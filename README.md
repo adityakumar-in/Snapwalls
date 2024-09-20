@@ -1,0 +1,1 @@
+This is Snapwalls Readme file. It contains information about the project, how to run it, and how to contribute to it.
