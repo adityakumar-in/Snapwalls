@@ -1,0 +1,11 @@
+:root {
+    --theme-color: rgb(120,243,229);
+    --background: rgb(33,33,33);
+    --foreground: rgb(44,44,44);
+    --color: rgb(234,234,234);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--color);
+}
