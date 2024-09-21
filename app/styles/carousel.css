@@ -93,27 +93,35 @@ p {
 
 @media (max-width: 480px) {
   .main {
-    padding: 15px 16px;
+    padding: 0px 20px;
   }
 
   .slick-track {
     height: 40vh;
   }
+
+  .slick-list {
+    border-radius: 10px;
+  }
 }
 
 @media (min-width: 481px) and (max-width: 1024px) {
   .main {
-    padding: 20px 24px;
+    padding: 0px 24px;
   }
 
   .slick-track {
     height: 55vh;
   }
+
+  .slick-list {
+    border-radius: 10px;
+  }
 }
 
 @media (min-width: 1025px) {
   .main {
-    padding: 25px 30px;
+    padding: 5px 30px;
   }
 
   .slick-track {
