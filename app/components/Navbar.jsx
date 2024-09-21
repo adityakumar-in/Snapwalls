@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { IoNotifications } from "react-icons/io5";
 import "@/app/styles/navbar.css";
 
 function Navbar() {
@@ -10,23 +11,48 @@ function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("All");
   const [profileOpen, setProfileOpen] = useState(false);
+  const [selectedProfileOption, setSelectedProfileOption] = useState(null);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const dropdownRef = useRef(null);
   const profileRef = useRef(null);
 
   const options = ["All", "Mobile", "Desktop"];
-  const profileOptions = ["Profile", "Notifications", "Settings", "Logout"];
+  const profileOptions = ["Notifications", "Themes", "Logout"];
 
+  // Handle Option Clicks for Dropdown
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     setDropdownOpen(false);
   };
 
+  // Handle Profile Option Clicks (like Profile, Settings, Logout)
   const handleProfileOptionClick = (option) => {
-    // console.log(option);
+    if (option === "Logout") {
+      alert("Logged out successfully!");
+    } else if (option === "Notifications") {
+      setNotificationsOpen((prevState) => !prevState);
+      setSelectedProfileOption((prevOption) =>
+        prevOption === "Notifications" ? null : "Notifications"
+      );
+    } else {
+      setSelectedProfileOption((prevOption) =>
+        prevOption === option ? null : option
+      );
+      setNotificationsOpen(false);
+    }
     setProfileOpen(false);
   };
 
+  const handleNotificationClick = () => {
+    setNotificationsOpen(!notificationsOpen);
+    setSelectedProfileOption((prevOption) =>
+      prevOption === "Notifications" ? null : "Notifications"
+    );
+    setProfileOpen(false);
+  };
+
+  // Close Dropdowns and Profile on Outside Click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -44,13 +70,24 @@ function Navbar() {
     };
   }, [dropdownOpen, profileOpen]);
 
+  const handleProfileImageClick = () => {
+    setSelectedProfileOption(null); //This toggles the profile menu when the profile image is clicked
+    setNotificationsOpen(false); //This toggles the notifications content when the notification is clicked
+    setProfileOpen(!profileOpen);
+    setDropdownOpen(false);
+  };
+
   return (
     <div className="navbar">
       {/* Dropdown */}
       <div className="dropdown" ref={dropdownRef}>
         <button
           className="dropbtn"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
+          onClick={() => {
+            setDropdownOpen(!dropdownOpen);
+            setProfileOpen(false); // Close profile if dropdown is opened
+            setSelectedProfileOption(null); // Close profile content if dropdown opens
+          }}
         >
           <span className="navbar-text">{selectedOption}</span>
           <RiArrowDropDownLine className="dropdown-icon" />
@@ -69,7 +106,6 @@ function Navbar() {
           </div>
         )}
       </div>
-
       {/* Search */}
       <form className="search-container" action="#">
         <input
@@ -81,26 +117,38 @@ function Navbar() {
         />
         <BiSearch className="search-icon" />
       </form>
-
       {/* Notifications */}
-      <div className="notification">
-        <IoNotificationsOutline className="notification-icon" />
+      {/* <div className="notification">
+        {selectedProfileOption === "Notifications" ? (
+          <IoNotifications className="notification-icon" />
+        ) : (
+          <IoNotificationsOutline className="notification-icon" />
+        )}
+      </div> */}{" "}
+      {/* DO NOT DELETE THIS OR TOUCH THIS ADITYA BHAI PLEASE */}
+      <div className="notification" onClick={handleNotificationClick}>
+        {notificationsOpen ? (
+          <IoNotifications className="notification-icon" />
+        ) : (
+          <IoNotificationsOutline className="notification-icon" />
+        )}
       </div>
-
       {/* Profile Menu */}
       <div className="profile" ref={profileRef}>
         <img
           className="profile-image"
           src="/images/profile-image.jpeg"
           alt="Profile"
-          onClick={() => setProfileOpen(!profileOpen)}
+          onClick={handleProfileImageClick}
         />
         {profileOpen && (
           <div className="profile-menu">
             {profileOptions.map((option, index) => (
               <div
                 key={index}
-                className="profile-item"
+                className={`profile-item ${
+                  option === "Notifications" ? "small-screen-only" : ""
+                }`}
                 onClick={() => handleProfileOptionClick(option)}
               >
                 {option}
@@ -109,6 +157,19 @@ function Navbar() {
           </div>
         )}
       </div>
+      {/* Profile Option Content */}
+      {(notificationsOpen || selectedProfileOption === "Notifications") && (
+        <div className="notifications-content">
+          <h2>Notifications</h2>
+          <p>Check your recent notifications here.</p>
+        </div>
+      )}
+      {selectedProfileOption === "Themes" && (
+        <div className="themes-content">
+          <h2>Themes</h2>
+          <p>Change your themes here.</p>
+        </div>
+      )}
     </div>
   );
 }

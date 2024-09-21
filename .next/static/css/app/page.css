@@ -11,15 +11,16 @@
 }
 
 .slick-track {
-  height: 500px;
+  height: 100%;
 }
 
 .main {
-  padding: 25px 24px;
+  padding: 20px 24px;
 }
 
 .slick-list {
   border-radius: 1rem;
+  overflow: hidden;
 }
 
 .slick-dots li button:before {
@@ -47,7 +48,7 @@
   height: 100%;
   object-fit: cover;
   filter: brightness(70%);
-  transition: transform 1.2s ease;
+  transition: transform 1s ease;
 }
 
 .carouselItem:hover .image {
@@ -73,7 +74,7 @@
   max-width: 80%;
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.8s ease;
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 .carouselItem:hover .content {
@@ -82,7 +83,7 @@
 }
 
 h2 {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: 700;
   letter-spacing: 1px;
   margin-bottom: 1rem;
@@ -90,35 +91,51 @@ h2 {
 }
 
 p {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   line-height: 1.6;
 }
 
 @media (max-width: 480px) {
   .main {
-    padding: 0px 20px;
+    padding: 0px 15px;
   }
 
   .slick-track {
-    height: 40vh;
+    height: 25vh;
   }
 
   .slick-list {
     border-radius: 10px;
+  }
+
+  h2 {
+    font-size: 2.2rem;
+  }
+
+  p {
+    font-size: 1.1rem;
   }
 }
 
 @media (min-width: 481px) and (max-width: 1024px) {
   .main {
-    padding: 0px 24px;
+    padding: 0px 20px;
   }
 
   .slick-track {
-    height: 55vh;
+    height: 25vh;
   }
 
   .slick-list {
     border-radius: 10px;
+  }
+
+  h2 {
+    font-size: 2.8rem;
+  }
+
+  p {
+    font-size: 1.3rem;
   }
 }
 
@@ -128,7 +145,15 @@ p {
   }
 
   .slick-track {
-    height: 60vh;
+    height: 50vh;
+  }
+
+  h2 {
+    font-size: 3.5rem;
+  }
+
+  p {
+    font-size: 1.4rem;
   }
 }
 
