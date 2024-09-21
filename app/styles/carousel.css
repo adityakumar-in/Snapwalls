@@ -1,14 +1,36 @@
 .carouselContainer {
   position: relative;
   width: 100%;
-  height: 100vh; /* Full height of the viewport */
+  height: 100vh;
+  min-height: 400px;
+  max-height: 800px;
   overflow: hidden;
+}
+
+.slick-track {
+  height: 500px;
+}
+
+.main {
+  padding: 25px 24px;
+}
+
+.slick-list {
+  border-radius: 1rem;
+}
+
+.slick-dots li button:before {
+  color: white;
+}
+
+.slick-dots li.slick-active button:before {
+  color: white;
 }
 
 .carouselItem {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,69 +43,80 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -1;
+  filter: brightness(70%);
+  transition: transform 1.2s ease;
+}
+
+.carouselItem:hover .image {
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 .content {
   position: relative;
-  color: white;
+  z-index: 2;
   text-align: center;
-  z-index: 1;
+  color: white;
+  padding: 0 20px;
+  max-width: 80%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.8s ease;
+}
+
+.carouselItem:hover .content {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 h2 {
-  font-size: 3rem;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
   margin-bottom: 1rem;
+  text-transform: uppercase;
 }
 
 p {
-  font-size: 1.2rem;
-  max-width: 600px;
+  font-size: 1.4rem;
+  line-height: 1.6;
 }
 
-/* Responsive Styles */
-
-/* For screens up to 480px (Mobile) */
 @media (max-width: 480px) {
-  .carouselItem {
-    height: 100vh; /* Full viewport height */
+  .main {
+    padding: 15px 16px;
   }
 
-  h2 {
-    font-size: 2rem;
-  }
-
-  p {
-    font-size: 1rem;
+  .slick-track {
+    height: 40vh;
   }
 }
 
-/* For screens between 481px and 1024px (Tablets and small laptops) */
 @media (min-width: 481px) and (max-width: 1024px) {
-  .carouselItem {
-    height: 100vh;
+  .main {
+    padding: 20px 24px;
   }
 
-  h2 {
-    font-size: 2.5rem;
-  }
-
-  p {
-    font-size: 1.1rem;
+  .slick-track {
+    height: 55vh;
   }
 }
 
-/* For screens larger than 1025px (Desktops) */
 @media (min-width: 1025px) {
-  .carouselItem {
-    height: 100vh;
+  .main {
+    padding: 25px 30px;
   }
 
-  h2 {
-    font-size: 3rem;
-  }
-
-  p {
-    font-size: 1.2rem;
+  .slick-track {
+    height: 60vh;
   }
 }

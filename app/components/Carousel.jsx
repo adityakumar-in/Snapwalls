@@ -1,4 +1,3 @@
-// app/components/Carousel.js
 "use client";
 
 import React from "react";
@@ -10,27 +9,28 @@ const Carousel = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 800,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 2500,
     arrows: false,
+    fade: true,
     pauseOnHover: true,
   };
 
   return (
     <div className={styles.carouselContainer}>
       <Slider {...settings}>
-        {/* First Slide */}
         <div className={styles.carouselItem}>
           <Image
             src="/images/tanjiro.jpg"
-            alt="Mavka"
-            layout="fill" // This makes the image fill the container
-            objectFit="cover" // Makes sure the image covers the entire container while maintaining aspect ratio
+            alt="tanjiro"
+            layout="fill"
+            objectFit="cover"
             className={styles.image}
           />
+          <div className={styles.overlay} />
           <div className={styles.content}>
             <h2>Mavka</h2>
             <p>
@@ -39,22 +39,34 @@ const Carousel = () => {
           </div>
         </div>
 
-        {/* Second Slide */}
         <div className={styles.carouselItem}>
           <Image
-            src="/images/your-image-2.jpg"
-            alt="Image 2"
-            layout="fill" // Full width image
+            src="/images/tanjiro2.jpg"
+            alt="tanjiro2"
+            layout="fill"
             objectFit="cover"
             className={styles.image}
           />
+          <div className={styles.overlay} />
           <div className={styles.content}>
             <h2>Slide 2</h2>
             <p>Another carousel item with a description.</p>
           </div>
         </div>
-
-        {/* Add more slides as needed */}
+        <div className={styles.carouselItem}>
+          <Image
+            src="/images/tanjiro3.png"
+            alt="tanjiro3"
+            layout="fill"
+            objectFit="cover"
+            className={styles.image}
+          />
+          <div className={styles.overlay} />
+          <div className={styles.content}>
+            <h2>Slide 3</h2>
+            <p>Another carousel item with a description.</p>
+          </div>
+        </div>
       </Slider>
     </div>
   );

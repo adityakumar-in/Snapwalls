@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
 import { IoNotificationsOutline } from "react-icons/io5";
-import "@/app/styles/navbar.css"; // Make sure the path is correct
+import "@/app/styles/navbar.css";
 
 function Navbar() {
   const [searchValue, setSearchValue] = useState("");
@@ -71,6 +71,9 @@ function Navbar() {
       </form>
       <div className="notification">
         <IoNotificationsOutline className="notification-icon" />
+      </div>
+      <div className="profile">
+        <img src="/images/profile-image.jpeg" alt="Profile Picture" />
       </div>
     </div>
   );
