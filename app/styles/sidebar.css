@@ -69,29 +69,23 @@
     height: 30px;
 }
 
-.sidebar-home-hovered {
+.sidebar-nav-icon-hovered {
     display: none;
 }
-.sidebar-home-container:hover .sidebar-home {
+.sidebar-home-container:hover .sidebar-nav-icon {
     display: none;
 }
-.sidebar-home-container:hover .sidebar-home-hovered {
+.sidebar-home-container:hover .sidebar-nav-icon-hovered {
     display: block;
-}
-
-.sidebar-explore {
-    width: 35px;
-    height: 35px;
 }
 
 
 /* Sidebar Navbar - Hover/Active */
 .sidebar-nav-items:hover {
-    color: var(--theme-color);
     font-weight: 500;
 }
 .sidebar-nav-items:hover .sidebar-nav-icons {
-    stroke: var(--theme-color);
+    outline: 10px;
 }
 .active-nav {
     color: var(--theme-color);
