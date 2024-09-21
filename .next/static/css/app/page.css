@@ -1,0 +1,93 @@
+/*!*********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[12].use[3]!./app/styles/carousel.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************/
+.carouselContainer {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full height of the viewport */
+  overflow: hidden;
+}
+
+.carouselItem {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.content {
+  position: relative;
+  color: white;
+  text-align: center;
+  z-index: 1;
+}
+
+h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  font-size: 1.2rem;
+  max-width: 600px;
+}
+
+/* Responsive Styles */
+
+/* For screens up to 480px (Mobile) */
+@media (max-width: 480px) {
+  .carouselItem {
+    height: 100vh; /* Full viewport height */
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+/* For screens between 481px and 1024px (Tablets and small laptops) */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .carouselItem {
+    height: 100vh;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+  }
+}
+
+/* For screens larger than 1025px (Desktops) */
+@media (min-width: 1025px) {
+  .carouselItem {
+    height: 100vh;
+  }
+
+  h2 {
+    font-size: 3rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+  }
+}
+
