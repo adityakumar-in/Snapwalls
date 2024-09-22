@@ -1,7 +1,9 @@
+import React from "react";
+import Carousel from "./components/Carousel";
 export default function Home() {
   return (
-    <div className="theme">
-      Snapwalls
+    <div className="main">
+      <Carousel />
     </div>
   );
 }
