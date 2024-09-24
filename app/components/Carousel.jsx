@@ -16,7 +16,7 @@ const Carousel = () => {
     autoplaySpeed: 2500,
     arrows: false,
     fade: true,
-    pauseOnHover: true,
+    pauseOnHover: false,
   };
 
   return (
@@ -24,33 +24,38 @@ const Carousel = () => {
       <Slider {...settings}>
         <div className={styles.carouselItem}>
           <Image
-            src="/images/tanjiro.jpg"
-            alt="tanjiro"
+            src="/images/cyberpunk.jpg"
+            alt="cyberpunk"
             layout="fill"
             objectFit="cover"
             className={styles.image}
           />
           <div className={styles.overlay} />
           <div className={styles.content}>
-            <h2>Mavka</h2>
+            <h2>Cyberpunk</h2>
             <p>
-              The already tumultuous lives of people are turned upside down.
+              Cyberpunk is a subgenre of science fiction in a dystopian future
+              where technology is advanced but society is corrupt and
+              oppressive.
             </p>
           </div>
         </div>
 
         <div className={styles.carouselItem}>
           <Image
-            src="/images/tanjiro2.jpg"
-            alt="tanjiro2"
+            src="/images/spiderrman.jpg"
+            alt="spiderman"
             layout="fill"
             objectFit="cover"
             className={styles.image}
           />
           <div className={styles.overlay} />
           <div className={styles.content}>
-            <h2>Slide 2</h2>
-            <p>Another carousel item with a description.</p>
+            <h2>Spiderman</h2>
+            <p>
+              Spider-Man is a superhero appearing in American comic books
+              published by Marvel Comics.
+            </p>
           </div>
         </div>
         <div className={styles.carouselItem}>
@@ -63,8 +68,54 @@ const Carousel = () => {
           />
           <div className={styles.overlay} />
           <div className={styles.content}>
-            <h2>Slide 3</h2>
-            <p>Another carousel item with a description.</p>
+            <h2>Tanjiro</h2>
+            <p>
+              Tanjiro Kamado is a kind-hearted and hardworking young man who
+              dreams of becoming a demon slayer to save his sister, Nezuko,
+              after she was turned into a demon.
+            </p>
+          </div>
+        </div>
+        <div className={styles.carouselItem}>
+          <Image
+            src="/images/animegirl.webp"
+            alt="animegirl"
+            layout="fill"
+            objectFit="cover"
+            className={styles.image}
+          />
+          <div className={styles.overlay} />
+          <div className={styles.content}>
+            <h2>Anime Girl</h2>
+            <p>Anime Girl is a fictional character from the anime series.</p>
+          </div>
+        </div>
+        <div className={styles.carouselItem}>
+          <Image
+            src="/images/firewatch.jpg"
+            alt="firewatch"
+            layout="fill"
+            objectFit="cover"
+            className={styles.image}
+          />
+          <div className={styles.overlay} />
+          <div className={styles.content}>
+            <h2>Firewatch</h2>
+            <p>Firewatch around a fire</p>
+          </div>
+        </div>
+        <div className={styles.carouselItem}>
+          <Image
+            src="/images/nature-1.jpg"
+            alt="nature"
+            layout="fill"
+            objectFit="cover"
+            className={styles.image}
+          />
+          <div className={styles.overlay} />
+          <div className={styles.content}>
+            <h2>Firewatch</h2>
+            <p>Firewatch around a fire</p>
           </div>
         </div>
       </Slider>

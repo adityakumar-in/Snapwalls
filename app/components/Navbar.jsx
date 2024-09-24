@@ -4,6 +4,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { IoNotifications } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
 import "@/app/styles/navbar.css";
 
 function Navbar() {
@@ -28,9 +29,7 @@ function Navbar() {
 
   // Handle Profile Option Clicks (like Profile, Settings, Logout)
   const handleProfileOptionClick = (option) => {
-    if (option === "Logout") {
-      alert("Logged out successfully!");
-    } else if (option === "Notifications") {
+    if (option === "Notifications") {
       setNotificationsOpen((prevState) => !prevState);
       setSelectedProfileOption((prevOption) =>
         prevOption === "Notifications" ? null : "Notifications"
@@ -164,13 +163,31 @@ function Navbar() {
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
         <div className="notifications-content">
           <h2>Notifications</h2>
+          <RxCross2 className="close-icon" onClick={handleNotificationClick} />
           <p>Check your recent notifications here.</p>
         </div>
       )}
       {selectedProfileOption === "Themes" && (
         <div className="themes-content">
           <h2>Themes</h2>
+          <RxCross2 className="close-icon" onClick={handleProfileOptionClick} />
           <p>Change your themes here.</p>
+        </div>
+      )}
+      {selectedProfileOption === "Logout" && (
+        <div className="logout-content">
+          <h2>Logout</h2>
+          <RxCross2 className="close-icon" onClick={handleProfileOptionClick} />
+          <p>Are you sure you want to logout?</p>
+          <div className="confirm">
+            <button
+              className="cancel-button"
+              onClick={handleProfileOptionClick}
+            >
+              Cancel
+            </button>
+            <button className="logout-button">Logout</button>
+          </div>
         </div>
       )}
     </div>

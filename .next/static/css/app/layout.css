@@ -184,7 +184,149 @@ body {
   display: none;
 }
 
+.close-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.logout-content {
+  position: absolute;
+  top: 100%;
+  right: 0.85rem;
+  background-color: var(--foreground);
+  color: white;
+  z-index: 200;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+  width: 220px;
+}
+
+.logout-content h2 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.logout-content p {
+  font-size: 1rem;
+  padding: 10px;
+  text-align: center;
+}
+
+.confirm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.logout-button {
+  background: linear-gradient(135deg, #3498db, #2ecc71);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-button:hover {
+  background: linear-gradient(135deg, #5dade2, #58d68d);
+}
+
+.logout-button:active {
+  background: linear-gradient(135deg, #2980b9, #27ae60);
+  transform: scale(0.98);
+}
+
+.cancel-button {
+  background: linear-gradient(135deg, #ff6b6b, #f06595);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-button:hover {
+  background: linear-gradient(135deg, #ff8787, #f78fb3);
+}
+
+.cancel-button:active {
+  background: linear-gradient(135deg, #ff4d4d, #e64980);
+  transform: scale(0.98);
+}
+
+.logout-button {
+  background: linear-gradient(135deg, #3498db, #2ecc71);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-button:hover {
+  background: linear-gradient(135deg, #5dade2, #58d68d);
+}
+
+.logout-button:active {
+  background: linear-gradient(135deg, #2980b9, #27ae60);
+  transform: scale(0.98);
+}
+
 @media (max-width: 480px) {
+  .close-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+
+  .logout-content {
+    width: 100%;
+    right: 0;
+    padding: 10px;
+  }
+
+  .logout-content h2 {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .logout-content p {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  .confirm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .logout-button,
+  .cancel-button {
+    padding: 8px 16px;
+    margin: 5px;
+    font-size: 0.9rem;
+  }
   .notifications-content {
     position: absolute;
     top: 100%;
@@ -200,7 +342,7 @@ body {
   }
 
   .notifications-content h2 {
-    font-size: 1rem;
+    font-size: 0.85rem;
     padding: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
@@ -338,6 +480,35 @@ body {
 }
 
 @media (min-width: 481px) and (max-width: 1024px) {
+  .close-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+  }
+  .logout-content {
+    width: 300px;
+    right: 1rem;
+    padding: 12px;
+  }
+
+  .logout-content h2 {
+    font-size: 1.05rem;
+    padding: 10px;
+  }
+
+  .logout-content p {
+    font-size: 0.95rem;
+    padding: 9px;
+  }
+
+  .logout-button,
+  .cancel-button {
+    padding: 9px 18px;
+    margin: 8px;
+    font-size: 0.95rem;
+  }
   .notifications-content {
     position: absolute;
     top: 100%;
@@ -353,7 +524,7 @@ body {
   }
 
   .notifications-content h2 {
-    font-size: 1rem;
+    font-size: 0.85rem;
     padding: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
@@ -482,6 +653,42 @@ body {
 }
 
 @media (min-width: 1025px) {
+  .close-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+  }
+
+  .logout-content {
+    width: 400px;
+    right: 1.5rem;
+    padding: 20px;
+  }
+
+  .logout-content h2 {
+    font-size: 1.2rem;
+    padding: 15px;
+  }
+
+  .logout-content p {
+    font-size: 1.1rem;
+    padding: 12px;
+  }
+
+  .confirm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+  }
+
+  .logout-button,
+  .cancel-button {
+    padding: 12px 24px;
+    margin: 10px;
+    font-size: 1rem;
+  }
   .notifications-content {
     position: absolute;
     top: 100%;
@@ -518,34 +725,33 @@ body {
   .themes-content {
     position: absolute;
     top: 100%;
-    right: 0.85rem;
+    right: 1.5rem;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    width: 550px;
     height: 450px;
   }
 
   .themes-content h2 {
-    font-size: 1.2rem;
-    padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
     width: 100%;
-    margin-bottom: 10px;
   }
 
   .themes-content p {
-    font-size: 0.9rem;
-    padding: 10px;
-    padding-top: 0px;
-    /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
+    font-size: 1rem;
+    padding: 15px;
+    padding-top: 5px;
     text-align: center;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
   .navbar {
     padding: 25px 30px;
