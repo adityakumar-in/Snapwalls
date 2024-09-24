@@ -1,4 +1,4 @@
-// File: /Users/aditya/Documents/Coding/Projects/Advance/Snapwalls/app/layout.js
+// File: C:\Users\Abhishek\Desktop\Snap Walls\Snapwalls\app\layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
