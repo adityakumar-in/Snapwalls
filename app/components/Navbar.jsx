@@ -90,7 +90,10 @@ function Navbar() {
           }}
         >
           <span className="navbar-text">{selectedOption}</span>
-          <RiArrowDropDownLine className="dropdown-icon" />
+          <RiArrowDropDownLine
+            className="dropdown-icon"
+            style={{ marginLeft: "0px" }}
+          />
         </button>
         {dropdownOpen && (
           <div className="dropdown-menu">
