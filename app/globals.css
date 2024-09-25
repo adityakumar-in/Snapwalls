@@ -13,3 +13,6 @@ body {
     color: var(--color);
     font-family: "Ubuntu", sans-serif;
 }
+.snapwalls-container {
+    display: flex;
+}
