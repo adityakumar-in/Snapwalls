@@ -262,29 +262,42 @@
   transform: scale(0.98);
 }
 
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media (max-width: 480px) {
   .close-icon {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.3rem;
+    top: 0.96rem;
+    right: 0.85rem;
+    font-size: 1.2rem;
     cursor: pointer;
   }
 
   .logout-content {
-    width: 100%;
-    right: 0;
-    padding: 10px;
+    width: 246px;
+    right: 1rem;
+    padding: 12px;
   }
 
   .logout-content h2 {
-    font-size: 1rem;
+    font-size: 1.05rem;
     padding: 10px;
   }
 
   .logout-content p {
-    font-size: 0.9rem;
-    padding: 8px;
+    font-size: 0.95rem;
+    padding: 9px;
+  }
+
+  .logout-button,
+  .cancel-button {
+    padding: 9px 18px;
+    margin: 8px;
+    font-size: 0.95rem;
   }
 
   .confirm {
@@ -294,12 +307,6 @@
     margin-top: 20px;
   }
 
-  .logout-button,
-  .cancel-button {
-    padding: 8px 16px;
-    margin: 5px;
-    font-size: 0.9rem;
-  }
   .notifications-content {
     position: absolute;
     top: 100%;
@@ -457,9 +464,9 @@
 @media (min-width: 481px) and (max-width: 1024px) {
   .close-icon {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.3rem;
+    top: 0.96rem;
+    right: 0.85rem;
+    font-size: 1.2rem;
     cursor: pointer;
   }
   .logout-content {

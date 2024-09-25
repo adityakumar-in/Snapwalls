@@ -162,8 +162,13 @@ function Navbar() {
       {/* Profile Option Content */}
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
         <div className="notifications-content">
-          <h2>Notifications</h2>
-          <RxCross2 className="close-icon" onClick={handleNotificationClick} />
+          <div className="notification-header">
+            <h2>Notifications</h2>
+            <RxCross2
+              className="close-icon"
+              onClick={handleNotificationClick}
+            />
+          </div>
           <p>Check your recent notifications here.</p>
         </div>
       )}
