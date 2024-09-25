@@ -3,7 +3,7 @@
 import React from "react";
 import Slider from "react-slick";
 import Image from "next/image";
-import styles from "../styles/carousel.css";
+import styles from "@/app/styles/carousel.css";
 
 const Carousel = () => {
   const settings = {
