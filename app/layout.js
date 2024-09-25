@@ -1,8 +1,9 @@
+import './globals.css';
+import SideBar from '@/components/SideBar';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./globals.css";
 import Navbar from "../components/Navbar";
-import "@/app/styles/navbar.css";
+
 export const metadata = {
   title: "Snapwalls - Ultra HD Wallpapers",
   description:
@@ -13,8 +14,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        {children}
+        <div className='snapwalls-container'>
+          <div className='snapwalls-sidebar'>
+            <SideBar />
+          </div>
+          <div className='snapwalls-content'>
+            <Navbar />
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );

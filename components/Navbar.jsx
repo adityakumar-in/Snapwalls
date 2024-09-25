@@ -29,6 +29,7 @@ function Navbar() {
 
   // Handle Profile Option Clicks (like Profile, Settings, Logout)
   const handleProfileOptionClick = (option) => {
+
     if (option === "Notifications") {
       setNotificationsOpen((prevState) => !prevState);
       setSelectedProfileOption((prevOption) =>
@@ -89,10 +90,7 @@ function Navbar() {
           }}
         >
           <span className="navbar-text">{selectedOption}</span>
-          <RiArrowDropDownLine
-            className="dropdown-icon"
-            style={{ marginLeft: "0px" }}
-          />
+          <RiArrowDropDownLine className="dropdown-icon" style={{ marginLeft: "0px" }} />
         </button>
         {dropdownOpen && (
           <div className="dropdown-menu">
@@ -126,7 +124,8 @@ function Navbar() {
         ) : (
           <IoNotificationsOutline className="notification-icon" />
         )}
-      </div> */}{" "}
+      </div> */}
+
       {/* DO NOT DELETE THIS OR TOUCH THIS ADITYA BHAI PLEASE */}
       <div className="notification" onClick={handleNotificationClick}>
         {notificationsOpen ? (
@@ -135,6 +134,7 @@ function Navbar() {
           <IoNotificationsOutline className="notification-icon" />
         )}
       </div>
+
       {/* Profile Menu */}
       <div className="profile" ref={profileRef}>
         <img
