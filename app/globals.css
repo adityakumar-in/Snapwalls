@@ -1,8 +1,8 @@
 :root {
-    --theme-color: rgb(16, 160, 144);
-    --background: rgb(33,33,33);
-    --foreground: rgb(44,44,44);
-    --color: rgb(234,234,234);
+  --theme-color: rgb(3, 155, 137);
+  --background: rgb(33, 33, 33);
+  --foreground: rgb(44, 44, 44);
+  --color: rgb(234, 234, 234);
 }
 * {
     margin: 0;

@@ -4,6 +4,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { IoNotifications } from "react-icons/io5";
+import { RxCross2 } from "react-icons/rx";
 import "@/app/styles/navbar.css";
 
 function Navbar() {
@@ -28,9 +29,8 @@ function Navbar() {
 
   // Handle Profile Option Clicks (like Profile, Settings, Logout)
   const handleProfileOptionClick = (option) => {
-    if (option === "Logout") {
-      alert("Logged out successfully!");
-    } else if (option === "Notifications") {
+
+    if (option === "Notifications") {
       setNotificationsOpen((prevState) => !prevState);
       setSelectedProfileOption((prevOption) =>
         prevOption === "Notifications" ? null : "Notifications"
@@ -90,7 +90,7 @@ function Navbar() {
           }}
         >
           <span className="navbar-text">{selectedOption}</span>
-          <RiArrowDropDownLine className="dropdown-icon" />
+          <RiArrowDropDownLine className="dropdown-icon" style={{ marginLeft: "0px" }} />
         </button>
         {dropdownOpen && (
           <div className="dropdown-menu">
@@ -124,7 +124,8 @@ function Navbar() {
         ) : (
           <IoNotificationsOutline className="notification-icon" />
         )}
-      </div> */}{" "}
+      </div> */}
+
       {/* DO NOT DELETE THIS OR TOUCH THIS ADITYA BHAI PLEASE */}
       <div className="notification" onClick={handleNotificationClick}>
         {notificationsOpen ? (
@@ -133,6 +134,7 @@ function Navbar() {
           <IoNotificationsOutline className="notification-icon" />
         )}
       </div>
+
       {/* Profile Menu */}
       <div className="profile" ref={profileRef}>
         <img
@@ -160,14 +162,37 @@ function Navbar() {
       {/* Profile Option Content */}
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
         <div className="notifications-content">
-          <h2>Notifications</h2>
+          <div className="notification-header">
+            <h2>Notifications</h2>
+            <RxCross2
+              className="close-icon"
+              onClick={handleNotificationClick}
+            />
+          </div>
           <p>Check your recent notifications here.</p>
         </div>
       )}
       {selectedProfileOption === "Themes" && (
         <div className="themes-content">
           <h2>Themes</h2>
+          <RxCross2 className="close-icon" onClick={handleProfileOptionClick} />
           <p>Change your themes here.</p>
+        </div>
+      )}
+      {selectedProfileOption === "Logout" && (
+        <div className="logout-content">
+          <h2>Logout</h2>
+          <RxCross2 className="close-icon" onClick={handleProfileOptionClick} />
+          <p>Are you sure you want to logout?</p>
+          <div className="confirm">
+            <button
+              className="cancel-button"
+              onClick={handleProfileOptionClick}
+            >
+              Cancel
+            </button>
+            <button className="logout-button">Logout</button>
+          </div>
         </div>
       )}
     </div>
