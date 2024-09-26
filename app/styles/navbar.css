@@ -1,18 +1,37 @@
+/*
+
+TODO add website logo below 1100px in width of navbar
+TODO: make heights in pixels
+TODO fix search icon
+TODO fix searchbar size on different devices
+TODO fix dropdown profile menu size on different devices 
+TODO change cross color of notification
+TODO remove theme dropdown menu
+TODO fix logout color on hover and default color also - --seekbar
+
+
+TODO remove top bottom padding below 1100px in width of navbar
+*/
+
 .navbar-nav {
   color: white;
-  padding: 25px 24px;
+  /* padding: 25px 24px; */
+
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding-bottom: 1rem;
+  gap: 0.5em;
+  /* padding-bottom: 1em; */
+  padding: 1.5vh;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .navbar-dropbtn {
   background-color: var(--foreground);
   color: white;
   padding: 16px 25px;
-  font-size: 1rem;
+  font-size: 1em;
   border: none;
   border-radius: 68px;
   cursor: pointer;
@@ -29,7 +48,7 @@
 
 .navbar-dropdown-icon {
   margin-left: 10px;
-  font-size: 1.5rem;
+  font-size: 1.5em;
 }
 
 .navbar-dropdown {
@@ -50,18 +69,18 @@
 .navbar-dropdown-item {
   padding: 12px 18px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+  border-bottom: 1px solid var(--seekbar);
   transition: background-color 0.navbar-2s ease, color 0.navbar-2s ease;
   display: flex;
   align-items: center;
-  font-size: 0.95rem;
+  font-size: 0.95em;
   min-height: 44px;
   box-sizing: border-box;
   width: 100%;
 }
 
 .navbar-dropdown-item:hover {
-  background-color: rgba(255, 255, 255, 0.navbar-1);
+  background-color: var(--seekbar);
   color: var(--accent-color, var(--theme-color));
 }
 
@@ -80,10 +99,7 @@
   border-top-right-radius: 8px;
 }
 
-.navbar-search-container {
-  flex-grow: 1;
-  position: relative;
-}
+
 
 .navbar-profile-menu {
   display: block;
@@ -97,27 +113,31 @@
   right: 0;
   text-align: left;
 }
-
+.navbar-search-container {
+  flex-grow: 1;
+  position: relative;
+}
 .navbar-search-bar {
   width: 100%;
-  padding: 14px 20px;
-  padding-right: 45px;
   border: none;
   border-radius: 54px;
+  background-color: transparent;
   background-color: var(--foreground);
+  padding-left: 20px;
   color: white;
   font-size: 14px;
   outline: none;
-  height: 3.5rem;
+  height: 3.5em;
+  box-sizing: border-box;
 }
 
 .navbar-search-icon {
   position: absolute;
-  right: 1.5rem;
+  right: 1.5em;
   top: 50%;
   transform: translateY(-50%);
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.5em;
   pointer-events: none;
 }
 
@@ -131,7 +151,7 @@
 }
 
 .navbar-notification-icon {
-  font-size: 1.5rem;
+  font-size: 1.5em;
 }
 
 .navbar-profile {
@@ -159,16 +179,16 @@
 
 .navbar-close-icon {
   position: absolute;
-  top: 1rem;
-  right: 1.5rem;
-  font-size: 1.5rem;
+  top: 1em;
+  right: 1.5em;
+  font-size: 1.5em;
   cursor: pointer;
 }
 
 .navbar-logout-content {
   position: absolute;
   top: 100%;
-  right: 0.85rem;
+  right: 0.85em;
   background-color: var(--foreground);
   color: white;
   z-index: 200;
@@ -179,7 +199,7 @@
 }
 
 .navbar-logout-content h2 {
-  font-size: 1.1rem;
+  font-size: 1.1em;
   margin-bottom: 12px;
   padding: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-2);
@@ -187,7 +207,7 @@
 }
 
 .navbar-logout-content p {
-  font-size: 1rem;
+  font-size: 1em;
   padding: 10px;
   text-align: center;
 }
@@ -271,25 +291,25 @@
 @media (max-width: 480px) {
   .navbar-close-icon {
     position: absolute;
-    top: 0.96rem;
-    right: 0.85rem;
-    font-size: 1.2rem;
+    top: 0.96em;
+    right: 0.85em;
+    font-size: 1.2em;
     cursor: pointer;
   }
 
   .navbar-logout-content {
     width: 246px;
-    right: 1rem;
+    right: 1em;
     padding: 12px;
   }
 
   .navbar-logout-content h2 {
-    font-size: 1.05rem;
+    font-size: 1.05em;
     padding: 10px;
   }
 
   .navbar-logout-content p {
-    font-size: 0.95rem;
+    font-size: 0.95em;
     padding: 9px;
   }
 
@@ -297,7 +317,7 @@
   .navbar-cancel-button {
     padding: 9px 18px;
     margin: 8px;
-    font-size: 0.95rem;
+    font-size: 0.95em;
   }
 
   .navbar-confirm {
@@ -310,7 +330,7 @@
   .navbar-notifications-content {
     position: absolute;
     top: 100%;
-    right: 0.85rem;
+    right: 0.85em;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
@@ -322,17 +342,17 @@
   }
 
   .navbar-notifications-content h2 {
-    font-size: 0.85rem;
+    font-size: 0.85em;
     margin-bottom: 10px;
     padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
   }
 
   .navbar-notifications-content p {
-    font-size: 0.navbar-9rem;
+    font-size: 0.navbar-9em;
     padding: 10px;
     padding-top: 0px;
     text-align: center;
@@ -343,7 +363,7 @@
   .navbar-themes-content {
     position: absolute;
     top: 100%;
-    right: 0.85rem;
+    right: 0.85em;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
@@ -355,22 +375,23 @@
   }
 
   .navbar-themes-content h2 {
-    font-size: 1rem;
+    font-size: 1em;
     margin-bottom: 10px;
     padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
   }
 
   .navbar-profile-item:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
+    border-radius: 10px;
     color: var(--theme-color);
   }
 
   .navbar-themes-content p {
-    font-size: 0.9rem;
+    font-size: 0.9em;
     padding: 10px;
     padding-top: 0px;
     text-align: center;
@@ -378,11 +399,11 @@
     margin-bottom: 10px;
   }
 
-  .navbar-navbar {
+  /* .navbar-nav {
     padding: 15px 16px;
-    padding-bottom: 1rem;
-    gap: 0.55rem;
-  }
+    padding-bottom: 1em;
+    gap: 0.55em;
+  } */
 
   .navbar-profile {
     width: 45px;
@@ -395,18 +416,18 @@
     background-color: var(--foreground);
     color: white;
     border-radius: 8px;
-    margin-top: 10.5rem;
+    margin-top: 10.5em;
     z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.navbar-1);
-    right: 0.85rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    right: 0.85em;
     text-align: center;
   }
 
   .navbar-profile-item {
-    font-size: 0.85rem;
+    font-size: 0.85em;
     padding: 10px 15px;
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
   }
 
   .navbar-profile-item:last-child {
@@ -414,21 +435,21 @@
   }
 
   .navbar-dropdown-menu {
-    font-size: 0.85rem;
+    font-size: 0.85em;
   }
 
   .navbar-dropdown-icon {
     margin-left: 7px;
-    font-size: 1.3rem;
+    font-size: 1.3em;
   }
 
   .navbar-search-bar {
-    height: 2.5rem;
+    height: 2.5em;
   }
 
   .navbar-search-icon {
-    right: 0.75rem;
-    font-size: 1.3rem;
+    right: 0.75em;
+    font-size: 1.3em;
   }
 
   .navbar-notification {
@@ -437,11 +458,11 @@
   }
 
   .navbar-notification-icon {
-    font-size: 1.2rem;
+    font-size: 1.2em;
   }
 
   .navbar-text {
-    font-size: 0.85rem;
+    font-size: 0.85em;
   }
 
   .navbar-dropbtn {
@@ -451,12 +472,12 @@
   }
 
   .navbar-profile-item:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
     color: var(--theme-color);
   }
 
   .navbar-profile-item:last-child:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
     color: red;
   }
 }
@@ -464,24 +485,24 @@
 @media (min-width: 481px) and (max-width: 1024px) {
   .navbar-close-icon {
     position: absolute;
-    top: 0.96rem;
-    right: 0.85rem;
-    font-size: 1.2rem;
+    top: 0.96em;
+    right: 0.85em;
+    font-size: 1.2em;
     cursor: pointer;
   }
   .navbar-logout-content {
     width: 300px;
-    right: 1rem;
+    right: 1em;
     padding: 12px;
   }
 
   .navbar-logout-content h2 {
-    font-size: 1.05rem;
+    font-size: 1.05em;
     padding: 10px;
   }
 
   .navbar-logout-content p {
-    font-size: 0.95rem;
+    font-size: 0.95em;
     padding: 9px;
   }
 
@@ -489,12 +510,12 @@
   .navbar-cancel-button {
     padding: 9px 18px;
     margin: 8px;
-    font-size: 0.95rem;
+    font-size: 0.95em;
   }
   .navbar-notifications-content {
     position: absolute;
     top: 100%;
-    right: 1rem;
+    right: 1em;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
@@ -506,20 +527,20 @@
   }
 
   .navbar-notifications-content h2 {
-    font-size: 0.85rem;
+    font-size: 0.85em;
     margin-bottom: 10px;
     padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
   }
 
   .navbar-notifications-content p {
-    font-size: 0.9rem;
+    font-size: 0.9em;
     padding: 10px;
     padding-top: 0px;
-    /* border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1); */
+    /* border-bottom: 1px solid var(--seekbar); */
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
@@ -528,7 +549,7 @@
   .navbar-themes-content {
     position: absolute;
     top: 100%;
-    right: 0.85rem;
+    right: 0.85em;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
@@ -540,29 +561,29 @@
   }
 
   .navbar-themes-content h2 {
-    font-size: 1rem;
+    font-size: 1em;
     margin-bottom: 10px;
     padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
   }
 
   .navbar-themes-content p {
-    font-size: 0.9rem;
+    font-size: 0.9em;
     padding: 10px;
     padding-top: 0px;
-    /* border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1); */
+    /* border-bottom: 1px solid var(--seekbar); */
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
   }
-  .navbar-nav {
+  /* .navbar-nav {
     padding: 20px 24px;
     padding-bottom: 10px;
-    gap: 0.8rem;
-  }
+    gap: 0.8em;
+  } */
 
   .navbar-profile {
     width: 44px;
@@ -571,7 +592,7 @@
 
   .navbar-dropbtn {
     padding: 12px 5px;
-    font-size: 0.85rem;
+    font-size: 0.85em;
     border-radius: 60px;
     /* padding: 10px 7px; */
     padding-left: 10px;
@@ -579,20 +600,18 @@
   }
 
   .navbar-dropdown-icon {
-    font-size: 1.4rem;
+    font-size: 1.4em;
   }
 
   .navbar-search-bar {
-    padding: 12px 18px;
-    padding-right: 42px;
-    font-size: 0.95rem;
+    font-size: 0.95em;
     border-radius: 48px;
-    height: 3rem;
+    height: 3em;
   }
 
   .navbar-search-icon {
-    font-size: 1.4rem;
-    right: 1.2rem;
+    font-size: 1.4em;
+    right: 1.2em;
   }
 
   .navbar-notification {
@@ -600,7 +619,7 @@
   }
 
   .navbar-notification-icon {
-    font-size: 1.4rem;
+    font-size: 1.4em;
   }
   .navbar-profile-menu {
     display: block;
@@ -608,22 +627,22 @@
     background-color: var(--foreground);
     color: white;
     border-radius: 8px;
-    margin-top: 10.5rem;
+    margin-top: 10.5em;
     z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.navbar-1);
-    right: 0.85rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    right: 0.85em;
     text-align: center;
   }
 
   .navbar-profile-item {
-    font-size: 0.85rem;
+    font-size: 0.85em;
     padding: 10px 15px;
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
   }
 
   .navbar-profile-item:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
     color: var(--theme-color);
   }
 
@@ -631,7 +650,7 @@
     border-bottom: none;
   }
   .navbar-profile-item:last-child:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
     color: red;
   }
 }
@@ -639,24 +658,24 @@
 @media (min-width: 1025px) {
   .navbar-close-icon {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 1em;
+    right: 1em;
     cursor: pointer;
   }
 
   .navbar-logout-content {
     width: 400px;
-    right: 1.5rem;
+    right: 1.5em;
     padding: 20px;
   }
 
   .navbar-logout-content h2 {
-    font-size: 1.2rem;
+    font-size: 1.2em;
     padding: 15px;
   }
 
   .navbar-logout-content p {
-    font-size: 1.1rem;
+    font-size: 1.1em;
     padding: 12px;
   }
 
@@ -671,12 +690,12 @@
   .navbar-cancel-button {
     padding: 12px 24px;
     margin: 10px;
-    font-size: 1rem;
+    font-size: 1em;
   }
   .navbar-notifications-content {
     position: absolute;
     top: 100%;
-    right: 1rem;
+    right: 1em;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
@@ -688,20 +707,20 @@
   }
 
   .navbar-notifications-content h2 {
-    font-size: 1.2rem;
+    font-size: 1.2em;
     margin-bottom: 10px;
     padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
   }
 
   .navbar-notifications-content p {
-    font-size: 0.9rem;
+    font-size: 0.9em;
     padding: 10px;
     padding-top: 0px;
-    /* border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1); */
+    /* border-bottom: 1px solid var(--seekbar); */
     text-align: center;
     width: 100%;
     margin-bottom: 10px;
@@ -710,7 +729,7 @@
   .navbar-themes-content {
     position: absolute;
     top: 100%;
-    right: 1.5rem;
+    right: 1.5em;
     background-color: var(--foreground);
     color: white;
     z-index: 200;
@@ -722,7 +741,7 @@
   }
 
   .navbar-themes-content h2 {
-    font-size: 1.4rem;
+    font-size: 1.4em;
     margin-bottom: 15px;
     padding: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-2);
@@ -731,18 +750,18 @@
   }
 
   .navbar-themes-content p {
-    font-size: 1rem;
+    font-size: 1em;
     padding: 15px;
     padding-top: 5px;
     text-align: center;
     width: 100%;
     margin-bottom: 15px;
   }
-  .navbar-nav {
+  /* .navbar-nav {
     padding: 25px 30px;
-    padding-bottom: 1rem;
-    gap: 0.95rem;
-  }
+    padding-bottom: 1em;
+    gap: 0.95em;
+  } */
 
   .navbar-profile {
     width: 55px;
@@ -750,37 +769,35 @@
   }
 
   .navbar-profile-item:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
     color: var(--theme-color);
   }
   .navbar-profile-item:last-child:hover {
-    background-color: rgba(255, 255, 255, 0.navbar-1);
+    background-color: var(--seekbar);
     color: red;
   }
 
   .navbar-dropbtn {
     padding: 16px 25px;
-    font-size: 1rem;
+    font-size: 1em;
     border-radius: 68px;
     width: 142px;
     justify-content: space-between;
   }
 
   .navbar-dropdown-icon {
-    font-size: 1.5rem;
+    font-size: 1.5em;
   }
 
   .navbar-search-bar {
-    padding: 14px 20px;
-    padding-right: 45px;
-    font-size: 1rem;
+    font-size: 1em;
     border-radius: 54px;
-    height: 3.5rem;
+    height: 3.5em;
   }
 
   .navbar-search-icon {
-    font-size: 1.5rem;
-    right: 1.5rem;
+    font-size: 1.5em;
+    right: 1.5em;
   }
 
   .navbar-notification {
@@ -788,7 +805,7 @@
   }
 
   .navbar-notification-icon {
-    font-size: 1.5rem;
+    font-size: 1.5em;
   }
   .navbar-profile-menu {
     display: block;
@@ -796,19 +813,19 @@
     background-color: var(--foreground);
     color: white;
     border-radius: 8px;
-    margin-top: 10rem;
+    margin-top: 10em;
     z-index: 1000;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.navbar-1);
-    right: 1.75rem;
+    right: 1.75em;
     text-align: center;
     width: 150px;
   }
 
   .navbar-profile-item {
-    font-size: 1rem;
+    font-size: 1em;
     padding: 10px 15px;
     cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.navbar-1);
+    border-bottom: 1px solid var(--seekbar);
   }
 
   .navbar-profile-item:last-child {

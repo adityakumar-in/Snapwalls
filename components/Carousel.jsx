@@ -28,9 +28,9 @@ const Carousel = () => {
             alt="cyberpunk"
             layout="fill"
             objectFit="cover"
-            className={styles.image}
+            className={styles.carouselImage}
           />
-          <div className={styles.overlay} />
+          <div className={styles.carouselOverlay} />
           <div className={styles.carouselContent}>
             <h2 className="carousel-title">Cyberpunk</h2>
             <p className="carousel-content">
@@ -47,9 +47,9 @@ const Carousel = () => {
             alt="spiderman"
             layout="fill"
             objectFit="cover"
-            className={styles.image}
+            className={styles.carouselImage}
           />
-          <div className={styles.overlay} />
+          <div className={styles.carouselOverlay} />
           <div className={styles.carouselContent}>
             <h2 className="carousel-title">Spiderman</h2>
             <p className="carousel-content">
@@ -64,9 +64,9 @@ const Carousel = () => {
             alt="tanjiro3"
             layout="fill"
             objectFit="cover"
-            className={styles.image}
+            className={styles.carouselImage}
           />
-          <div className={styles.overlay} />
+          <div className={styles.carouselOverlay} />
           <div className={styles.carouselContent}>
             <h2 className="carousel-title">Tanjiro</h2>
             <p className="carousel-content">
@@ -82,9 +82,9 @@ const Carousel = () => {
             alt="animegirl"
             layout="fill"
             objectFit="cover"
-            className={styles.image}
+            className={styles.carouselImage}
           />
-          <div className={styles.overlay} />
+          <div className={styles.carouselOverlay} />
           <div className={styles.carouselContent}>
             <h2 className="carousel-title">Anime Girl</h2>
             <p className="carousel-content">Anime Girl is a fictional character from the anime series.</p>
@@ -96,9 +96,9 @@ const Carousel = () => {
             alt="firewatch"
             layout="fill"
             objectFit="cover"
-            className={styles.image}
+            className={styles.carouselImage}
           />
-          <div className={styles.overlay} />
+          <div className={styles.carouselOverlay} />
           <div className={styles.carouselContent}>
             <h2 className="carousel-title">Firewatch</h2>
             <p className="carousel-content">Firewatch around a fire</p>
@@ -110,9 +110,9 @@ const Carousel = () => {
             alt="nature"
             layout="fill"
             objectFit="cover"
-            className={styles.image}
+            className={styles.carouselImage}
           />
-          <div className={styles.overlay} />
+          <div className={styles.carouselOverlay} />
           <div className={styles.carouselContent}>
             <h2 className="carousel-title">Firewatch</h2>
             <p className="carousel-content">Firewatch around a fire</p>

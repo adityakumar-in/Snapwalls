@@ -1,3 +1,10 @@
+/*
+
+TODO Fix when click outside category div is not closing (<1100px in width and <670px in height)
+TODO fix window.innerwidth error
+*/
+
+
 'use client'
 import { React, useState, useEffect, useRef } from 'react';
 import Link from 'next/link'
@@ -118,7 +125,7 @@ const SideBar = () => {
                 </nav>
             </div>
 
-            {category && <div className='sidebar-outer-category'><div ref={categoryRef} className="sidebar-category">
+            {category && <div ref={categoryRef} className='sidebar-outer-category'><div className="sidebar-category">
                 <span className='sidebar-nav-items sidebar-category-title'>
                     <span>Trending</span>
                     <span ref={categoryCloseRef} onClick={closeCategory} className='category-close'><svg viewBox="0 0 24 24" fill="none" width={25} height={25}  xmlns="http://www.w3.org/2000/svg" stroke="#efefef"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20 20L4 4.00003M20 4L4.00002 20" stroke="#929292" stroke-width="2" stroke-linecap="round"></path> </g></svg></span>

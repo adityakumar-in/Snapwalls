@@ -1,12 +1,15 @@
-.carousel-carouselContainer {
+.carouselContainer {
   position: relative;
-  width: 100%;
+  width: 200px;
   height: 100vh;
   min-height: 400px;
   max-height: 800px;
   overflow: hidden;
 }
-
+.carouselContainer img {
+  width: 400px;
+  height: 100%;
+}
 .carousel-slick-track {
   height: 100%;
 }
@@ -16,7 +19,7 @@
 }
 
 .carousel-slick-list {
-  border-radius: 1rem;
+  border-radius: 1em;
   overflow: hidden;
 }
 
@@ -28,35 +31,35 @@
   color: white;
 }
 
-.carousel-carouselItem {
+.carouselItem {
   position: relative;
-  width: 100%;
+  width: 400px;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.carousel-image {
+.carouselImage {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 400px;
   height: 100%;
   object-fit: cover;
   filter: brightness(70%);
   transition: transform 1s ease;
 }
 
-.carousel-carouselItem:hover .carousel-image {
+.carouselItem:hover .carouselImage {
   transform: scale(1.carousel-05);
 }
 
-.carousel-overlay {
+.carouselOverlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 400px;
   height: 100%;
   background: rgba(0, 0, 0, 0.carousel-5);
   z-index: 1;
@@ -68,27 +71,27 @@
   text-align: center;
   color: white;
   padding: 0 20px;
-  max-width: 80%;
+  max-width: 300px;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.carousel-8s ease, transform 0.carousel-8s ease;
 }
 
-.carousel-carouselItem:hover .carouselContent {
+.carouselItem:hover .carouselContent {
   opacity: 1;
   transform: translateY(0);
 }
 
 .carousel-title {
-  font-size: 3rem;
+  font-size: 3em;
   font-weight: 700;
   letter-spacing: 1px;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
   text-transform: uppercase;
 }
 
 .carousel-content {
-  font-size: 1.3rem;
+  font-size: 1.3em;
   line-height: 1.6;
 }
 
@@ -106,11 +109,11 @@
   }
 
   .carousel-title {
-    font-size: 2.2rem;
+    font-size: 2.2em;
   }
 
   .carousel-content {
-    font-size: 1.1rem;
+    font-size: 1.1em;
   }
 }
 
@@ -128,11 +131,11 @@
   }
 
   .carousel-title {
-    font-size: 2.8rem;
+    font-size: 2.8em;
   }
 
   .carousel-content {
-    font-size: 1.3rem;
+    font-size: 1.3em;
   }
 }
 
@@ -146,10 +149,10 @@
   }
 
   .carousel-title {
-    font-size: 3.5rem;
+    font-size: 3.5em;
   }
 
   .carousel-content {
-    font-size: 1.4rem;
+    font-size: 1.4em;
   }
 }

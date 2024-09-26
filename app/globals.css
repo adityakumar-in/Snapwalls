@@ -3,6 +3,7 @@
   --background: rgb(33, 33, 33);
   --foreground: rgb(44, 44, 44);
   --color: rgb(234, 234, 234);
+  --seekbar: rgb(57, 57, 57);
 }
 * {
     margin: 0;
@@ -15,4 +16,7 @@ body {
 }
 .snapwalls-container {
     display: flex;
+}
+.snapwalls-content {
+    width: 100%;
 }
