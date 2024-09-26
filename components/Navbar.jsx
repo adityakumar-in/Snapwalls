@@ -78,11 +78,11 @@ function Navbar() {
   };
 
   return (
-    <div className="navbar">
+    <div className="navbar-nav">
       {/* Dropdown */}
-      <div className="dropdown" ref={dropdownRef}>
+      <div className="navbar-dropdown" ref={dropdownRef}>
         <button
-          className="dropbtn"
+          className="navbar-dropbtn"
           onClick={() => {
             setDropdownOpen(!dropdownOpen);
             setProfileOpen(false); // Close profile if dropdown is opened
@@ -90,14 +90,14 @@ function Navbar() {
           }}
         >
           <span className="navbar-text">{selectedOption}</span>
-          <RiArrowDropDownLine className="dropdown-icon" style={{ marginLeft: "0px" }} />
+          <RiArrowDropDownLine className="navbar-dropdown-icon" style={{ marginLeft: "0px" }} />
         </button>
         {dropdownOpen && (
-          <div className="dropdown-menu">
+          <div className="navbar-dropdown-menu">
             {options.map((option, index) => (
               <div
                 key={index}
-                className="dropdown-item"
+                className="navbar-dropdown-item"
                 onClick={() => handleOptionClick(option)}
               >
                 {option}
@@ -107,49 +107,49 @@ function Navbar() {
         )}
       </div>
       {/* Search */}
-      <form className="search-container" action="#">
+      <form className="navbar-search-container" action="#">
         <input
-          className="search-bar"
+          className="navbar-search-bar"
           type="text"
           placeholder="Search"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        <BiSearch className="search-icon" />
+        <BiSearch className="navbar-search-icon" />
       </form>
       {/* Notifications */}
-      {/* <div className="notification">
+      {/* <div className="navbar-notification">
         {selectedProfileOption === "Notifications" ? (
-          <IoNotifications className="notification-icon" />
+          <IoNotifications className="navbar-notification-icon" />
         ) : (
-          <IoNotificationsOutline className="notification-icon" />
+          <IoNotificationsOutline className="navbar-notification-icon" />
         )}
       </div> */}
 
       {/* DO NOT DELETE THIS OR TOUCH THIS ADITYA BHAI PLEASE */}
-      <div className="notification" onClick={handleNotificationClick}>
+      <div className="navbar-notification" onClick={handleNotificationClick}>
         {notificationsOpen ? (
-          <IoNotifications className="notification-icon" />
+          <IoNotifications className="navbar-notification-icon" />
         ) : (
-          <IoNotificationsOutline className="notification-icon" />
+          <IoNotificationsOutline className="navbar-notification-icon" />
         )}
       </div>
 
       {/* Profile Menu */}
-      <div className="profile" ref={profileRef}>
+      <div className="navbar-profile" ref={profileRef}>
         <img
-          className="profile-image"
+          className="navbar-profile-image"
           src="/images/profile-image.jpeg"
           alt="Profile"
           onClick={handleProfileImageClick}
         />
         {profileOpen && (
-          <div className="profile-menu">
+          <div className="navbar-profile-menu">
             {profileOptions.map((option, index) => (
               <div
                 key={index}
-                className={`profile-item ${
-                  option === "Notifications" ? "small-screen-only" : ""
+                className={`navbar-profile-item ${
+                  option === "Notifications" ? "navbar-small-screen-only" : ""
                 }`}
                 onClick={() => handleProfileOptionClick(option)}
               >
@@ -161,11 +161,11 @@ function Navbar() {
       </div>
       {/* Profile Option Content */}
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
-        <div className="notifications-content">
-          <div className="notification-header">
+        <div className="navbar-notifications-content">
+          <div className="navbar-notification-header">
             <h2>Notifications</h2>
             <RxCross2
-              className="close-icon"
+              className="navbar-close-icon"
               onClick={handleNotificationClick}
             />
           </div>
@@ -173,25 +173,25 @@ function Navbar() {
         </div>
       )}
       {selectedProfileOption === "Themes" && (
-        <div className="themes-content">
+        <div className="navbar-themes-content">
           <h2>Themes</h2>
-          <RxCross2 className="close-icon" onClick={handleProfileOptionClick} />
+          <RxCross2 className="navbar-close-icon" onClick={handleProfileOptionClick} />
           <p>Change your themes here.</p>
         </div>
       )}
       {selectedProfileOption === "Logout" && (
-        <div className="logout-content">
+        <div className="navbar-logout-content">
           <h2>Logout</h2>
-          <RxCross2 className="close-icon" onClick={handleProfileOptionClick} />
+          <RxCross2 className="navbar-close-icon" onClick={handleProfileOptionClick} />
           <p>Are you sure you want to logout?</p>
-          <div className="confirm">
+          <div className="navbar-confirm">
             <button
-              className="cancel-button"
+              className="navbar-cancel-button"
               onClick={handleProfileOptionClick}
             >
               Cancel
             </button>
-            <button className="logout-button">Logout</button>
+            <button className="navbar-logout-button">Logout</button>
           </div>
         </div>
       )}

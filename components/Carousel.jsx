@@ -31,9 +31,9 @@ const Carousel = () => {
             className={styles.image}
           />
           <div className={styles.overlay} />
-          <div className={styles.content}>
-            <h2>Cyberpunk</h2>
-            <p>
+          <div className={styles.carouselContent}>
+            <h2 className="carousel-title">Cyberpunk</h2>
+            <p className="carousel-content">
               Cyberpunk is a subgenre of science fiction in a dystopian future
               where technology is advanced but society is corrupt and
               oppressive.
@@ -50,9 +50,9 @@ const Carousel = () => {
             className={styles.image}
           />
           <div className={styles.overlay} />
-          <div className={styles.content}>
-            <h2>Spiderman</h2>
-            <p>
+          <div className={styles.carouselContent}>
+            <h2 className="carousel-title">Spiderman</h2>
+            <p className="carousel-content">
               Spider-Man is a superhero appearing in American comic books
               published by Marvel Comics.
             </p>
@@ -67,9 +67,9 @@ const Carousel = () => {
             className={styles.image}
           />
           <div className={styles.overlay} />
-          <div className={styles.content}>
-            <h2>Tanjiro</h2>
-            <p>
+          <div className={styles.carouselContent}>
+            <h2 className="carousel-title">Tanjiro</h2>
+            <p className="carousel-content">
               Tanjiro Kamado is a kind-hearted and hardworking young man who
               dreams of becoming a demon slayer to save his sister, Nezuko,
               after she was turned into a demon.
@@ -85,9 +85,9 @@ const Carousel = () => {
             className={styles.image}
           />
           <div className={styles.overlay} />
-          <div className={styles.content}>
-            <h2>Anime Girl</h2>
-            <p>Anime Girl is a fictional character from the anime series.</p>
+          <div className={styles.carouselContent}>
+            <h2 className="carousel-title">Anime Girl</h2>
+            <p className="carousel-content">Anime Girl is a fictional character from the anime series.</p>
           </div>
         </div>
         <div className={styles.carouselItem}>
@@ -99,9 +99,9 @@ const Carousel = () => {
             className={styles.image}
           />
           <div className={styles.overlay} />
-          <div className={styles.content}>
-            <h2>Firewatch</h2>
-            <p>Firewatch around a fire</p>
+          <div className={styles.carouselContent}>
+            <h2 className="carousel-title">Firewatch</h2>
+            <p className="carousel-content">Firewatch around a fire</p>
           </div>
         </div>
         <div className={styles.carouselItem}>
@@ -113,9 +113,9 @@ const Carousel = () => {
             className={styles.image}
           />
           <div className={styles.overlay} />
-          <div className={styles.content}>
-            <h2>Firewatch</h2>
-            <p>Firewatch around a fire</p>
+          <div className={styles.carouselContent}>
+            <h2 className="carousel-title">Firewatch</h2>
+            <p className="carousel-content">Firewatch around a fire</p>
           </div>
         </div>
       </Slider>

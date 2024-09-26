@@ -1,4 +1,4 @@
-.carouselContainer {
+.carousel-carouselContainer {
   position: relative;
   width: 100%;
   height: 100vh;
@@ -7,28 +7,28 @@
   overflow: hidden;
 }
 
-.slick-track {
+.carousel-slick-track {
   height: 100%;
 }
 
-.main {
+.carousel-main {
   padding: 20px 24px;
 }
 
-.slick-list {
+.carousel-slick-list {
   border-radius: 1rem;
   overflow: hidden;
 }
 
-.slick-dots li button:before {
+.carousel-slick-dots li button:before {
   color: white;
 }
 
-.slick-dots li.slick-active button:before {
+.carousel-slick-dots li.carousel-slick-active button:before {
   color: white;
 }
 
-.carouselItem {
+.carousel-carouselItem {
   position: relative;
   width: 100%;
   height: 100%;
@@ -37,7 +37,7 @@
   align-items: center;
 }
 
-.image {
+.carousel-image {
   position: absolute;
   top: 0;
   left: 0;
@@ -48,21 +48,21 @@
   transition: transform 1s ease;
 }
 
-.carouselItem:hover .image {
-  transform: scale(1.05);
+.carousel-carouselItem:hover .carousel-image {
+  transform: scale(1.carousel-05);
 }
 
-.overlay {
+.carousel-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.carousel-5);
   z-index: 1;
 }
 
-.content {
+.carouselContent {
   position: relative;
   z-index: 2;
   text-align: center;
@@ -71,15 +71,15 @@
   max-width: 80%;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition: opacity 0.carousel-8s ease, transform 0.carousel-8s ease;
 }
 
-.carouselItem:hover .content {
+.carousel-carouselItem:hover .carouselContent {
   opacity: 1;
   transform: translateY(0);
 }
 
-h2 {
+.carousel-title {
   font-size: 3rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -87,69 +87,69 @@ h2 {
   text-transform: uppercase;
 }
 
-p {
+.carousel-content {
   font-size: 1.3rem;
   line-height: 1.6;
 }
 
 @media (max-width: 480px) {
-  .main {
+  .carousel-main {
     padding: 0px 15px;
   }
 
-  .slick-track {
+  .carousel-slick-track {
     height: 25vh;
   }
 
-  .slick-list {
+  .carousel-slick-list {
     border-radius: 10px;
   }
 
-  h2 {
+  .carousel-title {
     font-size: 2.2rem;
   }
 
-  p {
+  .carousel-content {
     font-size: 1.1rem;
   }
 }
 
 @media (min-width: 481px) and (max-width: 1024px) {
-  .main {
+  .carousel-main {
     padding: 0px 20px;
   }
 
-  .slick-track {
+  .carousel-slick-track {
     height: 25vh;
   }
 
-  .slick-list {
+  .carousel-slick-list {
     border-radius: 10px;
   }
 
-  h2 {
+  .carousel-title {
     font-size: 2.8rem;
   }
 
-  p {
+  .carousel-content {
     font-size: 1.3rem;
   }
 }
 
 @media (min-width: 1025px) {
-  .main {
+  .carousel-main {
     padding: 5px 30px;
   }
 
-  .slick-track {
+  .carousel-slick-track {
     height: 50vh;
   }
 
-  h2 {
+  .carousel-title {
     font-size: 3.5rem;
   }
 
-  p {
+  .carousel-content {
     font-size: 1.4rem;
   }
 }
