@@ -21,7 +21,8 @@ TODO remove top bottom padding below 1100px in width of navbar
   align-items: center;
   gap: 0.5em;
   /* padding-bottom: 1em; */
-  padding: 1.5vh;
+  padding: 0 1.5vh;
+  padding-top: 1.5vh;
   position: relative;
   width: 100%;
   box-sizing: border-box;
