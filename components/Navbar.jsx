@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -29,7 +30,6 @@ function Navbar() {
 
   // Handle Profile Option Clicks (like Profile, Settings, Logout)
   const handleProfileOptionClick = (option) => {
-
     if (option === "Notifications") {
       setNotificationsOpen((prevState) => !prevState);
       setSelectedProfileOption((prevOption) =>
@@ -79,6 +79,11 @@ function Navbar() {
 
   return (
     <div className="navbar-nav">
+      <div className="navbar-site-name">
+        <Link href="/">
+          <img className="navbar-site-logo" src="site-logo.png" alt="" />
+        </Link>
+      </div>
       {/* Dropdown */}
       <div className="navbar-dropdown" ref={dropdownRef}>
         <button
@@ -90,7 +95,10 @@ function Navbar() {
           }}
         >
           <span className="navbar-text">{selectedOption}</span>
-          <RiArrowDropDownLine className="navbar-dropdown-icon" style={{ marginLeft: "0px" }} />
+          <RiArrowDropDownLine
+            className="navbar-dropdown-icon"
+            style={{ marginLeft: "0px" }}
+          />
         </button>
         {dropdownOpen && (
           <div className="navbar-dropdown-menu">
@@ -175,23 +183,31 @@ function Navbar() {
       {selectedProfileOption === "Themes" && (
         <div className="navbar-themes-content">
           <h2>Themes</h2>
-          <RxCross2 className="navbar-close-icon" onClick={handleProfileOptionClick} />
+          <RxCross2
+            className="navbar-close-icon"
+            onClick={handleProfileOptionClick}
+          />
           <p>Change your themes here.</p>
         </div>
       )}
       {selectedProfileOption === "Logout" && (
         <div className="navbar-logout-content">
           <h2>Logout</h2>
-          <RxCross2 className="navbar-close-icon" onClick={handleProfileOptionClick} />
+          <RxCross2
+            className="navbar-close-icon"
+            onClick={handleProfileOptionClick}
+          />
           <p>Are you sure you want to logout?</p>
           <div className="navbar-confirm">
+            <button className="navbar-logout-button">
+              <span>Logout</span>
+            </button>
             <button
               className="navbar-cancel-button"
               onClick={handleProfileOptionClick}
             >
-              Cancel
+              <span>Cancel</span>
             </button>
-            <button className="navbar-logout-button">Logout</button>
           </div>
         </div>
       )}
