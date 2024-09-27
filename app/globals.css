@@ -6,17 +6,21 @@
   --seekbar: rgb(57, 57, 57);
 }
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 body {
-    background-color: var(--background);
-    color: var(--color);
-    font-family: "Ubuntu", sans-serif;
+  background-color: var(--background);
+  color: var(--color);
+  font-family: "Ubuntu", sans-serif;
 }
 .snapwalls-container {
-    display: flex;
+  display: flex;
 }
 .snapwalls-content {
-    width: 100%;
+  width: 100%;
+}
+
+.navbar-nav {
+  padding: 10px;
 }
