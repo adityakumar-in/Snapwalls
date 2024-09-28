@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
       <body>
         <div className='snapwalls-container'>
           <div className='snapwalls-sidebar'>
-            {/* <SideBar /> */}
+            <SideBar />
           </div>
           <div className='snapwalls-content'>
             <Navbar />
