@@ -81,7 +81,7 @@ const SideBar = () => {
                 <div className="site-name">
                     <img className='site-logo' src='site-logo.png' alt="" />
                     <Link href="/">
-                        <span className='site-title'>Snap<span className='site-title-right'>walls</span></span>
+                        <span className='site-title'><span className='site-title-right'>Snap</span>walls</span>
                     </Link>
                 </div>
 

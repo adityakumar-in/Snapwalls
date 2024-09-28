@@ -1,5 +1,5 @@
 :root {
-  --theme-color: rgb(3, 155, 137);
+  --theme-color: rgb(212, 212, 212);
   --background: rgb(33, 33, 33);
   --foreground: rgb(44, 44, 44);
   --color: rgb(234, 234, 234);
@@ -20,15 +20,18 @@ body {
 }
 .snapwalls-content {
   width: 100%;
-}
-.snapwalls-content-page {
-  padding: 1.5vh 2vh;
+  padding: 0 10px;
+  padding-bottom: 10px;
 }
 .snapwalls-content-page-home {
-  padding: 0 2vh;
-  padding-bottom: 1.5vh;
+  padding: 0 15px;
+  padding-bottom: 10px;
 }
 
-.navbar-nav {
-  padding: 10px;
+@media screen and (max-width: 1100px) {
+  .snapwalls-content {
+    padding: 0;
+    padding: 0 10px;
+    padding-bottom: 10px;
+  }
 }
