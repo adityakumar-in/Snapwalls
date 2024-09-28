@@ -1,9 +1,13 @@
+import Carousel from '@/components/Carousel'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-      Home
+      <Carousel />
+      <div className='snapwalls-content-page-home'>
+        Home
+      </div>
     </div>
   )
 }

@@ -20,7 +20,10 @@ body {
 .snapwalls-content {
   width: 100%;
 }
-
-.navbar-nav {
-  padding: 10px;
+.snapwalls-content-page {
+    padding: 1.5vh 2vh;
+}
+.snapwalls-content-page-home {
+    padding: 0 2vh;
+    padding-bottom: 1.5vh;
 }
