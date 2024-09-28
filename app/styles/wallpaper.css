@@ -1,0 +1,13 @@
+.wallpaper-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+.wallpaper-image {
+    height: 400px;
+    width: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
