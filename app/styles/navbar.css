@@ -11,6 +11,8 @@ TODO fix logout color on hover and default color also - --seekbar ✅
 
 
 TODO remove top bottom padding below 1100px in width of navbar ✅
+
+ Solving this issue: https://stackoverflow.com/questions/70170306/css-hover-pseudo-element-not-working-on-mobile-devices 
 */
 
 .navbar-site-name {
