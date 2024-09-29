@@ -26,10 +26,13 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   width: 100%;
   box-sizing: border-box;
   height: fit-content;
+  background-color: var(--background); /* Add this line to ensure the navbar has a background */
 }
 .navbar-dropbtn {
   background-color: var(--foreground);
