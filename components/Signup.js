@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
 import { useRouter } from 'next/navigation';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Login from './Login';
 import '@/app/styles/signup.css';
 
 export default function Signup() {
@@ -11,6 +13,8 @@ export default function Signup() {
   const [error, setError] = useState(null);
   const [verificationSent, setVerificationSent] = useState(false);
   const [countdown, setCountdown] = useState(20);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
 
@@ -87,6 +91,18 @@ export default function Signup() {
     router.push('/');
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleLoginSignup = () => {
+    setShowLogin(!showLogin);
+  };
+
+  if (showLogin) {
+    return <Login onToggle={toggleLoginSignup} />;
+  }
+
   return (
     <div className="overlay" onClick={handleOutsideClick}>
       <div className="container" ref={modalRef}>
@@ -107,14 +123,23 @@ export default function Signup() {
                 required
                 className="input"
               />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-                className="input"
-              />
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                  className="input"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="password-toggle-button"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
               <button type="submit" className="button primary-button">Sign Up with Email</button>
             </form>
             <div className="social-buttons">
@@ -125,6 +150,9 @@ export default function Signup() {
                 Sign Up with GitHub
               </button>
             </div>
+            <p className="login-link">
+              Already have an account? <button onClick={toggleLoginSignup} className="link-button">Log in</button>
+            </p>
           </>
         )}
         {error && <p className="error">{error}</p>}
