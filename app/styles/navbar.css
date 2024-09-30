@@ -49,6 +49,7 @@
   align-items: center;
   transition: background-color 0.3s ease;
   justify-content: space-between;
+  min-width: 133px;
 }
 
 .navbar-dropbtn:hover {
@@ -120,6 +121,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   right: 0;
   text-align: left;
+  
 }
 
 .navbar-search-container {
