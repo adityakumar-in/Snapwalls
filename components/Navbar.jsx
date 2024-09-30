@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import Link from "next/link";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
