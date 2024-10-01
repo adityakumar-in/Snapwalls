@@ -28,7 +28,7 @@ export default function Login() {
       } else {
         setNotification("Logged in successfully!");
         setTimeout(() => {
-          router.push('/dashboard');
+          router.push('/home');
         }, 2000);
       }
     } catch (error) {
@@ -41,7 +41,7 @@ export default function Login() {
       await signInWithPopup(auth, googleProvider);
       setNotification("Logged in successfully with Google!");
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push('/home');
       }, 2000);
     } catch (error) {
       setError(error.message);
@@ -53,7 +53,7 @@ export default function Login() {
       await signInWithPopup(auth, githubProvider);
       setNotification("Logged in successfully with GitHub!");
       setTimeout(() => {
-        router.push('/dashboard');
+        router.push('/home');
       }, 2000);
     } catch (error) {
       setError(error.message);
@@ -171,7 +171,6 @@ export default function Login() {
                 className="input"
               />
               <button type="submit" className="button primary-button">Send Reset Email</button>
-              <button onClick={() => setShowForgotPassword(false)} className="button secondary-button">Back to Login</button>
             </form>
           </div>
         )}
