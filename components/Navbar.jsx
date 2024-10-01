@@ -115,15 +115,17 @@ function Navbar() {
         )}
       </div>
       {/* Search */}
-      <form className="navbar-search-container" action="#">
+      <form className="navbar-search-container">
+        <div className="navbar-search-icon-container">
+          <BiSearch className="navbar-search-icon" />
+        </div>
         <input
-          className="navbar-search-bar"
           type="text"
-          placeholder="Search"
+          className="navbar-search-bar"
+          placeholder="Search..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        <BiSearch className="navbar-search-icon" />
       </form>
       {/* Notifications */}
       {/* <div className="navbar-notification">
