@@ -1,5 +1,6 @@
 import React from "react";
 import Carousel from "../components/Carousel";
+import WallpaperLoader from '../components/getWallpapers';
 
 export default function Home() {
   return (
@@ -7,7 +8,7 @@ export default function Home() {
       <Carousel />
 
       <div className="snapwalls-content-page-home">
-        Hello
+      <WallpaperLoader />
       </div>
     </div>
   );
