@@ -1,12 +1,29 @@
 "use client";
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { IoNotifications } from "react-icons/io5";
+import { IoNotificationsOutline, IoNotifications } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import Signup from "./Signup";
 import "@/app/styles/navbar.css";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAls6YNcAlW54zldtQUUYq-Ki7n6uhUWTI",
+  authDomain: "snapwalls-wallpaper.firebaseapp.com",
+  projectId: "snapwalls-wallpaper",
+  storageBucket: "snapwalls-wallpaper.appspot.com",
+  messagingSenderId: "305754642684",
+  appId: "1:305754642684:web:98fe3d7ca9e0ac8eb6df79",
+  measurementId: "G-LXQEEM6577"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 function Navbar() {
   const [searchValue, setSearchValue] = useState("");
@@ -15,6 +32,9 @@ function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [selectedProfileOption, setSelectedProfileOption] = useState(null);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const dropdownRef = useRef(null);
   const profileRef = useRef(null);
@@ -22,13 +42,19 @@ function Navbar() {
   const options = ["All", "Mobile", "Desktop"];
   const profileOptions = ["Notifications", "Themes", "Logout"];
 
-  // Handle Option Clicks for Dropdown
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const handleOptionClick = (option) => {
     setSelectedOption(option);
     setDropdownOpen(false);
   };
 
-  // Handle Profile Option Clicks (like Profile, Settings, Logout)
   const handleProfileOptionClick = (option) => {
     if (option === "Notifications") {
       setNotificationsOpen((prevState) => !prevState);
@@ -52,7 +78,6 @@ function Navbar() {
     setProfileOpen(false);
   };
 
-  // Close Dropdowns and Profile on Outside Click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -71,10 +96,30 @@ function Navbar() {
   }, [dropdownOpen, profileOpen]);
 
   const handleProfileImageClick = () => {
-    setSelectedProfileOption(null); //This toggles the profile menu when the profile image is clicked
-    setNotificationsOpen(false); //This toggles the notifications content when the notification is clicked
+    setSelectedProfileOption(null);
+    setNotificationsOpen(false);
     setProfileOpen(!profileOpen);
     setDropdownOpen(false);
+  };
+
+  
+
+  const handleSignupClick = () => {
+    // Implement your signup logic here or navigate to signup page
+    setShowSignup(true);
+  };
+
+  const handleLoginClick = () => {
+    setShowLogin(true);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Handle successful logout (e.g., redirect to home page)
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
   };
 
   return (
@@ -84,14 +129,13 @@ function Navbar() {
           <img className="navbar-site-logo" src="site-logo.png" alt="" />
         </Link>
       </div>
-      {/* Dropdown */}
       <div className="navbar-dropdown" ref={dropdownRef}>
         <button
           className="navbar-dropbtn"
           onClick={() => {
             setDropdownOpen(!dropdownOpen);
-            setProfileOpen(false); // Close profile if dropdown is opened
-            setSelectedProfileOption(null); // Close profile content if dropdown opens
+            setProfileOpen(false);
+            setSelectedProfileOption(null);
           }}
         >
           <span className="navbar-text">{selectedOption}</span>
@@ -114,7 +158,6 @@ function Navbar() {
           </div>
         )}
       </div>
-      {/* Search */}
       <form className="navbar-search-container">
         <div className="navbar-search-icon-container">
           <BiSearch className="navbar-search-icon" />
@@ -127,49 +170,62 @@ function Navbar() {
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </form>
-      {/* Notifications */}
-      {/* <div className="navbar-notification">
-        {selectedProfileOption === "Notifications" ? (
-          <IoNotifications className="navbar-notification-icon" />
-        ) : (
-          <IoNotificationsOutline className="navbar-notification-icon" />
-        )}
-      </div> */}
 
-      {/* DO NOT DELETE THIS OR TOUCH THIS ADITYA BHAI PLEASE */}
-      <div className="navbar-notification" onClick={handleNotificationClick}>
-        {notificationsOpen ? (
-          <IoNotifications className="navbar-notification-icon" />
-        ) : (
-          <IoNotificationsOutline className="navbar-notification-icon" />
-        )}
-      </div>
-
-      {/* Profile Menu */}
-      <div className="navbar-profile" ref={profileRef}>
-        <img
-          className="navbar-profile-image"
-          src="/images/profile-image.jpeg"
-          alt="Profile"
-          onClick={handleProfileImageClick}
-        />
-        {profileOpen && (
-          <div className="navbar-profile-menu">
-            {profileOptions.map((option, index) => (
-              <div
-                key={index}
-                className={`navbar-profile-item ${
-                  option === "Notifications" ? "navbar-small-screen-only" : ""
-                }`}
-                onClick={() => handleProfileOptionClick(option)}
-              >
-                {option}
-              </div>
-            ))}
+      {isLoggedIn ? (
+        <>
+          <div className="navbar-notification" onClick={handleNotificationClick}>
+            {notificationsOpen ? (
+              <IoNotifications className="navbar-notification-icon" />
+            ) : (
+              <IoNotificationsOutline className="navbar-notification-icon" />
+            )}
           </div>
-        )}
-      </div>
-      {/* Profile Option Content */}
+
+          <div className="navbar-profile" ref={profileRef}>
+            <img
+              className="navbar-profile-image"
+              src="/images/profile-image.jpeg"
+              alt="Profile"
+              onClick={handleProfileImageClick}
+            />
+            {profileOpen && (
+              <div className="navbar-profile-menu">
+                {profileOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`navbar-profile-item ${
+                      option === "Notifications" ? "navbar-small-screen-only" : ""
+                    }`}
+                    onClick={() => {
+                      if (option === "Logout") {
+                        handleLogout();
+                      } else {
+                        handleProfileOptionClick(option);
+                      }
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+        <div className="navbar-signup">
+          <button className="navbar-signup-button" onClick={handleLoginClick}>
+            Log In
+          </button>
+        </div>
+        <div className="navbar-signup">
+          <button className="navbar-signup-button" onClick={handleSignupClick}>
+            Sign Up
+          </button>
+        </div>
+        </>
+      )}
+
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
         <div className="navbar-notifications-content">
           <div className="navbar-notification-header">
@@ -192,6 +248,12 @@ function Navbar() {
           <p>Change your themes here.</p>
         </div>
       )}
+
+
+      {/* {showSignup && <Signup onClose={() => setShowSignup(false)} />} */}
+      {/* {showLogin && <Login onClose={() => setShowLogin(false)} />} */}
+
+
       {selectedProfileOption === "Logout" && (
         <div className="navbar-logout-content">
           <h2>Logout</h2>
@@ -201,7 +263,7 @@ function Navbar() {
           />
           <p>Are you sure you want to logout?</p>
           <div className="navbar-confirm">
-            <button className="navbar-logout-button">
+            <button className="navbar-logout-button" onClick={handleLogout}>
               <span>Logout</span>
             </button>
             <button

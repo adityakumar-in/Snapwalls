@@ -4,6 +4,7 @@
     height: calc(100vh - 20px);
     z-index: 5;
     width: fit-content;
+    overflow-y: none;
 }
 
 .sidebar-container {
@@ -18,7 +19,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    overflow-y: auto;
+    overflow-y: none;
 }
 
 Link, a {
