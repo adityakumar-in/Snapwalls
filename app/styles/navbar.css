@@ -336,18 +336,50 @@
 }
 
 
+.navbar-signup-button,
+.navbar-login-button {
+  padding: 10px 20px;
+  background-color: var(--foreground);
+  color: var(--color);
+  border: 1px solid var(--seekbar);
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  outline: none;
+}
+
+.navbar-signup-button:hover,
+.navbar-login-button:hover {
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+  box-shadow: 0 4px 8px rgba(0, 204, 125, 0.2);
+  transform: translateY(-2px);
+}
+
 .navbar-signup-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: bold;
+  background-color: var(--theme-color);
+  color: var(--background);
+  border: none;
 }
 
 .navbar-signup-button:hover {
-  background-color: #0056b3;
+  background-color: #27ae60 ;
+  color: white;
+  
 }
+
+.navbar-login-button:focus,
+.navbar-signup-button:focus {
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--theme-color);
+}
+
+.navbar-login-button:active,
+.navbar-signup-button:active {
+  box-shadow: none;
+}
+
 
 @media (max-width: 1100px) {
   .navbar-site-name {
@@ -1263,6 +1295,7 @@
     color: white;
   }
 }
+
 
 
 

@@ -8,6 +8,7 @@ import { RxCross2 } from "react-icons/rx";
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Signup from "./Signup";
+import Login from "./Login";
 import "@/app/styles/navbar.css";
 
 // Firebase configuration
@@ -102,15 +103,20 @@ function Navbar() {
     setDropdownOpen(false);
   };
 
-  
-
   const handleSignupClick = () => {
-    // Implement your signup logic here or navigate to signup page
     setShowSignup(true);
+  };
+
+  const handleCloseSignup = () => {
+    setShowSignup(false);
   };
 
   const handleLoginClick = () => {
     setShowLogin(true);
+  };
+
+  const handleCloseLogin = () => {
+    setShowLogin(false);
   };
 
   const handleLogout = async () => {
@@ -213,16 +219,16 @@ function Navbar() {
         </>
       ) : (
         <>
-        <div className="navbar-signup">
-          <button className="navbar-signup-button" onClick={handleLoginClick}>
-            Log In
-          </button>
-        </div>
-        <div className="navbar-signup">
-          <button className="navbar-signup-button" onClick={handleSignupClick}>
-            Sign Up
-          </button>
-        </div>
+          <div className="navbar-signup">
+            <button className="navbar-login-button" onClick={handleLoginClick}>
+              Log In
+            </button>
+          </div>
+          <div className="navbar-signup">
+            <button className="navbar-signup-button" onClick={handleSignupClick}>
+              Sign Up
+            </button>
+          </div>
         </>
       )}
 
@@ -249,10 +255,8 @@ function Navbar() {
         </div>
       )}
 
-
-      {/* {showSignup && <Signup onClose={() => setShowSignup(false)} />} */}
-      {/* {showLogin && <Login onClose={() => setShowLogin(false)} />} */}
-
+      {showSignup && <Signup onClose={handleCloseSignup} />}
+      {showLogin && <Login onClose={handleCloseLogin} />}
 
       {selectedProfileOption === "Logout" && (
         <div className="navbar-logout-content">

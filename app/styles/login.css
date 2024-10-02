@@ -1,175 +1,348 @@
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.container {
+  background-color: var(--foreground);
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: var(--theme-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: var(--color);
+}
+
+.title {
+  font-size: 2.25rem;
+  color: var(--color);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input {
+  padding: 0.9rem;
+  border: 1px solid var(--seekbar);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  background-color: var(--background);
+  color: var(--color);
+  transition: border-color 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #00cc7d;
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container .input {
+  padding-right: 45px;
+  width: 100%;
+}
+
+.password-toggle-button {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--theme-color);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-button:hover {
+  color: var(--color);
+}
+
+.password-toggle-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.eye-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.button {
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.primary-button {
+  background-color: #00cc7d;
+  color: var(--background);
+}
+
+.primary-button:hover {
+  background-color: #008f61;
+}
+
+.forgot-password-link {
+  text-align: right;
+  color: #00cc7d;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.google-button {
+  background-color: #db4437;
+  color: var(--color);
+}
+
+.google-button:hover {
+  background-color: #c53929;
+}
+
+.github-button {
+  background-color: #333;
+  color: var(--color);
+}
+
+.github-button:hover {
+  background-color: #24292e;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--theme-color);
+  font-size: 1.1rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #00cc7d;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  font-size: 1em;
+}
+
+.link-button:hover {
+  color: #008f61;
+  text-decoration: underline;
+}
+
+.error {
+  color: #e74c3c;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #00cc7d;
+  color: white;
+  padding: 1rem;
+  border-radius: 6px;
+  z-index: 1001;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.forgot-password-content {
+  text-align: center;
+}
+
+.forgot-password-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color);
+}
+
+.back-to-login {
+  margin-top: 1rem;
+  background: none;
+  border: none;
+  color: #00cc7d;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.back-to-login:hover {
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
   .container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: relative;
-    width: 300px;
+    padding: 2rem;
+    max-width: 400px;
   }
-  
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
+
   .title {
-    text-align: center;
-    margin-bottom: 20px;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
   }
-  
+
+  .input, .button {
+    padding: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .password-toggle-button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .signup-link {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem;
+    width: 95%;
+    max-width: 350px;
+  }
+
+  .title {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .input, .button {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
   .form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .input {
-    margin-bottom: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .primary-button {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .google-button, .github-button {
-    margin-top: 10px;
-  }
-  
-  .google-button {
-    background-color: #db4437;
-    color: white;
-  }
-  
-  .github-button {
-    background-color: #333;
-    color: white;
-  }
-  
-  .forgot-password-link {
-    text-align: right;
-    margin-top: 10px;
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .error-container {
-    margin-top: 10px;
-    color: red;
-  }
-  
-  .notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    z-index: 1000;
-    animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-  
-  .forgot-password-content {
-    text-align: center;
-  }
-  
-  .forgot-password-content h2 {
-    margin-bottom: 20px;
-  }
-  
-  .forgot-password-content .input {
-    margin-bottom: 15px;
-  }
-  
-  .forgot-password-content .button {
-    margin: 0 5px;
-  }
-  
-  .secondary-button {
-    background-color: #6c757d;
-    color: white;
-  }
-  
-  .password-input-container {
-    position: relative;
-  }
-  
-  .password-toggle-btn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-  }
-  
-  .input[type="password"],
-  .input[type="text"] {
-    padding-right: 40px;
+    gap: 0.75rem;
   }
 
-
-
-
-  .notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    z-index: 1000;
-    animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
+  .password-toggle-button {
+    right: 8px;
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+
+  .password-toggle-button svg {
+    width: 20px;
+    height: 20px;
   }
-  
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+
+  .social-buttons {
+    gap: 0.75rem;
+    margin-top: 1rem;
   }
+
+  .signup-link {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .container {
+    padding: 1rem;
+    max-width: 300px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .input, .button {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .form {
+    gap: 0.5rem;
+  }
+
+  .password-toggle-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .social-buttons {
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .signup-link {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
