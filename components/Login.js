@@ -2,9 +2,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
-import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaGoogle, FaGithub, FaEnvelope, FaCheckCircle, FaLock, FaArrowLeft } from 'react-icons/fa';
+import Signup from './Signup';
 import '@/app/styles/login.css';
+import { useRouter } from 'next/navigation';
 
 const EyeIcon = () => (
   <svg className="eye-icon" viewBox="0 0 24 24">
@@ -13,21 +14,24 @@ const EyeIcon = () => (
   </svg>
 );
 
-export default function Login({ onClose = () => {}, onSwitchToSignup }) {
+export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
-  const [notification, setNotification] = useState(null);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+  const [showSignup, setShowSignup] = useState(false);
+  const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
   const modalRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target) && typeof onClose === 'function') {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose();
+        router.push('/');
       }
     };
 
@@ -35,7 +39,7 @@ export default function Login({ onClose = () => {}, onSwitchToSignup }) {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, router]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -45,11 +49,12 @@ export default function Login({ onClose = () => {}, onSwitchToSignup }) {
         await auth.signOut();
         setError("Please verify your email first");
       } else {
-        setNotification("Logged in successfully!");
+        setShowSuccessNotification(true);
         setTimeout(() => {
-          router.push('/');
-          if (typeof onClose === 'function') onClose();
-        }, 2000);
+          setShowSuccessNotification(false);
+          onClose();
+          router.push(currentPath);
+        }, 3000);
       }
     } catch (error) {
       setError(error.message);
@@ -59,11 +64,12 @@ export default function Login({ onClose = () => {}, onSwitchToSignup }) {
   const handleSocialLogin = async (provider) => {
     try {
       await signInWithPopup(auth, provider);
-      setNotification(`Logged in successfully with ${provider.providerId}!`);
+      setShowSuccessNotification(true);
       setTimeout(() => {
-        router.push('/');
-        if (typeof onClose === 'function') onClose();
-      }, 2000);
+        setShowSuccessNotification(false);
+        onClose();
+        router.push(currentPath);
+      }, 3000);
     } catch (error) {
       setError(error.message);
     }
@@ -73,9 +79,7 @@ export default function Login({ onClose = () => {}, onSwitchToSignup }) {
     e.preventDefault();
     try {
       await sendPasswordResetEmail(auth, resetEmail);
-      setNotification("Password reset email sent. Please check your inbox.");
-      setResetEmail('');
-      setTimeout(() => setShowForgotPassword(false), 3000);
+      setResetPasswordSuccess(true);
     } catch (error) {
       setError(error.message);
     }
@@ -85,16 +89,19 @@ export default function Login({ onClose = () => {}, onSwitchToSignup }) {
     setShowPassword(!showPassword);
   };
 
+  const toggleLoginSignup = () => {
+    setShowSignup(!showSignup);
+  };
+
+  if (showSignup) {
+    return <Signup onSwitchToLogin={toggleLoginSignup} onClose={onClose} currentPath={currentPath} />;
+  }
+
   return (
     <div className="overlay">
-      {notification && (
-        <div className="notification">
-          {notification}
-        </div>
-      )}
       <div className="container" ref={modalRef}>
-        <button className="close-button" onClick={() => typeof onClose === 'function' && onClose()}>&times;</button>
-        <h1 className="title">Log In</h1>
+        <button className="close-button" onClick={onClose}>&times;</button>
+        <h1 className="title">{showForgotPassword ? "Reset Password" : "Log In"}</h1>
         {!showForgotPassword ? (
           <>
             <form onSubmit={handleEmailLogin} className="form">
@@ -123,40 +130,74 @@ export default function Login({ onClose = () => {}, onSwitchToSignup }) {
                   {showPassword ? <FaEyeSlash /> : <EyeIcon />}
                 </button>
               </div>
-              <button type="submit" className="button primary-button">Log In with Email</button>
+              <button type="submit" className="button primary-button">
+                <FaEnvelope className="button-icon" />
+                <span>Log In with Email</span>
+              </button>
             </form>
             <button onClick={() => setShowForgotPassword(true)} className="forgot-password-link">Forgot Password?</button>
             <div className="social-buttons">
               <button onClick={() => handleSocialLogin(googleProvider)} className="button google-button">
-                Log In with Google
+                <FaGoogle className="social-icon" />
+                <span>Log In with Google</span>
               </button>
               <button onClick={() => handleSocialLogin(githubProvider)} className="button github-button">
-                Log In with GitHub
+                <FaGithub className="social-icon" />
+                <span>Log In with GitHub</span>
               </button>
             </div>
-            <p className="signup-link">
-              Don't have an account? <button onClick={onSwitchToSignup} className="link-button">Sign up</button>
+            <p className="signup-prompt">
+              Don't have an account? <button onClick={toggleLoginSignup} className="switch-button">Sign Up</button>
             </p>
           </>
         ) : (
-          <div className="forgot-password-content">
-            <h2>Reset Password</h2>
-            <form onSubmit={handleForgotPassword}>
-              <input
-                type="email"
-                value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-                className="input"
-              />
-              <button type="submit" className="button primary-button">Send Reset Email</button>
-            </form>
-            <button onClick={() => setShowForgotPassword(false)} className="back-to-login">Back to Login</button>
+          <div className="reset-password-container">
+            {!resetPasswordSuccess ? (
+              <>
+                <div className="reset-password-icon">
+                  <FaLock />
+                </div>
+                <p className="reset-password-text">Enter your email address and we'll send you a link to reset your password.</p>
+                <form onSubmit={handleForgotPassword} className="form">
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="Email"
+                    required
+                    className="input"
+                  />
+                  <button type="submit" className="button primary-button">
+                    <span>Send Reset Link</span>
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className="reset-password-success">
+                <FaCheckCircle className="success-icon" />
+                <h2>Reset Link Sent</h2>
+                <p>Please check your email for instructions to reset your password.</p>
+              </div>
+            )}
+            <button onClick={() => {
+              setShowForgotPassword(false);
+              setResetPasswordSuccess(false);
+            }} className="back-to-login">
+              <FaArrowLeft /> Back to Login
+            </button>
           </div>
         )}
         {error && <p className="error">{error}</p>}
       </div>
+      {showSuccessNotification && (
+        <div className="success-notification">
+          <FaCheckCircle className="success-icon" />
+          <div className="success-message">
+            <h2>Successfully Logged In!</h2>
+            <p>Welcome back to our platform.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
-} 
+}

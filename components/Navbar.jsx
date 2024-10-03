@@ -1,14 +1,17 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import { usePathname, useRouter } from 'next/navigation';
 import Link from "next/link";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BiSearch } from "react-icons/bi";
 import { IoNotificationsOutline, IoNotifications } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
+import { FaSignOutAlt } from 'react-icons/fa';
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import Signup from "./Signup";
 import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
 import "@/app/styles/navbar.css";
 
 // Firebase configuration
@@ -27,20 +30,23 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 function Navbar() {
+  const currentPath = usePathname();
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("All");
+  // const [dropdownOpen, setDropdownOpen] = useState(false);
+  // const [selectedOption, setSelectedOption] = useState("All");
   const [profileOpen, setProfileOpen] = useState(false);
   const [selectedProfileOption, setSelectedProfileOption] = useState(null);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showLogoutNotification, setShowLogoutNotification] = useState(false);
 
-  const dropdownRef = useRef(null);
+  // const dropdownRef = useRef(null);
   const profileRef = useRef(null);
 
-  const options = ["All", "Mobile", "Desktop"];
+  // const options = ["All", "Mobile", "Desktop"];
   const profileOptions = ["Notifications", "Themes", "Logout"];
 
   useEffect(() => {
@@ -51,10 +57,10 @@ function Navbar() {
     return () => unsubscribe();
   }, []);
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    setDropdownOpen(false);
-  };
+  // const handleOptionClick = (option) => {
+  //   setSelectedOption(option);
+  //   setDropdownOpen(false);
+  // };
 
   const handleProfileOptionClick = (option) => {
     if (option === "Notifications") {
@@ -82,10 +88,10 @@ function Navbar() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        (dropdownRef.current && !dropdownRef.current.contains(event.target)) ||
+        // (dropdownRef.current && !dropdownRef.current.contains(event.target)) ||
         (profileRef.current && !profileRef.current.contains(event.target))
       ) {
-        setDropdownOpen(false);
+        // setDropdownOpen(false);
         setProfileOpen(false);
       }
     };
@@ -94,13 +100,13 @@ function Navbar() {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [dropdownOpen, profileOpen]);
+  }, [profileOpen]); // Removed dropdownOpen from the dependency array
 
   const handleProfileImageClick = () => {
     setSelectedProfileOption(null);
     setNotificationsOpen(false);
     setProfileOpen(!profileOpen);
-    setDropdownOpen(false);
+    // setDropdownOpen(false);
   };
 
   const handleSignupClick = () => {
@@ -122,7 +128,12 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      // Handle successful logout (e.g., redirect to home page)
+      setShowLogoutNotification(true);
+      setSelectedProfileOption(null);
+      setTimeout(() => {
+        setShowLogoutNotification(false);
+        router.push('/');
+      }, 3000);
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -135,6 +146,7 @@ function Navbar() {
           <img className="navbar-site-logo" src="site-logo.png" alt="" />
         </Link>
       </div>
+      {/* Commented out navbar-dropdown
       <div className="navbar-dropdown" ref={dropdownRef}>
         <button
           className="navbar-dropbtn"
@@ -164,6 +176,7 @@ function Navbar() {
           </div>
         )}
       </div>
+      */}
       <form className="navbar-search-container">
         <div className="navbar-search-icon-container">
           <BiSearch className="navbar-search-icon" />
@@ -176,7 +189,6 @@ function Navbar() {
           onChange={(e) => setSearchValue(e.target.value)}
         />
       </form>
-
       {isLoggedIn ? (
         <>
           <div className="navbar-notification" onClick={handleNotificationClick}>
@@ -186,7 +198,6 @@ function Navbar() {
               <IoNotificationsOutline className="navbar-notification-icon" />
             )}
           </div>
-
           <div className="navbar-profile" ref={profileRef}>
             <img
               className="navbar-profile-image"
@@ -199,9 +210,8 @@ function Navbar() {
                 {profileOptions.map((option, index) => (
                   <div
                     key={index}
-                    className={`navbar-profile-item ${
-                      option === "Notifications" ? "navbar-small-screen-only" : ""
-                    }`}
+                    className={`navbar-profile-item ${option === "Notifications" ? "navbar-small-screen-only" : ""
+                      }`}
                     onClick={() => {
                       if (option === "Logout") {
                         handleLogout();
@@ -231,7 +241,6 @@ function Navbar() {
           </div>
         </>
       )}
-
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
         <div className="navbar-notifications-content">
           <div className="navbar-notification-header">
@@ -254,10 +263,8 @@ function Navbar() {
           <p>Change your themes here.</p>
         </div>
       )}
-
-      {showSignup && <Signup onClose={handleCloseSignup} />}
-      {showLogin && <Login onClose={handleCloseLogin} />}
-
+      {showSignup && <Signup onClose={handleCloseSignup} currentPath={currentPath} />}
+      {showLogin && <Login onClose={handleCloseLogin} currentPath={currentPath} />}
       {selectedProfileOption === "Logout" && (
         <div className="navbar-logout-content">
           <h2>Logout</h2>
@@ -276,6 +283,15 @@ function Navbar() {
             >
               <span>Cancel</span>
             </button>
+          </div>
+        </div>
+      )}
+      {showLogoutNotification && (
+        <div className="navbar-logout-notification">
+          <FaSignOutAlt className="navbar-logout-icon" />
+          <div className="navbar-logout-message">
+            <h2>Successfully Logged Out</h2>
+            <p>You have been securely logged out.</p>
           </div>
         </div>
       )}

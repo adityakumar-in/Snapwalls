@@ -124,6 +124,10 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .button:active {
@@ -164,6 +168,10 @@
   background-color: #24292e;
 }
 
+.social-icon {
+  font-size: 1.2rem;
+}
+
 .login-link {
   text-align: center;
   margin-top: 1.5rem;
@@ -178,6 +186,7 @@
   cursor: pointer;
   font-weight: bold;
   transition: color 0.3s ease;
+  font-size: 16px;
 }
 
 .link-button:hover {
@@ -230,7 +239,7 @@
 }
 
 .resend-button {
-  margin-top: 1.5rem;
+  margin: 1.5rem auto;
   background-color: var(--theme-color);
   color: var(--background);
   padding: 0.8rem 1.2rem;
@@ -257,61 +266,76 @@
   opacity: 0.7;
 }
 
-.success-popup {
+.success-notification {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--foreground);
-  border-radius: 12px;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  top: 20px;
+  right: 20px;
+  background-color: #00cc7d;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  font-size: 16px;
   z-index: 1100;
-  animation: fadeInScale 0.3s ease-out;
+  animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
 }
 
-@keyframes fadeInScale {
-  0% {
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.9);
   }
-  100% {
+  to {
+    transform: translateX(0);
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
 
 .success-icon {
-  font-size: 3rem;
-  color: #00cc7d;
-  margin-bottom: 1rem;
+  font-size: 24px;
+  margin-right: 12px;
 }
 
-.success-popup h2 {
-  font-size: 1.5rem;
-  color: var(--color);
-  margin-bottom: 0.5rem;
+.success-message {
+  display: flex;
+  flex-direction: column;
 }
 
-.success-popup p {
-  font-size: 1rem;
-  color: var(--theme-color);
+.success-message h2 {
+  font-size: 18px;
+  margin: 0;
+  margin-bottom: 4px;
+}
+
+.success-message p {
+  font-size: 14px;
+  margin: 0;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .container, .success-popup {
+  .container, .success-notification {
     padding: 2rem;
     max-width: 400px;
   }
 
-  .title, .success-popup h2 {
+  .title, .success-notification h2 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
   }
 
-  .input, .button, .success-popup p, .resend-button {
+  .input, .button, .success-notification p, .resend-button {
     padding: 0.8rem;
     font-size: 1rem;
   }
@@ -327,18 +351,18 @@
 }
 
 @media (max-width: 480px) {
-  .container, .success-popup {
+  .container, .success-notification {
     padding: 1.5rem;
     width: 95%;
     max-width: 350px;
   }
 
-  .title, .success-popup h2 {
+  .title, .success-notification h2 {
     font-size: 1.75rem;
     margin-bottom: 1rem;
   }
 
-  .input, .button, .success-popup p, .resend-button {
+  .input, .button, .success-notification p, .resend-button {
     padding: 0.7rem;
     font-size: 0.95rem;
   }
@@ -365,45 +389,20 @@
     margin-top: 1rem;
     font-size: 0.95rem;
   }
-
-  .verification-message, .success-popup {
-    padding: 1.5rem;
-  }
-
-  .verification-icon, .success-icon {
-    font-size: 2.5rem;
-  }
-
-  .verification-message h2, .success-popup h2 {
-    font-size: 1.25rem;
-  }
-
-  .verification-message p, .success-popup p {
-    font-size: 0.9rem;
-  }
-
-  .verification-note {
-    font-size: 0.8rem;
-  }
-
-  .resend-button {
-    margin-top: 1.25rem;
-    padding: 0.7rem 1rem;
-  }
 }
 
 @media (max-width: 320px) {
-  .container, .success-popup {
+  .container, .success-notification {
     padding: 1rem;
     max-width: 300px;
   }
 
-  .title, .success-popup h2 {
+  .title, .success-notification h2 {
     font-size: 1.5rem;
     margin-bottom: 0.75rem;
   }
 
-  .input, .button, .success-popup p, .resend-button {
+  .input, .button, .success-notification p, .resend-button {
     padding: 0.6rem;
     font-size: 0.9rem;
   }

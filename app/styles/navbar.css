@@ -354,7 +354,7 @@
 .navbar-login-button:hover {
   border-color: var(--theme-color);
   color: var(--theme-color);
-  box-shadow: 0 4px 8px rgba(0, 204, 125, 0.2);
+  /* box-shadow: 0 4px 8px rgba(0, 204, 125, 0.2); */
   transform: translateY(-2px);
 }
 
@@ -1324,8 +1324,62 @@
   }
 }
 
+.navbar-logout-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #e74c3c;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  z-index: 1100;
+  animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+}
 
+.navbar-logout-icon {
+  font-size: 24px;
+  margin-right: 12px;
+}
 
+.navbar-logout-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-logout-message h2 {
+  font-size: 18px;
+  margin: 0;
+  margin-bottom: 4px;
+}
+
+.navbar-logout-message p {
+  font-size: 14px;
+  margin: 0;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 
 
 
