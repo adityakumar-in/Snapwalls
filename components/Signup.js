@@ -1,9 +1,8 @@
-'use client'
 import { useState, useEffect, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
 import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub } from 'react-icons/fa';
 import Login from './Login';
 import '@/app/styles/signup.css';
 
@@ -14,14 +13,14 @@ const EyeIcon = () => (
   </svg>
 );
 
-export default function Signup({ onClose = () => {} }) {
+export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [verificationSent, setVerificationSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
@@ -36,10 +35,10 @@ export default function Signup({ onClose = () => {} }) {
             clearInterval(verificationChecker);
             await signInWithEmailAndPassword(auth, email, password);
             setVerificationSent(false);
-            setShowSuccessPopup(true);
+            setShowSuccessNotification(true);
             setTimeout(() => {
-              setShowSuccessPopup(false);
-              router.push('/');
+              setShowSuccessNotification(false);
+              router.push(currentPath);
               onClose();
             }, 3000);
           }
@@ -54,7 +53,7 @@ export default function Signup({ onClose = () => {} }) {
         clearInterval(verificationChecker);
       }
     };
-  }, [verificationSent, router, onClose, email, password]);
+  }, [verificationSent, router, onClose, email, password, currentPath]);
 
   const handleEmailSignup = async (e) => {
     e.preventDefault();
@@ -72,10 +71,10 @@ export default function Signup({ onClose = () => {} }) {
     try {
       const result = await signInWithPopup(auth, provider);
       if (result.user.emailVerified) {
-        setShowSuccessPopup(true);
+        setShowSuccessNotification(true);
         setTimeout(() => {
-          setShowSuccessPopup(false);
-          router.push('/');
+          setShowSuccessNotification(false);
+          router.push(currentPath);
           onClose();
         }, 3000);
       } else {
@@ -92,7 +91,7 @@ export default function Signup({ onClose = () => {} }) {
     try {
       await sendEmailVerification(auth.currentUser);
       setResendDisabled(true);
-      setTimeout(() => setResendDisabled(false), 60000); // Enable resend after 1 minute
+      setTimeout(() => setResendDisabled(false), 60000);
       setError("Verification email resent. Please check your inbox.");
     } catch (error) {
       setError(error.message);
@@ -114,7 +113,7 @@ export default function Signup({ onClose = () => {} }) {
   };
 
   if (showLogin) {
-    return <Login onSwitchToSignup={toggleLoginSignup} onClose={onClose} />;
+    return <Login onSwitchToSignup={toggleLoginSignup} onClose={onClose} currentPath={currentPath} />;
   }
 
   return (
@@ -134,8 +133,8 @@ export default function Signup({ onClose = () => {} }) {
               <p>Once verified, you will be automatically logged in and redirected.</p>
               <p>You can close this window and come back later if needed.</p>
             </div>
-            <button 
-              onClick={handleResendVerification} 
+            <button
+              onClick={handleResendVerification}
               disabled={resendDisabled}
               className="button resend-button"
             >
@@ -170,14 +169,19 @@ export default function Signup({ onClose = () => {} }) {
                   {showPassword ? <FaEyeSlash /> : <EyeIcon />}
                 </button>
               </div>
-              <button type="submit" className="button primary-button">Sign Up with Email</button>
+              <button type="submit" className="button primary-button">
+                <FaEnvelope className="button-icon" />
+                <span>Sign Up with Email</span>
+              </button>
             </form>
             <div className="social-buttons">
               <button onClick={() => handleSocialSignup(googleProvider)} className="button google-button">
-                Sign Up with Google
+                <FaGoogle className="social-icon" />
+                <span>Sign Up with Google</span>
               </button>
               <button onClick={() => handleSocialSignup(githubProvider)} className="button github-button">
-                Sign Up with GitHub
+                <FaGithub className="social-icon" />
+                <span>Sign Up with GitHub</span>
               </button>
             </div>
             <p className="login-link">
@@ -187,11 +191,13 @@ export default function Signup({ onClose = () => {} }) {
         )}
         {error && <p className="error">{error}</p>}
       </div>
-      {showSuccessPopup && (
-        <div className="success-popup">
+      {showSuccessNotification && (
+        <div className="success-notification">
           <FaCheckCircle className="success-icon" />
-          <h2>Successfully Logged In!</h2>
-          <p>Welcome to our platform. You'll be redirected shortly.</p>
+          <div className="success-message">
+            <h2>Successfully Signed Up!</h2>
+            <p>Welcome to our platform.</p>
+          </div>
         </div>
       )}
     </div>
