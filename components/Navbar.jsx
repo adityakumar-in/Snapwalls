@@ -33,8 +33,8 @@ function Navbar() {
   const currentPath = usePathname();
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("All");
+  // const [dropdownOpen, setDropdownOpen] = useState(false);
+  // const [selectedOption, setSelectedOption] = useState("All");
   const [profileOpen, setProfileOpen] = useState(false);
   const [selectedProfileOption, setSelectedProfileOption] = useState(null);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -43,10 +43,10 @@ function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
   const [showLogoutNotification, setShowLogoutNotification] = useState(false);
 
-  const dropdownRef = useRef(null);
+  // const dropdownRef = useRef(null);
   const profileRef = useRef(null);
 
-  const options = ["All", "Mobile", "Desktop"];
+  // const options = ["All", "Mobile", "Desktop"];
   const profileOptions = ["Notifications", "Themes", "Logout"];
 
   useEffect(() => {
@@ -57,10 +57,10 @@ function Navbar() {
     return () => unsubscribe();
   }, []);
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    setDropdownOpen(false);
-  };
+  // const handleOptionClick = (option) => {
+  //   setSelectedOption(option);
+  //   setDropdownOpen(false);
+  // };
 
   const handleProfileOptionClick = (option) => {
     if (option === "Notifications") {
@@ -88,10 +88,10 @@ function Navbar() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        (dropdownRef.current && !dropdownRef.current.contains(event.target)) ||
+        // (dropdownRef.current && !dropdownRef.current.contains(event.target)) ||
         (profileRef.current && !profileRef.current.contains(event.target))
       ) {
-        setDropdownOpen(false);
+        // setDropdownOpen(false);
         setProfileOpen(false);
       }
     };
@@ -100,13 +100,13 @@ function Navbar() {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [dropdownOpen, profileOpen]);
+  }, [profileOpen]); // Removed dropdownOpen from the dependency array
 
   const handleProfileImageClick = () => {
     setSelectedProfileOption(null);
     setNotificationsOpen(false);
     setProfileOpen(!profileOpen);
-    setDropdownOpen(false);
+    // setDropdownOpen(false);
   };
 
   const handleSignupClick = () => {
@@ -146,6 +146,7 @@ function Navbar() {
           <img className="navbar-site-logo" src="site-logo.png" alt="" />
         </Link>
       </div>
+      {/* Commented out navbar-dropdown
       <div className="navbar-dropdown" ref={dropdownRef}>
         <button
           className="navbar-dropbtn"
@@ -175,6 +176,7 @@ function Navbar() {
           </div>
         )}
       </div>
+      */}
       <form className="navbar-search-container">
         <div className="navbar-search-icon-container">
           <BiSearch className="navbar-search-icon" />
