@@ -354,7 +354,7 @@
 .navbar-login-button:hover {
   border-color: var(--theme-color);
   color: var(--theme-color);
-  box-shadow: 0 4px 8px rgba(0, 204, 125, 0.2);
+  /* box-shadow: 0 4px 8px rgba(0, 204, 125, 0.2); */
   transform: translateY(-2px);
 }
 
