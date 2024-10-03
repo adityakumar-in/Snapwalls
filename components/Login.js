@@ -3,10 +3,17 @@ import { useState, useRef, useEffect } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
 import { useRouter } from 'next/navigation';
-import SignUp from './Signup';  // Import the SignUp component
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '@/app/styles/login.css';
 
-export default function Login() {
+const EyeIcon = () => (
+  <svg className="eye-icon" viewBox="0 0 24 24">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+export default function Login({ onClose = () => {}, onSwitchToSignup }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -14,9 +21,21 @@ export default function Login() {
   const [resetEmail, setResetEmail] = useState('');
   const [notification, setNotification] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [showSignUp, setShowSignUp] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target) && typeof onClose === 'function') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -24,11 +43,12 @@ export default function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
         await auth.signOut();
-        setError("*Please verify email first");
+        setError("Please verify your email first");
       } else {
         setNotification("Logged in successfully!");
         setTimeout(() => {
-          router.push('/home');
+          router.push('/');
+          if (typeof onClose === 'function') onClose();
         }, 2000);
       }
     } catch (error) {
@@ -36,24 +56,13 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleSocialLogin = async (provider) => {
     try {
-      await signInWithPopup(auth, googleProvider);
-      setNotification("Logged in successfully with Google!");
+      await signInWithPopup(auth, provider);
+      setNotification(`Logged in successfully with ${provider.providerId}!`);
       setTimeout(() => {
-        router.push('/home');
-      }, 2000);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  const handleGithubLogin = async () => {
-    try {
-      await signInWithPopup(auth, githubProvider);
-      setNotification("Logged in successfully with GitHub!");
-      setTimeout(() => {
-        router.push('/home');
+        router.push('/');
+        if (typeof onClose === 'function') onClose();
       }, 2000);
     } catch (error) {
       setError(error.message);
@@ -66,57 +75,28 @@ export default function Login() {
       await sendPasswordResetEmail(auth, resetEmail);
       setNotification("Password reset email sent. Please check your inbox.");
       setResetEmail('');
+      setTimeout(() => setShowForgotPassword(false), 3000);
     } catch (error) {
       setError(error.message);
     }
-  };
-
-  const handleOutsideClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      router.push('/');
-    }
-  };
-
-  const handleCloseClick = () => {
-    router.push('/');
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSignUpClick = () => {
-    setShowSignUp(true);
-  };
-
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-        if (showForgotPassword) {
-          setShowForgotPassword(false);
-        }
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification, showForgotPassword]);
-
-  if (showSignUp) {
-    return <SignUp onBackToLogin={() => setShowSignUp(false)} />;
-  }
-
   return (
-    <div className="overlay" onClick={handleOutsideClick}>
+    <div className="overlay">
       {notification && (
         <div className="notification">
           {notification}
         </div>
       )}
       <div className="container" ref={modalRef}>
-        <button className="close-button" onClick={handleCloseClick}>&times;</button>
+        <button className="close-button" onClick={() => typeof onClose === 'function' && onClose()}>&times;</button>
+        <h1 className="title">Log In</h1>
         {!showForgotPassword ? (
           <>
-            <h1 className="title">Log In</h1>
             <form onSubmit={handleEmailLogin} className="form">
               <input
                 type="email"
@@ -135,27 +115,27 @@ export default function Login() {
                   required
                   className="input"
                 />
-                <button 
-                  type="button" 
-                  onClick={togglePasswordVisibility} 
-                  className="password-toggle-btn"
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="password-toggle-button"
                 >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
                 </button>
               </div>
               <button type="submit" className="button primary-button">Log In with Email</button>
-              <a href="#" onClick={() => setShowForgotPassword(true)} className="forgot-password-link">Forgot Password?</a>
             </form>
+            <button onClick={() => setShowForgotPassword(true)} className="forgot-password-link">Forgot Password?</button>
             <div className="social-buttons">
-              <button onClick={handleGoogleLogin} className="button google-button">
+              <button onClick={() => handleSocialLogin(googleProvider)} className="button google-button">
                 Log In with Google
               </button>
-              <button onClick={handleGithubLogin} className="button github-button">
+              <button onClick={() => handleSocialLogin(githubProvider)} className="button github-button">
                 Log In with GitHub
               </button>
             </div>
-            <p className="signup-prompt">
-              Don't have an account? <a href="#" onClick={handleSignUpClick}>Sign up</a>
+            <p className="signup-link">
+              Don't have an account? <button onClick={onSwitchToSignup} className="link-button">Sign up</button>
             </p>
           </>
         ) : (
@@ -172,13 +152,11 @@ export default function Login() {
               />
               <button type="submit" className="button primary-button">Send Reset Email</button>
             </form>
+            <button onClick={() => setShowForgotPassword(false)} className="back-to-login">Back to Login</button>
           </div>
         )}
-
-        <div className="error-container">
-          {error && <p className="error">{error}</p>}
-        </div>
+        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );
-}
+} 

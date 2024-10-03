@@ -5,7 +5,7 @@ const page = () => {
   return (
     <div className='snapwalls-content-page'>
       Favourites
-      <Login />
+      {/* <Login /> */}
     </div>
   )
 }
