@@ -20,11 +20,15 @@
 .navbar-site-title-right {
   font-weight: 100;
 }
-
+.flex {
+  display: flex;
+  gap: 20px;
+}
 .navbar-nav {
   color: white;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 7px;
   position: relative;
   width: 100%;
@@ -349,6 +353,23 @@
   cursor: pointer;
   outline: none;
 }
+
+
+
+.nav-site-logo {
+  height: 50px;
+  border-radius: 50%;
+  margin: 10px;
+}
+.nav-site-title {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+.nav-site-title-right {
+  font-weight: 100;
+}
+
+
 
 .navbar-signup-button:hover,
 .navbar-login-button:hover {
@@ -714,14 +735,7 @@
 }
 
 @media (min-width: 481px) and (max-width: 756px) {
-  .navbar-site-name {
-    display: block;
-  }
-
-  .navbar-site-logo {
-    height: 3.5em;
-    margin: 0px;
-  }
+  
   .navbar-confirm {
     display: flex;
     justify-content: center;
