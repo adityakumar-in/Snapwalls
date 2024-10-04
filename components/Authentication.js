@@ -21,6 +21,13 @@ if (typeof window !== "undefined" && !getApps().length) {
   auth = getAuth(app);
   googleProvider = new GoogleAuthProvider();
   githubProvider = new GithubAuthProvider();
-}
 
+  const isProduction = process.env.NODE_ENV === 'production';
+  const redirectUrl = isProduction
+    ? 'https://snapwalls.vercel.app/auth/handler'
+    : 'http://localhost:3000/__/auth/handler';
+
+  googleProvider.setCustomParameters({ redirect_uri: redirectUrl });
+  githubProvider.setCustomParameters({ redirect_uri: redirectUrl });
+}
 export { app, auth, googleProvider, githubProvider };
