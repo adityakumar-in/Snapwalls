@@ -272,14 +272,39 @@
   right: 20px;
   background-color: #00cc7d;
   color: white;
-  padding: 16px;
+  padding: 12px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 14px;
   z-index: 1100;
   animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+  max-width: 280px;
+  width: auto;
+  overflow: hidden;
+}
+
+.success-notification .success-icon {
+  font-size: 20px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.success-notification .success-message {
+  display: flex;
+  flex-direction: column;
+}
+
+.success-notification .success-message h2 {
+  font-size: 16px;
+  margin: 0;
+  margin-bottom: 2px;
+}
+
+.success-notification .success-message p {
+  font-size: 12px;
+  margin: 0;
 }
 
 @keyframes slideIn {
@@ -302,25 +327,29 @@
   }
 }
 
-.success-icon {
-  font-size: 24px;
-  margin-right: 12px;
-}
+@media (max-width: 480px) {
+  .success-notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 8px;
+    font-size: 12px;
+    max-width: none;
+    width: auto;
+  }
 
-.success-message {
-  display: flex;
-  flex-direction: column;
-}
+  .success-notification .success-icon {
+    font-size: 16px;
+    margin-right: 8px;
+  }
 
-.success-message h2 {
-  font-size: 18px;
-  margin: 0;
-  margin-bottom: 4px;
-}
+  .success-notification .success-message h2 {
+    font-size: 14px;
+  }
 
-.success-message p {
-  font-size: 14px;
-  margin: 0;
+  .success-notification .success-message p {
+    font-size: 10px;
+  }
 }
 
 /* Responsive design */

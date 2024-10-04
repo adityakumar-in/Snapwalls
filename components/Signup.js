@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub } from 'react-icons/fa';
 import Login from './Login';
 import '@/app/styles/signup.css';
+import '@/app/styles/login.css';
 
 const EyeIcon = () => (
   <svg className="eye-icon" viewBox="0 0 24 24">

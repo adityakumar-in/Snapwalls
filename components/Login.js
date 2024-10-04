@@ -13,7 +13,6 @@ const EyeIcon = () => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 );
-
 export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -63,7 +62,6 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
       setError(error.message);
     }
   };
-
   const handleSocialLogin = async (provider) => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -200,10 +198,12 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
       </div>
       {showSuccessNotification && (
         <div className="success-notification">
-          <FaCheckCircle className="success-icon" />
-          <div className="success-message">
-            <h2>Successfully Logged In!</h2>
-            <p>Welcome back to our platform.</p>
+          <div className="success-content">
+            <svg className="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span className="success-message">Successfully Logged In</span>
           </div>
         </div>
       )}
@@ -215,6 +215,7 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
           <p>Please check your inbox and click the verification link to complete the login process.</p>
         </div>
       )}
+      
     </div>
   );
 }
