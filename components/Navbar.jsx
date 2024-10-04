@@ -141,9 +141,10 @@ function Navbar() {
 
   return (
     <div className="navbar-nav">
-      <div className="navbar-site-name">
+      <div className="nav-site-logo">
         <Link href="/">
           <img className="navbar-site-logo" src="site-logo.png" alt="" />
+          <span className="nav-site-title"><span className="nav-site-title-right">Snap</span>walls</span>
         </Link>
       </div>
       {/* Commented out navbar-dropdown
@@ -177,7 +178,7 @@ function Navbar() {
         )}
       </div>
       */}
-      <form className="navbar-search-container">
+      {/* <form className="navbar-search-container">
         <div className="navbar-search-icon-container">
           <BiSearch className="navbar-search-icon" />
         </div>
@@ -188,7 +189,7 @@ function Navbar() {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
-      </form>
+      </form> */}
       {isLoggedIn ? (
         <>
           <div className="navbar-notification" onClick={handleNotificationClick}>
@@ -228,7 +229,7 @@ function Navbar() {
           </div>
         </>
       ) : (
-        <>
+        <div className="flex">
           <div className="navbar-signup">
             <button className="navbar-login-button" onClick={handleLoginClick}>
               Log In
@@ -239,7 +240,7 @@ function Navbar() {
               Sign Up
             </button>
           </div>
-        </>
+        </div>
       )}
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
         <div className="navbar-notifications-content">
