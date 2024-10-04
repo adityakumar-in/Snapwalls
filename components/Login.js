@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { useState, useRef, useEffect } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
@@ -24,6 +24,7 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const modalRef = useRef(null);
   const router = useRouter();
 
@@ -47,7 +48,9 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
         await auth.signOut();
-        setError("Please verify your email first");
+        setVerificationSent(true);
+        await sendEmailVerification(userCredential.user);
+        setError("Please verify your email before logging in. A new verification email has been sent.");
       } else {
         setShowSuccessNotification(true);
         setTimeout(() => {
@@ -63,13 +66,20 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
 
   const handleSocialLogin = async (provider) => {
     try {
-      await signInWithPopup(auth, provider);
-      setShowSuccessNotification(true);
-      setTimeout(() => {
-        setShowSuccessNotification(false);
-        onClose();
-        router.push(currentPath);
-      }, 3000);
+      const result = await signInWithPopup(auth, provider);
+      if (result.user.emailVerified) {
+        setShowSuccessNotification(true);
+        setTimeout(() => {
+          setShowSuccessNotification(false);
+          onClose();
+          router.push(currentPath);
+        }, 3000);
+      } else {
+        await auth.signOut();
+        setVerificationSent(true);
+        await sendEmailVerification(result.user);
+        setError("Please verify your email before logging in. A verification email has been sent.");
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -157,7 +167,6 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
                 <div className="reset-password-icon">
                   <FaLock />
                 </div>
-                <p className="reset-password-text">Enter your email address and we'll send you a link to reset your password.</p>
                 <form onSubmit={handleForgotPassword} className="form">
                   <input
                     type="email"
@@ -196,6 +205,14 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
             <h2>Successfully Logged In!</h2>
             <p>Welcome back to our platform.</p>
           </div>
+        </div>
+      )}
+      {verificationSent && (
+        <div className="verification-&& message">
+          <FaEnvelope className="verification-icon" />
+          <h2>Verify Your Email</h2>
+          <p>A verification email has been sent to your email address.</p>
+          <p>Please check your inbox and click the verification link to complete the login process.</p>
         </div>
       )}
     </div>

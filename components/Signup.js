@@ -22,38 +22,56 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const [showLogin, setShowLogin] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
 
   useEffect(() => {
-    let verificationChecker;
-    if (verificationSent) {
-      verificationChecker = setInterval(async () => {
+    let intervalId;
+    if (verificationSent && !isEmailVerified) {
+      intervalId = setInterval(async () => {
         try {
           await auth.currentUser?.reload();
           if (auth.currentUser?.emailVerified) {
-            clearInterval(verificationChecker);
-            await signInWithEmailAndPassword(auth, email, password);
-            setVerificationSent(false);
+            clearInterval(intervalId);
+            setIsEmailVerified(true);
             setShowSuccessNotification(true);
             setTimeout(() => {
               setShowSuccessNotification(false);
-              router.push(currentPath);
               onClose();
+              router.push(currentPath);
             }, 3000);
           }
         } catch (error) {
           console.error("Error checking email verification:", error);
         }
-      }, 5000);
+      }, 5000); // Check every 5 seconds
     }
 
     return () => {
-      if (verificationChecker) {
-        clearInterval(verificationChecker);
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
-  }, [verificationSent, router, onClose, email, password, currentPath]);
+  }, [verificationSent, isEmailVerified, onClose, router, currentPath]);
+
+  useEffect(() => {
+    let cooldownTimer;
+    if (resendCooldown > 0) {
+      cooldownTimer = setInterval(() => {
+        setResendCooldown((prevCooldown) => prevCooldown - 1);
+      }, 1000);
+    } else {
+      setResendDisabled(false);
+    }
+
+    return () => {
+      if (cooldownTimer) {
+        clearInterval(cooldownTimer);
+      }
+    };
+  }, [resendCooldown]);
 
   const handleEmailSignup = async (e) => {
     e.preventDefault();
@@ -88,10 +106,22 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   };
 
   const handleResendVerification = async () => {
+    if (resendDisabled) {
+      return;
+    }
+
     try {
+      // Sign in the user with email and password
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // Send verification email
       await sendEmailVerification(auth.currentUser);
+      
+      // Sign out the user
+      await auth.signOut();
+      
       setResendDisabled(true);
-      setTimeout(() => setResendDisabled(false), 60000);
+      setResendCooldown(60); // Set cooldown to 60 seconds
       setError("Verification email resent. Please check your inbox.");
     } catch (error) {
       setError(error.message);
@@ -99,7 +129,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   };
 
   const handleOutsideClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
+    if (modalRef.current && !modalRef.current.contains(e.target) && !verificationSent) {
       onClose();
     }
   };
@@ -119,7 +149,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   return (
     <div className="overlay" onClick={handleOutsideClick}>
       <div className="container" ref={modalRef}>
-        <button className="close-button" onClick={onClose}>&times;</button>
+        <button className="close-button" onClick={onClose} disabled={verificationSent}>&times;</button>
         <h1 className="title">{verificationSent ? "Verify Your Email" : "Sign Up"}</h1>
         {verificationSent ? (
           <div className="verification-message">
@@ -130,15 +160,17 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
             <p className="verification-email">{email}</p>
             <p>Please check your inbox and click the verification link.</p>
             <div className="verification-notes">
-              <p>Once verified, you will be automatically logged in and redirected.</p>
-              <p>You can close this window and come back later if needed.</p>
+              <p>You need to verify your email before you can proceed.</p>
+              <p>This window will automatically close once your email is verified.</p>
             </div>
             <button
               onClick={handleResendVerification}
               disabled={resendDisabled}
               className="button resend-button"
             >
-              Resend Verification Email
+              {resendDisabled
+                ? `Resend in ${resendCooldown}s`
+                : "Resend Verification Email"}
             </button>
           </div>
         ) : (
