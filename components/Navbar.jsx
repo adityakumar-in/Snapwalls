@@ -238,7 +238,7 @@ function Navbar() {
         </>
       ) : (
         <div className="flex">
-          <div className="navbar-signup">
+          <div className="navbar-login">
             <button className="navbar-login-button" onClick={handleLoginClick}>
               Log In
             </button>
