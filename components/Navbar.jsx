@@ -13,6 +13,7 @@ import Signup from "./Signup";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
 import "@/app/styles/navbar.css";
+import { FaCloudUploadAlt, FaUserPlus, FaHeart, FaComment, FaAward, } from 'react-icons/fa';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -47,7 +48,7 @@ function Navbar() {
   const profileRef = useRef(null);
 
   // const options = ["All", "Mobile", "Desktop"];
-  const profileOptions = ["Notifications", "Themes", "Logout"];
+  const profileOptions = ["Themes", "Logout"];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -59,6 +60,18 @@ function Navbar() {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (notificationsOpen) {
+      document.body.classList.add('navbar-no-scroll');
+    } else {
+      document.body.classList.remove('navbar-no-scroll');
+    }
+
+    return () => {
+      document.body.classList.remove('navbar-no-scroll');
+    };
+  }, [notificationsOpen]);
 
   // const handleOptionClick = (option) => {
   //   setSelectedOption(option);
@@ -82,11 +95,24 @@ function Navbar() {
 
   const handleNotificationClick = () => {
     setNotificationsOpen(!notificationsOpen);
-    setSelectedProfileOption((prevOption) =>
-      prevOption === "Notifications" ? null : "Notifications"
-    );
-    setProfileOpen(false);
   };
+
+  // Add this effect to handle the animation end and hide the element
+  useEffect(() => {
+    const notificationElement = document.querySelector('.navbar-notifications-content');
+    if (notificationElement) {
+      const handleAnimationEnd = () => {
+        if (!notificationsOpen) {
+          notificationElement.style.display = 'none';
+        }
+      };
+
+      notificationElement.addEventListener('animationend', handleAnimationEnd);
+      return () => {
+        notificationElement.removeEventListener('animationend', handleAnimationEnd);
+      };
+    }
+  }, [notificationsOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -198,42 +224,42 @@ function Navbar() {
       </form> */}
       {isLoggedIn ? (
         <>
-        <div className="flex">
-          <div className="navbar-notification" onClick={handleNotificationClick}>
-            {notificationsOpen ? (
-              <IoNotifications className="navbar-notification-icon" />
-            ) : (
-              <IoNotificationsOutline className="navbar-notification-icon" />
-            )}
-          </div>
-          <div className="navbar-profile" ref={profileRef}>
-            <img
-              className="navbar-profile-image"
-              src="/images/profile-image.jpeg"
-              alt="Profile"
-              onClick={handleProfileImageClick}
-            />
-            {profileOpen && (
-              <div className="navbar-profile-menu">
-                {profileOptions.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`navbar-profile-item ${option === "Notifications" ? "navbar-small-screen-only" : ""
-                      }`}
-                    onClick={() => {
-                      if (option === "Logout") {
-                        handleLogout();
-                      } else {
-                        handleProfileOptionClick(option);
-                      }
-                    }}
-                  >
-                    {option}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <div className="flex">
+            <div className="navbar-notification" onClick={handleNotificationClick}>
+              {notificationsOpen ? (
+                <IoNotifications className="navbar-notification-icon" />
+              ) : (
+                <IoNotificationsOutline className="navbar-notification-icon" />
+              )}
+            </div>
+            <div className="navbar-profile" ref={profileRef}>
+              <img
+                className="navbar-profile-image"
+                src="/images/profile-image.jpeg"
+                alt="Profile"
+                onClick={handleProfileImageClick}
+              />
+              {profileOpen && (
+                <div className="navbar-profile-menu">
+                  {profileOptions.map((option, index) => (
+                    <div
+                      key={index}
+                      className={`navbar-profile-item ${option === "Notifications" ? "navbar-small-screen-only" : ""
+                        }`}
+                      onClick={() => {
+                        if (option === "Logout") {
+                          handleLogout();
+                        } else {
+                          handleProfileOptionClick(option);
+                        }
+                      }}
+                    >
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </>
       ) : (
@@ -251,7 +277,7 @@ function Navbar() {
         </div>
       )}
       {(notificationsOpen || selectedProfileOption === "Notifications") && (
-        <div className="navbar-notifications-content">
+        <div className={`navbar-notifications-content ${notificationsOpen ? 'show' : 'hide'}`}>
           <div className="navbar-notification-header">
             <h2>Notifications</h2>
             <RxCross2
@@ -259,7 +285,60 @@ function Navbar() {
               onClick={handleNotificationClick}
             />
           </div>
-          <p>Check your recent notifications here.</p>
+          <div className="notification-list-container">
+            <ul className="notification-list">
+              <li className="notification-item">
+                <div className="notification-icon">
+                  <FaCloudUploadAlt />
+                </div>
+                <div className="notification-content">
+                  <div className="notification-title">New Upload</div>
+                  <div className="notification-message">Your wallpaper "Mountain Vista" has been uploaded.</div>
+                  <div className="notification-time">Now</div>
+                </div>
+              </li>
+              <li className="notification-item">
+                <div className="notification-icon">
+                  <FaUserPlus />
+                </div>
+                <div className="notification-content">
+                  <div className="notification-title">New follower</div>
+                  <div className="notification-message">John Doe started following you.</div>
+                  <div className="notification-time">2 hours ago</div>
+                </div>
+              </li>
+              <li className="notification-item">
+                <div className="notification-icon">
+                  <FaHeart />
+                </div>
+                <div className="notification-content">
+                  <div className="notification-title">Your post was liked</div>
+                  <div className="notification-message">Your wallpaper "Sunset Beach" received 50 likes.</div>
+                  <div className="notification-time">Yesterday</div>
+                </div>
+              </li>
+              <li className="notification-item">
+                <div className="notification-icon">
+                  <FaComment />
+                </div>
+                <div className="notification-content">
+                  <div className="notification-title">New comment</div>
+                  <div className="notification-message">Alice commented on your wallpaper "Mountain Vista".</div>
+                  <div className="notification-time">3 days ago</div>
+                </div>
+              </li>
+              <li className="notification-item">
+                <div className="notification-icon">
+                  <FaAward />
+                </div>
+                <div className="notification-content">
+                  <div className="notification-title">Achievement Unlocked</div>
+                  <div className="notification-message">You've reached 1000 followers! Congratulations!</div>
+                  <div className="notification-time">1 week ago</div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       )}
       {selectedProfileOption === "Themes" && (
