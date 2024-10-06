@@ -52,6 +52,9 @@ function Navbar() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
+      setProfileOpen(false);
+      setSelectedProfileOption(null);
+      setNotificationsOpen(false);
     });
 
     return () => unsubscribe();
@@ -119,6 +122,9 @@ function Navbar() {
 
   const handleLoginClick = () => {
     setShowLogin(true);
+    setProfileOpen(false);
+    setSelectedProfileOption(null);
+    setNotificationsOpen(false);
   };
 
   const handleCloseLogin = () => {
@@ -142,7 +148,7 @@ function Navbar() {
   return (
     <div className="navbar-nav">
       <div className="nav-site-logo">
-        <Link href="/">
+        <Link href="/" className="parent-logo">
           <img className="navbar-site-logo" src="site-logo.png" alt="" />
           <span className="nav-site-title"><span className="nav-site-title-right">Snap</span>walls</span>
         </Link>
@@ -192,6 +198,7 @@ function Navbar() {
       </form> */}
       {isLoggedIn ? (
         <>
+        <div className="flex">
           <div className="navbar-notification" onClick={handleNotificationClick}>
             {notificationsOpen ? (
               <IoNotifications className="navbar-notification-icon" />
@@ -226,6 +233,7 @@ function Navbar() {
                 ))}
               </div>
             )}
+          </div>
           </div>
         </>
       ) : (
@@ -276,23 +284,22 @@ function Navbar() {
           <p>Are you sure you want to logout?</p>
           <div className="navbar-confirm">
             <button className="navbar-logout-button" onClick={handleLogout}>
-              <span>Logout</span>
+              Logout
             </button>
-            <button
-              className="navbar-cancel-button"
-              onClick={handleProfileOptionClick}
-            >
-              <span>Cancel</span>
+            <button className="navbar-cancel-button" onClick={handleProfileOptionClick}>
+              Cancel
             </button>
           </div>
         </div>
       )}
       {showLogoutNotification && (
-        <div className="navbar-logout-notification">
-          <FaSignOutAlt className="navbar-logout-icon" />
-          <div className="navbar-logout-message">
-            <h2>Successfully Logged Out</h2>
-            <p>You have been securely logged out.</p>
+        <div className="logout-notification">
+          <div className="logout-content">
+            <FaSignOutAlt className="logout-icon" />
+            <div className="logout-message">
+              <h2>Successfully Logged Out</h2>
+              <p>You have been securely logged out.</p>
+            </div>
           </div>
         </div>
       )}
