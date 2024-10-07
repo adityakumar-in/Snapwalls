@@ -118,8 +118,8 @@
 }
 
 .loading img {
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
 }
 
 .loader {
@@ -128,4 +128,21 @@
   padding: 20px 0;
   font-weight: bold;
   cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+  .download-icon {
+    display: flex;
+    background-color: red;
+  }
+  .wallpaper-item {
+    width: 100%;
+    gap: 1.5%;
+  }
+  .wallpaper-image {
+    width: 48%;
+    height: fit-content;
+    box-sizing: border-box;
+    object-fit: cover;
+  }
 }

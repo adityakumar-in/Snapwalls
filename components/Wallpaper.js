@@ -42,7 +42,7 @@ const Wallpaper = ({ wallpapers, fileNames }) => {
       setVisibleWallpapers(prev => [...prev, ...nextWallpapers]);
       setCurrentIndex(prev => prev + 40);
       setIsLoading(false);
-    }, 500); // Changed from 1000 to 2000 milliseconds
+    }, 800); // Changed from 1000 to 2000 milliseconds
   };
 
   const downloadWallpaper = async (wallpaper, fileName) => {
