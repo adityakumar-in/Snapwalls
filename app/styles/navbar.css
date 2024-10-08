@@ -2080,7 +2080,6 @@
     background-color: var(--foreground);
     color: var(--color);
     z-index: 1000;
-    overflow-y: auto;
     padding: 20px;
     box-sizing: border-box;
     display: flex;
