@@ -182,7 +182,7 @@
   /* padding: 16px; */
   border-radius: 50%;
   display: flex;
-  padding: 20px;
+  padding: 16px;
   font-size: 1.5em;
 }
 
@@ -449,7 +449,7 @@
   .navbar-signup-button,
   .navbar-login-button {
     padding: 6px 12px;
-    font-size: 20px;
+    font-size: 17px;
   }
 
   .nav-site-title {
@@ -462,6 +462,15 @@
 }
 
 @media screen and (max-width: 480px) {
+
+  .navbar-signup-button, .navbar-login-button {
+    padding: 8px 16px;
+    font-size: 17px;
+  }
+
+  .nav-site-title {
+    display: none;
+  }
   .navbar-notifications-content {
     position: fixed;
     top: 0;
@@ -848,34 +857,78 @@
     top: 100%;
     right: 0px;
     background-color: var(--foreground);
-    color: white;
+    color: var(--color);
     z-index: 200;
     border-radius: 10px;
-    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    width: 450px;
-    height: 450px;
+    width: 300px;
+  }
+
+  .navbar-themes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
   }
 
   .navbar-themes-content h2 {
     font-size: 1.4em;
-    margin-bottom: 15px;
-    padding: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    text-align: center;
+    margin: 0;
   }
 
-  .navbar-themes-content p {
-    font-size: 1em;
-    padding: 15px;
-    padding-top: 5px;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 15px;
+  .navbar-close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color);
+    padding: 5px;
+  }
+
+  .navbar-close-icon {
+    font-size: 1.2em;
+  }
+
+  .navbar-themes-description {
+    font-size: 0.9em;
+    margin-bottom: 20px;
+  }
+
+  .navbar-themes-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .navbar-theme-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    background-color: var(--background);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+  }
+
+  .navbar-theme-option:hover {
+    background-color: var(--seekbar);
+  }
+
+  .navbar-theme-option.active {
+    border-color: var(--theme-color);
+  }
+
+  .navbar-theme-icon {
+    font-size: 1.5em;
+    margin-bottom: 5px;
   }
 
   .navbar-profile {
-    width: 75px;
+    width: 66px;
     height: auto;
   }
 
@@ -915,7 +968,7 @@
   }
 
   .navbar-notification {
-    padding: 20px;
+    padding: 16px;
   }
 
   .navbar-notification-icon {
@@ -1135,34 +1188,81 @@
   .navbar-themes-content {
     position: absolute;
     top: 100%;
-    right: 0px;
+    right: 0;
+    width: 280px;
     background-color: var(--foreground);
-    color: white;
-    z-index: 200;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0navbar-1);
-    padding: 10px;
-    width: 200px;
-    height: 200px;
+    color: var(--color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    z-index: 1000;
+  }
+
+  .navbar-themes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
   }
 
   .navbar-themes-content h2 {
-    font-size: 1em;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-bottom: 1px solid var(--seekbar);
-    text-align: center;
-    margin-bottom: 10px;
+    font-size: 1.2em;
+    margin: 0;
   }
 
-  .navbar-themes-content p {
+  .navbar-close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color);
+    padding: 4px;
+  }
+
+  .navbar-close-icon {
+    font-size: 1.2em;
+  }
+
+  .navbar-themes-description {
     font-size: 0.9em;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  .navbar-themes-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navbar-theme-option {
+    display: flex;
+    align-items: center;
     padding: 10px;
-    padding-top: 0px;
-    /* border-bottom: 1px solid var(--seekbar); */
-    text-align: center;
-    width: 100%;
-    margin-bottom: 10px;
+    background-color: var(--background);
+    border: 1px solid var(--seekbar);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+  }
+
+  .navbar-theme-option:hover {
+    background-color: var(--seekbar);
+  }
+
+  .navbar-theme-option.active {
+    border-color: var(--theme-color);
+    background-color: rgba(var(--theme-color-rgb), 0.1);
+  }
+
+  .navbar-theme-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+
+  .navbar-theme-option span {
+    font-size: 0.95em;
   }
 
   .navbar-profile {
@@ -1260,7 +1360,7 @@
     right: 0;
     width: 80%;
     max-width: 400px;
-    height: 100%;
+    min-height: 100%;
     background-color: var(--foreground);
     color: var(--color);
     z-index: 1000;
@@ -1965,5 +2065,94 @@
   to {
     transform: translateX(100%);
     opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-themes-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--foreground);
+    color: var(--color);
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navbar-themes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .navbar-themes-content h2 {
+    font-size: 1.5em;
+    margin: 0;
+    border-bottom: none;
+  }
+
+  .navbar-close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color);
+    padding: 8px;
+  }
+
+  .navbar-close-icon {
+    font-size: 1.5em;
+  }
+
+  .navbar-themes-description {
+    font-size: 1em;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .navbar-themes-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .navbar-theme-option {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--background);
+    border: 1px solid var(--seekbar);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+  }
+
+  .navbar-theme-option:hover,
+  .navbar-theme-option:focus {
+    background-color: var(--seekbar);
+    outline: none;
+  }
+
+  .navbar-theme-option.active {
+    border-color: var(--theme-color);
+    background-color: rgba(var(--theme-color-rgb), 0.1);
+  }
+
+  .navbar-theme-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+  }
+
+  .navbar-theme-option span {
+    font-size: 1.1em;
   }
 }

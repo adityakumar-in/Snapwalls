@@ -43,6 +43,7 @@ function Navbar() {
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showLogoutNotification, setShowLogoutNotification] = useState(false);
+  const [isThemesOpen, setIsThemesOpen] = useState(false);
 
   // const dropdownRef = useRef(null);
   const profileRef = useRef(null);
@@ -84,6 +85,9 @@ function Navbar() {
       setSelectedProfileOption((prevOption) =>
         prevOption === "Notifications" ? null : "Notifications"
       );
+    } else if (option === "Themes") {
+      setIsThemesOpen(true);
+      setSelectedProfileOption("Themes");
     } else {
       setSelectedProfileOption((prevOption) =>
         prevOption === option ? null : option
@@ -169,6 +173,11 @@ function Navbar() {
     } catch (error) {
       console.error("Error signing out: ", error);
     }
+  };
+
+  const handleClose = () => {
+    setIsThemesOpen(false);
+    setSelectedProfileOption(null);
   };
 
   return (
@@ -341,14 +350,46 @@ function Navbar() {
           </div>
         </div>
       )}
-      {selectedProfileOption === "Themes" && (
+      {isThemesOpen && (
         <div className="navbar-themes-content">
-          <h2>Themes</h2>
-          <RxCross2
-            className="navbar-close-icon"
-            onClick={handleProfileOptionClick}
-          />
-          <p>Change your themes here.</p>
+          <div className="navbar-themes-header">
+            <h2>Themes</h2>
+            <button className="navbar-close-button" onClick={handleClose}>
+              <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" className="navbar-close-icon" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"></path>
+              </svg>
+            </button>
+          </div>
+          <p className="navbar-themes-description">Choose a theme to customize your experience:</p>
+          <div className="navbar-themes-options">
+            <button className="navbar-theme-option navbar-theme-light">
+              <svg className="navbar-theme-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+              Light
+            </button>
+            <button className="navbar-theme-option navbar-theme-dark">
+              <svg className="navbar-theme-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+              Dark
+            </button>
+            <button className="navbar-theme-option navbar-theme-system">
+              <svg className="navbar-theme-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              System
+            </button>
+          </div>
         </div>
       )}
       {showSignup && <Signup onClose={handleCloseSignup} currentPath={currentPath} />}
