@@ -24,8 +24,49 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [showSignup, setShowSignup] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const modalRef = useRef(null);
   const router = useRouter();
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError('Email is required');
+      return false;
+    }
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  const validatePassword = (password) => {
+    if (!password) {
+      setPasswordError('Password is required');
+      return false;
+    }
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    validateEmail(value);
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    validatePassword(value);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -43,6 +84,14 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
+    
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+
+    if (!isEmailValid || !isPasswordValid) {
+      return;
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
@@ -113,30 +162,36 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         {!showForgotPassword ? (
           <>
             <form onSubmit={handleEmailLogin} className="form">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-                className="input"
-              />
-              <div className="password-input-container">
+              <div className="input-group">
                 <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Email"
                   required
-                  className="input"
+                  className={`input ${emailError ? 'has-error' : email ? 'has-success' : ''}`}
                 />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="password-toggle-button"
-                >
-                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
-                </button>
+                {emailError && <div className="input-validation error">{emailError}</div>}
+              </div>
+              <div className="input-group">
+                <div className="password-input-container">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder="Password"
+                    required
+                    className={`input ${passwordError ? 'has-error' : password ? 'has-success' : ''}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="password-toggle-button"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <EyeIcon />}
+                  </button>
+                </div>
+                {passwordError && <div className="input-validation error">{passwordError}</div>}
               </div>
               <button type="submit" className="button primary-button">
                 <FaEnvelope className="button-icon" />
