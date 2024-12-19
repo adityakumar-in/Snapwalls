@@ -24,74 +24,19 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [showSignup, setShowSignup] = useState(false);
   const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
   const modalRef = useRef(null);
   const router = useRouter();
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setEmailError('Email is required');
-      return false;
-    }
-    if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address');
-      return false;
-    }
-    setEmailError('');
-    return true;
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // Match the new animation duration of 0.3s
   };
-
-  const validatePassword = (password) => {
-    if (!password) {
-      setPasswordError('Password is required');
-      return false;
-    }
-    if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-      return false;
-    }
-    setPasswordError('');
-    return true;
-  };
-
-  const handleEmailChange = (e) => {
-    const value = e.target.value;
-    setEmail(value);
-    validateEmail(value);
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
-    validatePassword(value);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-        router.push('/');
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose, router]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
-    
-    const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
-
-    if (!isEmailValid || !isPasswordValid) {
-      return;
-    }
-
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user.emailVerified) {
@@ -150,48 +95,48 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
     setShowSignup(!showSignup);
   };
 
+  const handleOutsideClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      handleClose();
+    }
+  };
+
   if (showSignup) {
-    return <Signup onSwitchToLogin={toggleLoginSignup} onClose={onClose} currentPath={currentPath} />;
+    return <Signup onSwitchToLogin={toggleLoginSignup} onClose={handleClose} currentPath={currentPath} />;
   }
 
   return (
-    <div className="overlay">
-      <div className="container" ref={modalRef}>
-        <button className="close-button" onClick={onClose}>&times;</button>
+    <div className={`overlay ${isClosing ? 'closing' : ''}`} onClick={handleOutsideClick}>
+      <div className={`container ${isClosing ? 'closing' : ''}`} ref={modalRef} onClick={e => e.stopPropagation()}>
+        <button className="close-button" onClick={handleClose}>&times;</button>
         <h1 className="title">{showForgotPassword ? "Reset Password" : "Log In"}</h1>
         {!showForgotPassword ? (
           <>
             <form onSubmit={handleEmailLogin} className="form">
-              <div className="input-group">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                required
+                className="input"
+              />
+              <div className="password-input-container">
                 <input
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="Email"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
                   required
-                  className={`input ${emailError ? 'has-error' : email ? 'has-success' : ''}`}
+                  className="input"
                 />
-                {emailError && <div className="input-validation error">{emailError}</div>}
-              </div>
-              <div className="input-group">
-                <div className="password-input-container">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={handlePasswordChange}
-                    placeholder="Password"
-                    required
-                    className={`input ${passwordError ? 'has-error' : password ? 'has-success' : ''}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="password-toggle-button"
-                  >
-                    {showPassword ? <FaEyeSlash /> : <EyeIcon />}
-                  </button>
-                </div>
-                {passwordError && <div className="input-validation error">{passwordError}</div>}
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="password-toggle-button"
+                >
+                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
+                </button>
               </div>
               <button type="submit" className="button primary-button">
                 <FaEnvelope className="button-icon" />

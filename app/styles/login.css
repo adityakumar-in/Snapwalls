@@ -11,6 +11,12 @@
   z-index: 1000;
   backdrop-filter: blur(10px);
   padding: 1.5rem;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.overlay.closing {
+  animation: fadeOut 0.3s ease-out forwards;
 }
 
 .container {
@@ -19,19 +25,54 @@
   border-radius: 20px;
   padding: 2rem;
   position: relative;
-  animation: slideUp 0.3s ease-out;
   border: 1px solid var(--seekbar);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  will-change: transform, opacity;
+  transform-origin: center center;
+  animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-@keyframes slideUp {
+.container.closing {
+  animation: scaleOut 0.3s cubic-bezier(0.34, 0, 0.64, 1) forwards;
+}
+
+@keyframes fadeIn {
   from { 
-    opacity: 0; 
-    transform: translateY(30px); 
+    opacity: 0;
   }
   to { 
-    opacity: 1; 
-    transform: translateY(0); 
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from { 
+    opacity: 1;
+  }
+  to { 
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes scaleOut {
+  from { 
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to { 
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
   }
 }
 
@@ -73,12 +114,6 @@
   flex-direction: column;
   gap: 0.75rem;
   width: 100%;
-}
-
-.input-group {
-  position: relative;
-  width: 100%;
-  margin-bottom: 1.75rem;
 }
 
 .input {
@@ -315,6 +350,7 @@
   .overlay {
     padding: 0;
     align-items: flex-end;
+    animation: fadeIn 0.3s ease-out forwards;
   }
 
   .container {
@@ -324,7 +360,34 @@
     border-radius: 20px 20px 0 0;
     padding: 1.5rem;
     padding-bottom: 1rem;
-    animation: slideUp 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+    animation: slideUpMobile 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center bottom;
+  }
+
+  .container.closing {
+    animation: slideDownMobile 0.3s cubic-bezier(0.34, 0, 0.64, 1) forwards;
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideDownMobile {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(100%);
+    }
   }
 
   .title {
@@ -501,126 +564,25 @@
   }
 }
 
-.input-validation {
-  position: absolute;
-  left: 1rem;
-  bottom: -1.5rem;
-  font-size: 0.8rem;
-  padding: 0.25rem 0;
-  opacity: 0;
-  transform: translateY(-5px);
-  transition: all 0.2s ease;
-  pointer-events: none;
-  width: calc(100% - 2rem);
-  text-align: left;
-}
-
-.input-validation.error {
-  color: #ff4d4d;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.input-validation.success {
-  color: #00cc7d;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.input.has-error {
-  border-color: #ff4d4d !important;
-  background-color: rgba(255, 77, 77, 0.05);
-}
-
-.input.has-error:focus {
-  box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
-}
-
-.input.has-success {
-  border-color: #00cc7d !important;
-  background-color: rgba(0, 204, 125, 0.05);
-}
-
-.input.has-success:focus {
-  box-shadow: 0 0 0 3px rgba(0, 204, 125, 0.1);
-}
-
-/* Desktop and larger screens */
-@media (min-width: 1024px) {
-  .input-group {
-    margin-bottom: 2rem;
-  }
-
-  .input-validation {
-    font-size: 0.85rem;
-    bottom: -1.75rem;
-  }
-}
-
-/* Tablet and medium screens */
-@media (max-width: 768px) {
-  .input-group {
-    margin-bottom: 1.75rem;
-  }
-
-  .input-validation {
-    font-size: 0.8rem;
-    bottom: -1.5rem;
-  }
-}
-
-/* Mobile screens */
-@media (max-width: 480px) {
-  .input-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .input-validation {
-    font-size: 0.75rem;
-    bottom: -1.35rem;
-    left: 0.75rem;
-    width: calc(100% - 1.5rem);
-  }
-
-  .form {
-    gap: 0.5rem;
-  }
-}
-
-/* Smaller mobile screens */
-@media (max-width: 360px) {
-  .input-group {
-    margin-bottom: 1.35rem;
-  }
-
-  .input-validation {
-    font-size: 0.7rem;
-    bottom: -1.25rem;
-    left: 0.5rem;
-    width: calc(100% - 1rem);
-  }
-}
-
-/* Landscape mode */
-@media (max-height: 600px) and (orientation: landscape) {
-  .input-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .input-validation {
-    font-size: 0.75rem;
-    bottom: -1.35rem;
-    padding: 0.15rem 0;
-  }
-
-  .form {
-    gap: 0.5rem;
-  }
-}
-
 /* Remove duplicate styles */
 .input-alert,
 .input.error,
 .input.success {
   display: none;
+}
+
+/* Remove input-group margins */
+.input-group {
+  margin-bottom: 0;
+}
+
+/* Remove media queries related to validation */
+@media (min-width: 1024px), 
+       (max-width: 768px), 
+       (max-width: 480px), 
+       (max-width: 360px), 
+       (max-height: 600px) and (orientation: landscape) {
+  .input-group {
+    margin-bottom: 0;
+  }
 }

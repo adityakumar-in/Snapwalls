@@ -25,6 +25,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
 
@@ -131,7 +132,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
 
   const handleOutsideClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target) && !verificationSent) {
-      onClose();
+      handleClose();
     }
   };
 
@@ -143,14 +144,22 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
     setShowLogin(!showLogin);
   };
 
+  const handleClose = () => {
+    if (verificationSent) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // Match the animation duration
+  };
+
   if (showLogin) {
-    return <Login onSwitchToSignup={toggleLoginSignup} onClose={onClose} currentPath={currentPath} />;
+    return <Login onSwitchToSignup={toggleLoginSignup} onClose={handleClose} currentPath={currentPath} />;
   }
 
   return (
-    <div className="overlay" onClick={handleOutsideClick}>
-      <div className="container" ref={modalRef}>
-        <button className="close-button" onClick={onClose} disabled={verificationSent}>&times;</button>
+    <div className={`overlay ${isClosing ? 'closing' : ''}`} onClick={handleOutsideClick}>
+      <div className={`container ${isClosing ? 'closing' : ''}`} ref={modalRef} onClick={e => e.stopPropagation()}>
+        <button className="close-button" onClick={handleClose} disabled={verificationSent}>&times;</button>
         <h1 className="title">{verificationSent ? "Verify Your Email" : "Sign Up"}</h1>
         {verificationSent ? (
           <div className="verification-message">
