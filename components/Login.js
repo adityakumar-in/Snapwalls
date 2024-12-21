@@ -30,11 +30,20 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
+  useEffect(() => {
+    document.body.classList.add('modal-open');
+    
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, []);
+
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
+      document.body.classList.remove('modal-open');
       onClose();
-    }, 300); // Match the new animation duration of 0.3s
+    }, 300);
   };
 
   const handleEmailLogin = async (e) => {
