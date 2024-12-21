@@ -8,11 +8,25 @@ const CreatedSnap = ({ imageUrl, selectedTag }) => {
     const router = useRouter();
 
     const getWidth = () => {
-        return selectedTag === 'Mobile' ? 720 : selectedTag === '' ? window.innerWidth : 1280;
+        switch (selectedTag) {
+            case 'Mobile':
+                return 390; // Standard mobile width
+            case 'Desktop':
+                return 1280; // Standard desktop width
+            default:
+                return 800; // Default/custom width
+        }
     }
 
     const getHeight = () => {
-        return selectedTag === 'Mobile' ? 1280 : selectedTag === '' ? window.innerHeight : 720;
+        switch (selectedTag) {
+            case 'Mobile':
+                return 844; // Standard mobile height
+            case 'Desktop':
+                return 720; // Standard desktop height
+            default:
+                return 600; // Default/custom height
+        }
     }
 
     const handleDownload = async () => {
@@ -45,14 +59,22 @@ const CreatedSnap = ({ imageUrl, selectedTag }) => {
                     <div className="header-content">
                         <div className="header-main">
                             <h1 className='choose-roadmap-title'>Generated Wallpaper</h1>
-                            <Image 
-                                src={imageUrl} 
-                                alt="Generated Wallpaper" 
-                                className="generated-wallpaper"
-                                width={getWidth()}
-                                height={getHeight()} 
-                                priority
-                            />
+                            <div className="image-container">
+                                <Image 
+                                    src={imageUrl} 
+                                    alt="Generated Wallpaper" 
+                                    className="generated-wallpaper"
+                                    width={getWidth()}
+                                    height={getHeight()} 
+                                    priority
+                                    style={{
+                                        width: '100%',
+                                        height: 'auto',
+                                        maxWidth: getWidth(),
+                                        objectFit: 'contain'
+                                    }}
+                                />
+                            </div>
                             <button className="download-button" onClick={handleDownload}>
                                 Download Wallpaper
                             </button>
