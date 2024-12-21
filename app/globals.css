@@ -1,5 +1,5 @@
 :root {
-  --theme-color: rgb(212, 212, 212);
+  --theme-color: #FFB200;
   --background: rgb(33, 33, 33);
   --foreground: rgb(44, 44, 44);
   --color: rgb(234, 234, 234);
@@ -56,5 +56,36 @@ body {
     padding: 0;
     padding: 0 10px;
     padding-bottom: 10px;
+  }
+}
+
+
+
+
+
+
+
+.default-padding {
+  padding-left: 74px;
+  padding-top: 7px;
+  padding-right: 7px;
+}
+
+@media screen and (max-width: 768px) {
+  .default-padding {
+    padding-left: 70px;
+  }
+}
+@media screen and (max-width: 700px) {
+  .default-padding {
+    padding-top: 57px;
+    padding-left: 7px;
+    padding-bottom: 65px;
+  }
+}
+@media screen and (max-width: 365px) {
+  .default-padding {
+    padding-top: 55px;
+    padding-bottom: 60px;
   }
 }

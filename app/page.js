@@ -4,9 +4,9 @@ import WallpaperLoader from '../components/getWallpapers';
 
 export default function Home() {
   return (
-    <div className="main">
+    <div className="default-padding">
       <Carousel />
-      <div className="snapwalls-content-page-home">
+      <div className="">
         <WallpaperLoader />
       </div>
     </div>
