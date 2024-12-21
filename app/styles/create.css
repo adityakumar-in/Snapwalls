@@ -1,0 +1,393 @@
+.create-search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+    min-height: 97vh;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  .create-search-input {
+    width: 100%;
+    padding: 16px 24px;
+    padding-right: 48px;
+    font-size: 24px;
+    font-weight: 600;
+    background-color: var(--backgroundColorDark);
+    color: #69696999;
+    border: 2px solid #45454599;
+    border-radius: 50px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    &::placeholder {
+      color: #4a4a4a99;
+    }
+  }
+  
+  .create-search-input:focus {
+    border: 2px solid rgba(232, 8, 19, 0.2);
+  }
+  
+  .create-tags-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 0 auto;
+  }
+  
+  .create-tag {
+    padding: 6px 12px;
+    border: 1px solid #5050506c;
+    border-radius: 20px;
+    background-color: var(--backgroundColorDark);
+    color: #9d9d9d9f;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  
+  .create-tag:hover {
+    background-color: #5050506c;
+  }
+  
+  .create-tag.active {
+    background-color: #5050506c;
+    border-color: #5050506c;
+  }
+  
+  .search-option {
+    text-align: center;
+    justify-content: center;
+    margin: 5px 0;
+    width: 100%;
+  }
+  
+  .search-tag-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .create-options-wrapper { 
+    position: absolute;
+    margin-top: 30px;
+    width: 100%;
+  }
+  
+  .create-button {
+    width: 150px;
+    padding: 16px 32px;
+    background-color: var(--theme-color);
+    color: var(--backgroundColorDark);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 550;
+    letter-spacing: 1px;
+    transition: transform 0.2s ease;
+    margin: 0 auto;
+    margin-top: 20px;
+    display: block;
+  }
+  
+  .create-button:hover {
+    transform: translateY(-2px);
+  }
+  
+  .create-button:active {
+    transform: translateY(0px);
+  }
+  
+  .create-search-heading {
+    font-size: 48px;
+    font-weight: 800;
+    width: 100%;
+    color: #9d9d9d9f;
+    text-align: left;
+    margin-left: 30px;
+    margin-bottom: 20px;
+  }
+  .bold, .typed-cursor {
+      color: var(--theme-color);
+  }
+  
+  .typed-cursor {
+      font-weight: 100;
+      font-size: 50px;
+      /* font-size: 0px; */
+  }
+  
+  @media screen and (max-width: 800px) {
+      .create-search-heading {
+          font-size: 46px;
+      }
+      .create-search-container {
+          max-width: 650px;
+        }
+  }
+  @media screen and (max-width: 760px) {
+      .create-search-heading {
+          font-size: 44px;
+          margin: 0;
+          margin-left: 20px;
+          margin-bottom: 20px;
+      }
+  }
+  @media screen and (max-width: 720px) {
+      .create-search-heading {
+          font-size: 42px;
+          font-weight: 1000;
+          margin: 0;
+          margin-left: 10px;
+      }
+      .create-search-container {
+          max-width: 600px;
+        }
+  }
+  @media screen and (max-width: 700px) {
+      .create-search-container {
+          
+          min-height: 80vh;
+        }
+      .create-search-heading {
+          font-size: 42px;
+          font-weight: 1000;
+          margin: 0;
+          margin-left: 10px;
+      }
+      .create-search-container {
+          max-width: 600px;
+        }
+  }
+  @media screen and (max-width: 700px) {
+      .create-search-container {
+          
+          min-height: 80vh;
+        }
+      .create-search-heading {
+          font-size: 42px;
+          font-weight: 1000;
+          margin: 0;
+          margin-left: 10px;
+      }
+      .create-search-container {
+          max-width: 600px;
+        }
+  }
+  @media screen and (max-width: 625px) {
+      .create-search-container {
+          max-width: 580px;
+          min-height: 80vh;
+        }
+      .create-search-heading {
+          font-size: 40px;
+          font-weight: 1000;
+          margin: 0;
+          margin-left: 10px;
+      }
+  }
+  @media screen and (max-width: 590px) {
+      .create-search-heading {
+          font-size: 38px;
+      }
+  }
+  @media screen and (max-width: 560px) {
+      .create-search-heading {
+          font-size: 36px;
+      }
+  }
+  @media screen and (max-width: 535px) {
+      .create-search-heading {
+          font-size: 34px;
+      }
+  }
+  @media screen and (max-width: 510px) {
+      .create-search-heading {
+          font-size: 32px;
+      }
+      .create-search-input {
+          font-size: 22px;
+      }
+  }
+  @media screen and (max-width: 490px) {
+      .create-search-heading {
+          font-size: 30px;
+      }
+      .create-search-input {
+          font-size: 22px;
+      }
+  }
+  
+  .input-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .slash-indicator {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #69696999;
+    font-size: 18px;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    padding: 7px;
+    border-radius: 7px;
+    background-color: #25252599;
+  }
+  
+  .slash-indicator.hidden {
+    opacity: 0;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .slash-indicator {
+      display: none;
+    }
+  }
+  
+  .custom-days-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: overlayFadeIn 0.3s ease;
+  }
+  
+  .custom-days-popup {
+    background-color: var(--backgroundColorDark);
+    padding: 32px;
+    border-radius: 20px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: popupSlideUp 0.4s ease;
+    transform-origin: center;
+  }
+  
+  .custom-days-popup h3 {
+    color: #9d9d9d;
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .custom-days-popup input {
+    padding: 12px 20px;
+    font-size: 18px;
+    border: 2px solid #45454599;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #9d9d9d;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-days-popup input:focus {
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 3px rgba(232, 8, 19, 0.1);
+  }
+  
+  .custom-days-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  
+  .custom-days-buttons button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-days-buttons button:first-child {
+    background-color: rgba(80, 80, 80, 0.2);
+    border: 1px solid rgba(80, 80, 80, 0.3);
+    color: #9d9d9d;
+  }
+  
+  .custom-days-buttons button:last-child {
+    background-color: var(--theme-color);
+    color: var(--backgroundColorDark);
+    font-weight: 600;
+  }
+  
+  .custom-days-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .custom-days-buttons button:active {
+    transform: translateY(0);
+  }
+  
+  .custom-days-buttons button:first-child:hover {
+    background-color: rgba(80, 80, 80, 0.3);
+  }
+  
+  @keyframes overlayFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes popupSlideUp {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  /* Add responsive styles */
+  @media screen and (max-width: 480px) {
+    .custom-days-popup {
+      min-width: 280px;
+      padding: 24px;
+    }
+    
+    .custom-days-popup h3 {
+      font-size: 20px;
+    }
+    
+    .custom-days-popup input {
+      padding: 10px 16px;
+      font-size: 16px;
+    }
+    
+    .custom-days-buttons button {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  }
