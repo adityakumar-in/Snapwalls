@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
 import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub, FaTimes } from 'react-icons/fa';
 import Login from './Login';
 import '@/app/styles/signup.css';
 import '@/app/styles/login.css';
@@ -26,8 +26,29 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) return "Email is required";
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    return "";
+  };
+
+  const validatePassword = (password) => {
+    if (!password) return "Password is required";
+    if (password.length < 8) return "Password must be at least 8 characters long";
+    if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
+    if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
+    if (!/[0-9]/.test(password)) return "Password must contain at least one number";
+    if (!/[!@#$%^&*]/.test(password)) return "Password must contain at least one special character (!@#$%^&*)";
+    return "";
+  };
 
   useEffect(() => {
     let intervalId;
@@ -77,6 +98,16 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
 
   const handleEmailSignup = async (e) => {
     e.preventDefault();
+    
+    // Validate email and password
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    
+    if (emailError || passwordError) {
+      setError(emailError || passwordError);
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
@@ -152,6 +183,36 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
     }, 300); // Match the animation duration
   };
 
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setEmailError(validateEmail(value));
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    
+    // Only show validation after user starts typing
+    if (!hasStartedTyping && value.length > 0) {
+      setHasStartedTyping(true);
+    }
+    
+    // Only show password error if user has started typing
+    if (hasStartedTyping) {
+      setPasswordError(validatePassword(value));
+    }
+    
+    // Calculate password strength
+    let strength = 0;
+    if (value.length >= 8) strength++;
+    if (/[A-Z]/.test(value)) strength++;
+    if (/[a-z]/.test(value)) strength++;
+    if (/[0-9]/.test(value)) strength++;
+    if (/[!@#$%^&*]/.test(value)) strength++;
+    setPasswordStrength(strength);
+  };
+
   if (showLogin) {
     return <Login onSwitchToSignup={toggleLoginSignup} onClose={handleClose} currentPath={currentPath} />;
   }
@@ -186,31 +247,102 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
         ) : (
           <>
             <form onSubmit={handleEmailSignup} className="form">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-                className="input"
-              />
-              <div className="password-input-container">
+              <div className="input-group">
                 <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Email"
                   required
-                  className="input"
+                  className={`input ${emailError ? 'input-error' : ''}`}
                 />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="password-toggle-button"
-                >
-                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
-                </button>
+                {emailError && <div className="error-message">{emailError}</div>}
               </div>
+              
+              <div className="input-group">
+                <div className="password-input-container">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder="Password"
+                    required
+                    className={`input ${hasStartedTyping && passwordError ? 'input-error' : ''}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="password-toggle-button"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <EyeIcon />}
+                  </button>
+                </div>
+                {hasStartedTyping && passwordError && <div className="error-message">{passwordError}</div>}
+                
+                {hasStartedTyping && (
+                  <>
+                    <div className="password-strength">
+                      <div className="strength-label">
+                        <span className="strength-text">Password Strength</span>
+                        <span className={`strength-value strength-${passwordStrength}`}>
+                          {passwordStrength === 0 && "Very Weak"}
+                          {passwordStrength === 1 && "Weak"}
+                          {passwordStrength === 2 && "Fair"}
+                          {passwordStrength === 3 && "Good"}
+                          {passwordStrength === 4 && "Strong"}
+                          {passwordStrength === 5 && "Very Strong"}
+                        </span>
+                      </div>
+                      <style jsx>{`
+                        .password-strength-progress {
+                          width: ${passwordStrength * 20}%;
+                          --strength-color-start: ${
+                            passwordStrength <= 1 ? '#e74c3c' :
+                            passwordStrength === 2 ? '#f39c12' :
+                            passwordStrength === 3 ? '#f1c40f' :
+                            passwordStrength === 4 ? '#2ecc71' :
+                            '#27ae60'
+                          };
+                          --strength-color-end: ${
+                            passwordStrength <= 1 ? '#c0392b' :
+                            passwordStrength === 2 ? '#d35400' :
+                            passwordStrength === 3 ? '#f39c12' :
+                            passwordStrength === 4 ? '#27ae60' :
+                            '#219a52'
+                          };
+                        }
+                      `}</style>
+                      <div className="password-strength-bar">
+                        <div className="password-strength-progress" />
+                      </div>
+                    </div>
+                    
+                    <div className="requirements-container">
+                      <div className={`requirement-tag ${password.length >= 8 ? 'met' : 'unmet'}`}>
+                        {password.length >= 8 ? <FaCheckCircle /> : <FaTimes />}
+                        <span>8+ chars</span>
+                      </div>
+                      <div className={`requirement-tag ${/[A-Z]/.test(password) ? 'met' : 'unmet'}`}>
+                        {/[A-Z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                        <span>Uppercase</span>
+                      </div>
+                      <div className={`requirement-tag ${/[a-z]/.test(password) ? 'met' : 'unmet'}`}>
+                        {/[a-z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                        <span>Lowercase</span>
+                      </div>
+                      <div className={`requirement-tag ${/[0-9]/.test(password) ? 'met' : 'unmet'}`}>
+                        {/[0-9]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                        <span>Number</span>
+                      </div>
+                      <div className={`requirement-tag ${/[!@#$%^&*]/.test(password) ? 'met' : 'unmet'}`}>
+                        {/[!@#$%^&*]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                        <span>Special</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              
               <button type="submit" className="button primary-button">
                 <FaEnvelope className="button-icon" />
                 <span>Sign Up with Email</span>
