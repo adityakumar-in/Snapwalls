@@ -165,16 +165,23 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
                 <div className="reset-password-icon">
                   <FaLock />
                 </div>
+                <div className="reset-password-header">
+                  <h2>Reset Your Password</h2>
+                  <p>Enter your email address and we'll send you instructions to reset your password.</p>
+                </div>
                 <form onSubmit={handleForgotPassword} className="form">
-                  <input
-                    type="email"
-                    value={resetEmail}
-                    onChange={(e) => setResetEmail(e.target.value)}
-                    placeholder="Email"
-                    required
-                    className="input"
-                  />
+                  <div className="input-group">
+                    <input
+                      type="email"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      className="input"
+                    />
+                  </div>
                   <button type="submit" className="button primary-button">
+                    <FaEnvelope className="button-icon" />
                     <span>Send Reset Link</span>
                   </button>
                 </form>
@@ -182,15 +189,21 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
             ) : (
               <div className="reset-password-success">
                 <FaCheckCircle className="success-icon" />
-                <h2>Reset Link Sent</h2>
-                <p>Please check your email for instructions to reset your password.</p>
+                <h2>Reset Link Sent!</h2>
+                <p>We've sent password reset instructions to your email address. Please check your inbox and follow the instructions to reset your password.</p>
               </div>
             )}
-            <button onClick={() => {
-              setShowForgotPassword(false);
-              setResetPasswordSuccess(false);
-            }} className="back-to-login">
-              <FaArrowLeft /> Back to Login
+            <button 
+              onClick={() => {
+                setShowForgotPassword(false);
+                setResetPasswordSuccess(false);
+                setResetEmail('');
+                setError(null);
+              }} 
+              className="back-to-login"
+            >
+              <FaArrowLeft />
+              <span>Back to Login</span>
             </button>
           </div>
         )}
