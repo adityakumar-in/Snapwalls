@@ -27,6 +27,8 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [isClosing, setIsClosing] = useState(false);
   const modalRef = useRef(null);
   const router = useRouter();
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
   const handleClose = () => {
     setIsClosing(true);
@@ -45,9 +47,10 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         await sendEmailVerification(userCredential.user);
         setError("Please verify your email before logging in. A new verification email has been sent.");
       } else {
-        setShowSuccessNotification(true);
+        setNotificationMessage('Successfully logged in!');
+        setShowNotification(true);
         setTimeout(() => {
-          setShowSuccessNotification(false);
+          setShowNotification(false);
           onClose();
           router.push(currentPath);
         }, 3000);
@@ -60,9 +63,10 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
     try {
       const result = await signInWithPopup(auth, provider);
       if (result.user.emailVerified) {
-        setShowSuccessNotification(true);
+        setNotificationMessage('Successfully logged in!');
+        setShowNotification(true);
         setTimeout(() => {
-          setShowSuccessNotification(false);
+          setShowNotification(false);
           onClose();
           router.push(currentPath);
         }, 3000);
@@ -209,15 +213,10 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         )}
         {error && <p className="error">{error}</p>}
       </div>
-      {showSuccessNotification && (
-        <div className="success-notification">
-          <div className="success-content">
-            <svg className="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <span className="success-message">Successfully Logged In</span>
-          </div>
+      {showNotification && (
+        <div className="login-notification">
+          <span className="icon">✓</span>
+          <span className="message">{notificationMessage}</span>
         </div>
       )}
       {verificationSent && (

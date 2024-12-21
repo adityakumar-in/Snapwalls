@@ -14,6 +14,16 @@ const EyeIcon = () => (
   </svg>
 );
 
+const GmailIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="mail-icon">
+    <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path>
+    <path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path>
+    <polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"></polygon>
+    <path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path>
+    <path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
+  </svg>
+);
+
 export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -219,136 +229,175 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
 
   return (
     <div className={`overlay ${isClosing ? 'closing' : ''}`} onClick={handleOutsideClick}>
-      <div className={`container ${isClosing ? 'closing' : ''}`} ref={modalRef} onClick={e => e.stopPropagation()}>
-        <button className="close-button" onClick={handleClose}>&times;</button>
-        <h1 className="title">Create Account</h1>
-        <p className="subtitle">Join us to get started with your journey</p>
-        
-        <div className="social-buttons">
-          <button onClick={() => handleSocialSignup(googleProvider)} className="social-button google-button">
-            <FaGoogle className="social-icon" />
-            <span>Google</span>
-          </button>
-          <button onClick={() => handleSocialSignup(githubProvider)} className="social-button github-button">
-            <FaGithub className="social-icon" />
-            <span>GitHub</span>
-          </button>
-        </div>
-        
-        <div className="divider">or continue with email</div>
-        
-        <form onSubmit={handleEmailSignup} className="form">
-          <div className="form-group">
-            <label className="form-label">Email address</label>
-            <div className="input-container">
-              <input
-                type="email"
-                value={email}
-                onChange={handleEmailChange}
-                placeholder="Enter your email"
-                required
-                className={`input ${emailError ? 'input-error' : ''}`}
-              />
-            </div>
-            {emailError && <div className="error-message">{emailError}</div>}
+      {!verificationSent ? (
+        <div className={`container ${isClosing ? 'closing' : ''}`} ref={modalRef} onClick={e => e.stopPropagation()}>
+          <button className="close-button" onClick={handleClose}>&times;</button>
+          <h1 className="title">Create Account</h1>
+          <p className="subtitle">Join us to get started with your journey</p>
+          
+          <div className="social-buttons">
+            <button onClick={() => handleSocialSignup(googleProvider)} className="social-button google-button">
+              <FaGoogle className="social-icon" />
+              <span>Google</span>
+            </button>
+            <button onClick={() => handleSocialSignup(githubProvider)} className="social-button github-button">
+              <FaGithub className="social-icon" />
+              <span>GitHub</span>
+            </button>
           </div>
           
-          <div className="form-group">
-            <label className="form-label">Create password</label>
-            <div className="password-input-container">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={handlePasswordChange}
-                placeholder="Enter your password"
-                required
-                className={`input ${passwordError ? 'input-error' : ''}`}
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="password-toggle-button"
-              >
-                {showPassword ? <FaEyeSlash /> : <EyeIcon />}
-              </button>
-            </div>
-            {passwordError && <div className="error-message">{passwordError}</div>}
-            {hasStartedTyping && (
-              <div className="password-strength-container">
-                <div className="password-strength">
-                  <div className="strength-label">
-                    <span className="strength-text">Password Strength</span>
-                    <span className={`strength-value strength-${passwordStrength}`}>
-                      {passwordStrength === 0 && "Very Weak"}
-                      {passwordStrength === 1 && "Weak"}
-                      {passwordStrength === 2 && "Fair"}
-                      {passwordStrength === 3 && "Good"}
-                      {passwordStrength === 4 && "Strong"}
-                      {passwordStrength === 5 && "Very Strong"}
-                    </span>
-                  </div>
-                  <style jsx>{`
-                    .password-strength-progress {
-                      width: ${passwordStrength * 20}%;
-                      --strength-color-start: ${
-                        passwordStrength <= 1 ? '#e74c3c' :
-                        passwordStrength === 2 ? '#f39c12' :
-                        passwordStrength === 3 ? '#f1c40f' :
-                        passwordStrength === 4 ? '#2ecc71' :
-                        '#27ae60'
-                      };
-                      --strength-color-end: ${
-                        passwordStrength <= 1 ? '#c0392b' :
-                        passwordStrength === 2 ? '#d35400' :
-                        passwordStrength === 3 ? '#f39c12' :
-                        passwordStrength === 4 ? '#27ae60' :
-                        '#219a52'
-                      };
-                    }
-                  `}</style>
-                  <div className="password-strength-bar">
-                    <div className="password-strength-progress" />
-                  </div>
-                </div>
-                
-                <div className="requirements-container">
-                  <div className={`requirement-tag ${password.length >= 8 ? 'met' : 'unmet'}`}>
-                    {password.length >= 8 ? <FaCheckCircle /> : <FaTimes />}
-                    <span>8+ chars</span>
-                  </div>
-                  <div className={`requirement-tag ${/[A-Z]/.test(password) ? 'met' : 'unmet'}`}>
-                    {/[A-Z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
-                    <span>Uppercase</span>
-                  </div>
-                  <div className={`requirement-tag ${/[a-z]/.test(password) ? 'met' : 'unmet'}`}>
-                    {/[a-z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
-                    <span>Lowercase</span>
-                  </div>
-                  <div className={`requirement-tag ${/[0-9]/.test(password) ? 'met' : 'unmet'}`}>
-                    {/[0-9]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
-                    <span>Number</span>
-                  </div>
-                  <div className={`requirement-tag ${/[!@#$%^&*]/.test(password) ? 'met' : 'unmet'}`}>
-                    {/[!@#$%^&*]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
-                    <span>Special</span>
-                  </div>
-                </div>
+          <div className="divider">or continue with email</div>
+          
+          <form onSubmit={handleEmailSignup} className="form">
+            <div className="form-group">
+              <label className="form-label">Email address</label>
+              <div className="input-container">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Enter your email"
+                  required
+                  className={`input ${emailError ? 'input-error' : ''}`}
+                />
               </div>
-            )}
-          </div>
+              {emailError && <div className="error-message">{emailError}</div>}
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Create password</label>
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={handlePasswordChange}
+                  placeholder="Enter your password"
+                  required
+                  className={`input ${passwordError ? 'input-error' : ''}`}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="password-toggle-button"
+                >
+                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
+                </button>
+              </div>
+              {passwordError && <div className="error-message">{passwordError}</div>}
+              {hasStartedTyping && (
+                <div className="password-strength-container">
+                  <div className="password-strength">
+                    <div className="strength-label">
+                      <span className="strength-text">Password Strength</span>
+                      <span className={`strength-value strength-${passwordStrength}`}>
+                        {passwordStrength === 0 && "Very Weak"}
+                        {passwordStrength === 1 && "Weak"}
+                        {passwordStrength === 2 && "Fair"}
+                        {passwordStrength === 3 && "Good"}
+                        {passwordStrength === 4 && "Strong"}
+                        {passwordStrength === 5 && "Very Strong"}
+                      </span>
+                    </div>
+                    <style jsx>{`
+                      .password-strength-progress {
+                        width: ${passwordStrength * 20}%;
+                        --strength-color-start: ${
+                          passwordStrength <= 1 ? '#e74c3c' :
+                          passwordStrength === 2 ? '#f39c12' :
+                          passwordStrength === 3 ? '#f1c40f' :
+                          passwordStrength === 4 ? '#2ecc71' :
+                          '#27ae60'
+                        };
+                        --strength-color-end: ${
+                          passwordStrength <= 1 ? '#c0392b' :
+                          passwordStrength === 2 ? '#d35400' :
+                          passwordStrength === 3 ? '#f39c12' :
+                          passwordStrength === 4 ? '#27ae60' :
+                          '#219a52'
+                        };
+                      }
+                    `}</style>
+                    <div className="password-strength-bar">
+                      <div className="password-strength-progress" />
+                    </div>
+                  </div>
+                  
+                  <div className="requirements-container">
+                    <div className={`requirement-tag ${password.length >= 8 ? 'met' : 'unmet'}`}>
+                      {password.length >= 8 ? <FaCheckCircle /> : <FaTimes />}
+                      <span>8+ chars</span>
+                    </div>
+                    <div className={`requirement-tag ${/[A-Z]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[A-Z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Uppercase</span>
+                    </div>
+                    <div className={`requirement-tag ${/[a-z]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[a-z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Lowercase</span>
+                    </div>
+                    <div className={`requirement-tag ${/[0-9]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[0-9]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Number</span>
+                    </div>
+                    <div className={`requirement-tag ${/[!@#$%^&*]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[!@#$%^&*]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Special</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <button type="submit" className="button primary-button">
+              <FaEnvelope className="button-icon" />
+              <span>Sign Up with Email</span>
+            </button>
+          </form>
           
-          <button type="submit" className="button primary-button">
-            <FaEnvelope className="button-icon" />
-            <span>Sign Up with Email</span>
-          </button>
-        </form>
-        
-        <p className="login-prompt">
-          Already have an account? <button onClick={toggleLoginSignup} className="switch-button">Log In</button>
-        </p>
-        
-        {error && <div className="error">{error}</div>}
-      </div>
+          <p className="login-prompt">
+            Already have an account? <button onClick={toggleLoginSignup} className="switch-button">Log In</button>
+          </p>
+          
+          {error && <div className="error">{error}</div>}
+        </div>
+      ) : (
+        <div className="verification-modal">
+          <div className="verification-content">
+            <div className="verification-header">
+              <div className="mail-icon-container">
+                <GmailIcon />
+              </div>
+              <h2>Verify your email</h2>
+              <p className="email-display">{email}</p>
+            </div>
+            
+            <div className="verification-body">
+              <p>We've sent you a verification link. Please check your inbox and click the link to verify your account.</p>
+              
+              <div className="action-buttons">
+                <button 
+                  className="primary-action"
+                  onClick={handleResendVerification}
+                  disabled={resendDisabled}
+                >
+                  {resendDisabled ? `Resend in ${resendCooldown}s` : 'Resend email'}
+                </button>
+                
+                <button 
+                  className="secondary-action"
+                  onClick={() => window.open('https://gmail.com')}
+                >
+                  Open Gmail
+                </button>
+              </div>
+            </div>
+
+            <div className="verification-footer">
+              <small>Can't find the email? Check your spam folder</small>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
