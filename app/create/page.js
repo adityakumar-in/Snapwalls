@@ -118,26 +118,39 @@ const page = () => {
       const imageUrl = await generatePollinationImage(prompt, {
         width: selectedTag === 'Mobile' ? 720 : selectedTag === '' ? window.innerWidth : 1280,
         height: selectedTag === 'Mobile' ? 1280 : selectedTag === '' ? window.innerHeight : 720,
-        seed: 42,
         model: 'flux'
       });
       console.log('Generated image URL:', imageUrl);
-    
+
+      // Create a new image object to ensure it's loaded
+      const img = new Image();
+      img.src = imageUrl;
+      
+      // Wait for image to load before proceeding
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+
       // Complete the progress
       setProgressPercent(100);
       
-      setIsGenerating(false);
-      setProgressPercent(0);
-      setSearchInput('');
-      setSelectedTag('');
-      
-      // Navigate with URL parameters
-      router.push(`/create/snap?imageUrl=${encodeURIComponent(imageUrl)}&selectedTag=${encodeURIComponent(selectedTag || '')}`);
-      
+      // Wait a moment to show 100% completion
+      setTimeout(() => {
+        setIsGenerating(false);
+        setProgressPercent(0);
+        setSearchInput('');
+        setSelectedTag('');
+        
+        // Navigate with URL parameters only after everything is complete
+        router.push(`/create/snap?imageUrl=${encodeURIComponent(imageUrl)}&selectedTag=${encodeURIComponent(selectedTag || '')}`);
+      }, 1000);
+
     } catch (error) {
       console.error('Generation error:', error);
       setIsGenerating(false);
       setProgressPercent(0);
+      clearInterval(progressTimer);
     }
   };
 
