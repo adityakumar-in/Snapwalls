@@ -324,16 +324,9 @@
     margin-bottom: 1rem;
   }
   
-  .back-button svg {
-    transition: transform 0.2s ease;
-  }
-  
   .back-button:hover {
     color: var(--text-primary);
     background: rgba(var(--theme-color-rgb), 0.1);
-  }
-  
-  .back-button:hover svg {
     transform: translateX(-2px);
   }
   

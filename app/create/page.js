@@ -6,6 +6,7 @@ import '/app/styles/create.css';
 import { useRouter } from 'next/navigation';
 import { generatePollinationImage } from '/utils/pollinations';
 import CreateSnapProgress from '@/components/CreateSnapProgress';
+import CreatedSnap from '@/components/CreatedSnap';
 
 const page = () => {
   const router = useRouter();
@@ -19,6 +20,8 @@ const page = () => {
   const tags = ['Mobile', 'Desktop'] // Add more tags here
   const [isInputFocused, setIsInputFocused] = useState(false);
   const inputRef = useRef(null);
+  const [generatedImage, setGeneratedImage] = useState(null);
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -70,18 +73,13 @@ const page = () => {
   };
 
   const handleCreate = async () => {
-    console.log('Create button clicked');
-    
     if (!user) {
-      console.log('User not authenticated');
       return;
     }
     if (!searchInput.trim()) {
-      console.log('Search input is empty');
       return;
     }
 
-    // Clear browser cache for pollinations.ai domain
     try {
       if ('caches' in window) {
         const cacheNames = await caches.keys();
@@ -90,7 +88,6 @@ const page = () => {
             return caches.delete(cacheName);
           })
         );
-        console.log('Cache cleared successfully');
       }
     } catch (error) {
       console.error('Error clearing cache:', error);
@@ -98,9 +95,7 @@ const page = () => {
 
     setIsGenerating(true);
     setProgressPercent(0);
-    console.log('Starting generation with:', { searchInput, selectedTag });
     
-    // Progress animation
     const progressTimer = setInterval(() => {
       setProgressPercent(prev => {
         if (prev >= 90) {
@@ -113,38 +108,33 @@ const page = () => {
 
     try {
       const prompt = `Create a ${searchInput} Wallpaper${selectedTag ? ` for ${selectedTag}` : 'Create a Animated Wallpaper'}`;
-      console.log('Generated prompt:', prompt);
       
       const imageUrl = await generatePollinationImage(prompt, {
         width: selectedTag === 'Mobile' ? 720 : selectedTag === '' ? window.innerWidth : 1280,
         height: selectedTag === 'Mobile' ? 1280 : selectedTag === '' ? window.innerHeight : 720,
         model: 'flux'
       });
-      console.log('Generated image URL:', imageUrl);
 
-      // Create a new image object to ensure it's loaded
-      const img = new Image();
-      img.src = imageUrl;
-      
-      // Wait for image to load before proceeding
+      // Create a new image object to ensure it's fully loaded
       await new Promise((resolve, reject) => {
+        const img = new Image();
         img.onload = resolve;
         img.onerror = reject;
+        img.src = imageUrl;
       });
 
-      // Complete the progress
+      // Set progress to 100% and wait a moment
       setProgressPercent(100);
       
-      // Wait a moment to show 100% completion
-      setTimeout(() => {
-        setIsGenerating(false);
-        setProgressPercent(0);
-        setSearchInput('');
-        setSelectedTag('');
-        
-        // Navigate with URL parameters only after everything is complete
-        router.push(`/create/snap?imageUrl=${encodeURIComponent(imageUrl)}&selectedTag=${encodeURIComponent(selectedTag || '')}`);
-      }, 1000);
+      // Wait for progress animation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Clear states and show generated image
+      setIsGenerating(false);
+      setProgressPercent(0);
+      setSearchInput('');
+      setSelectedTag('');
+      setGeneratedImage({ imageUrl, selectedTag });
 
     } catch (error) {
       console.error('Generation error:', error);
@@ -153,6 +143,15 @@ const page = () => {
       clearInterval(progressTimer);
     }
   };
+
+  // Add this log before the conditional render
+
+  if (generatedImage) {
+    return <CreatedSnap 
+      imageUrl={generatedImage.imageUrl} 
+      selectedTag={generatedImage.selectedTag} 
+    />;
+  }
 
   return (
     <div>

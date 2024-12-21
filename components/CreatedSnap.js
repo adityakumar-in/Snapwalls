@@ -2,24 +2,10 @@
 import React from 'react';
 import Image from 'next/image';
 import '/app/styles/createdSnap.css';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-const CreatedSnap = () => {
+const CreatedSnap = ({ imageUrl, selectedTag }) => {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    
-    const imageUrl = searchParams.get('imageUrl');
-    const selectedTag = searchParams.get('selectedTag');
-
-    React.useEffect(() => {
-        if (!imageUrl) {
-            router.push('/create');
-        }
-    }, [imageUrl, router]);
-
-    if (!imageUrl) {
-        return null;
-    }
 
     const getWidth = () => {
         return selectedTag === 'Mobile' ? 720 : selectedTag === '' ? window.innerWidth : 1280;
@@ -49,6 +35,12 @@ const CreatedSnap = () => {
     return (
         <div className='default-padding'>
             <div className="choose-roadmap-page">
+                <button 
+                    className="back-button" 
+                    onClick={() => router.push('/create')}
+                >
+                    ← Back to Create
+                </button>
                 <div className="choose-roadmap-header">
                     <div className="header-content">
                         <div className="header-main">
@@ -59,6 +51,7 @@ const CreatedSnap = () => {
                                 className="generated-wallpaper"
                                 width={getWidth()}
                                 height={getHeight()} 
+                                priority
                             />
                             <button className="download-button" onClick={handleDownload}>
                                 Download Wallpaper
