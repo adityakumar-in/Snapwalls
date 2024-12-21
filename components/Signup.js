@@ -128,6 +128,16 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
     };
   }, [resendCooldown]);
 
+  useEffect(() => {
+    // Add class to body when component mounts
+    document.body.classList.add('modal-open');
+    
+    // Remove class when component unmounts
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, []);
+
   const handleEmailSignup = async (e) => {
     e.preventDefault();
     
@@ -211,8 +221,9 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
     if (verificationSent) return;
     setIsClosing(true);
     setTimeout(() => {
+      document.body.classList.remove('modal-open');
       onClose();
-    }, 300); // Match the animation duration
+    }, 300);
   };
 
   const handleEmailChange = (e) => {
