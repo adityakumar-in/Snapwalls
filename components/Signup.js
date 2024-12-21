@@ -60,6 +60,28 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
     return "";
   };
 
+  const checkVerificationStatus = async () => {
+    try {
+      await auth.currentUser?.reload();
+      if (auth.currentUser?.emailVerified) {
+        setShowSuccessNotification(true);
+        setTimeout(() => {
+          setShowSuccessNotification(false);
+          onClose();
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error checking verification status:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (verificationSent) {
+      const interval = setInterval(checkVerificationStatus, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [verificationSent]);
+
   useEffect(() => {
     let intervalId;
     if (verificationSent && !isEmailVerified) {
@@ -396,6 +418,12 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
               <small>Can't find the email? Check your spam folder</small>
             </div>
           </div>
+        </div>
+      )}
+      {showSuccessNotification && (
+        <div className="success-notification">
+          <FaCheckCircle className="icon" />
+          <span className="message">Email verified successfully!</span>
         </div>
       )}
     </div>
