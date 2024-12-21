@@ -1,4 +1,3 @@
-markdown
 # Snapwalls
 
 Snapwalls is a web-based project built with CSS and JavaScript.
