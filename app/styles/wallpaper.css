@@ -9,6 +9,27 @@
   position: relative;
   overflow: hidden;
   border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+
+.wallpaper-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wallpaper-item:hover::after {
+  opacity: 1;
+}
+
+.wallpaper-item:hover {
+  transform: scale(1.03);
 }
 
 .wallpaper-image {
@@ -17,10 +38,6 @@
   height: 400px;
   object-fit: cover;
   transition: transform 0.3s ease;
-}
-
-.wallpaper-item:hover .wallpaper-image {
-  transform: scale(1.05);
 }
 
 .download-icon,
@@ -77,16 +94,17 @@
 
 .wallpaper-info {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 10px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 2;
 }
 
 .wallpaper-item:hover .wallpaper-info {
@@ -94,7 +112,7 @@
 }
 
 .wallpaper-name {
-  color: #ffffffe8;
+  color: #ffffff;
   font-size: 15px;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -111,6 +129,7 @@
   height: 25px;
   flex-shrink: 0;
 }
+
 .loading {
   width: 100%;
   text-align: center;
@@ -135,10 +154,12 @@
     display: flex;
     background-color: red;
   }
+
   .wallpaper-item {
     width: 100%;
     gap: 1.5%;
   }
+
   .wallpaper-image {
     width: 48%;
     height: fit-content;
