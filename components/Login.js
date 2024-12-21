@@ -116,6 +116,17 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         <h1 className="login-title">{showForgotPassword ? "Reset Password" : "Log In"}</h1>
         {!showForgotPassword ? (
           <>
+            <div className="social-buttons">
+              <button onClick={() => handleSocialLogin(googleProvider)} className="social-button google-button">
+                <FaGoogle className="social-icon" />
+                <span>Google</span>
+              </button>
+              <button onClick={() => handleSocialLogin(githubProvider)} className="social-button github-button">
+                <FaGithub className="social-icon" />
+                <span>GitHub</span>
+              </button>
+            </div>
+            <div className="divider">or continue with</div>
             <form onSubmit={handleEmailLogin} className="form">
               <input
                 type="email"
@@ -148,16 +159,6 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
               </button>
             </form>
             <button onClick={() => setShowForgotPassword(true)} className="forgot-password-link">Forgot Password?</button>
-            <div className="social-buttons">
-              <button onClick={() => handleSocialLogin(googleProvider)} className="button google-button">
-                <FaGoogle className="social-icon" />
-                <span>Google</span>
-              </button>
-              <button onClick={() => handleSocialLogin(githubProvider)} className="button github-button">
-                <FaGithub className="social-icon" />
-                <span>GitHub</span>
-              </button>
-            </div>
             <p className="signup-prompt">
               Don't have an account? <button onClick={toggleLoginSignup} className="switch-button">Sign Up</button>
             </p>
