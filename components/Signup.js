@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, googleProvider, githubProvider } from '../components/Authentication';
 import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub, FaTimes } from 'react-icons/fa';
 import Login from './Login';
 import '@/app/styles/signup.css';
 import '@/app/styles/login.css';
@@ -11,6 +11,16 @@ const EyeIcon = () => (
   <svg className="eye-icon" viewBox="0 0 24 24">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
     <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+const GmailIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="mail-icon">
+    <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path>
+    <path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"></path>
+    <polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"></polygon>
+    <path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"></path>
+    <path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"></path>
   </svg>
 );
 
@@ -25,8 +35,52 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const [resendDisabled, setResendDisabled] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const router = useRouter();
   const modalRef = useRef(null);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) return "Email is required";
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    return "";
+  };
+
+  const validatePassword = (password) => {
+    if (!password) return "Password is required";
+    if (password.length < 8) return "Password must be at least 8 characters long";
+    if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
+    if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
+    if (!/[0-9]/.test(password)) return "Password must contain at least one number";
+    if (!/[!@#$%^&*]/.test(password)) return "Password must contain at least one special character (!@#$%^&*)";
+    return "";
+  };
+
+  const checkVerificationStatus = async () => {
+    try {
+      await auth.currentUser?.reload();
+      if (auth.currentUser?.emailVerified) {
+        setShowSuccessNotification(true);
+        setTimeout(() => {
+          setShowSuccessNotification(false);
+          onClose();
+        }, 3000);
+      }
+    } catch (error) {
+      console.error("Error checking verification status:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (verificationSent) {
+      const interval = setInterval(checkVerificationStatus, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [verificationSent]);
 
   useEffect(() => {
     let intervalId;
@@ -76,6 +130,16 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
 
   const handleEmailSignup = async (e) => {
     e.preventDefault();
+    
+    // Validate email and password
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+    
+    if (emailError || passwordError) {
+      setError(emailError || passwordError);
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
@@ -131,7 +195,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
 
   const handleOutsideClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target) && !verificationSent) {
-      onClose();
+      handleClose();
     }
   };
 
@@ -143,56 +207,95 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
     setShowLogin(!showLogin);
   };
 
+  const handleClose = () => {
+    if (verificationSent) return;
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // Match the animation duration
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    setEmailError(validateEmail(value));
+  };
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    
+    // Only show validation after user starts typing
+    if (!hasStartedTyping && value.length > 0) {
+      setHasStartedTyping(true);
+    }
+    
+    // Only show password error if user has started typing
+    if (hasStartedTyping) {
+      setPasswordError(validatePassword(value));
+    }
+    
+    // Calculate password strength
+    let strength = 0;
+    if (value.length >= 8) strength++;
+    if (/[A-Z]/.test(value)) strength++;
+    if (/[a-z]/.test(value)) strength++;
+    if (/[0-9]/.test(value)) strength++;
+    if (/[!@#$%^&*]/.test(value)) strength++;
+    setPasswordStrength(strength);
+  };
+
   if (showLogin) {
-    return <Login onSwitchToSignup={toggleLoginSignup} onClose={onClose} currentPath={currentPath} />;
+    return <Login onSwitchToSignup={toggleLoginSignup} onClose={handleClose} currentPath={currentPath} />;
   }
 
   return (
-    <div className="overlay" onClick={handleOutsideClick}>
-      <div className="container" ref={modalRef}>
-        <button className="close-button" onClick={onClose} disabled={verificationSent}>&times;</button>
-        <h1 className="title">{verificationSent ? "Verify Your Email" : "Sign Up"}</h1>
-        {verificationSent ? (
-          <div className="verification-message">
-            <div className="verification-icon">
-              <FaEnvelope />
-            </div>
-            <p>A verification email has been sent to:</p>
-            <p className="verification-email">{email}</p>
-            <p>Please check your inbox and click the verification link.</p>
-            <div className="verification-notes">
-              <p>You need to verify your email before you can proceed.</p>
-              <p>This window will automatically close once your email is verified.</p>
-            </div>
-            <button
-              onClick={handleResendVerification}
-              disabled={resendDisabled}
-              className="button resend-button"
-            >
-              {resendDisabled
-                ? `Resend in ${resendCooldown}s`
-                : "Resend Verification Email"}
+    <div className={`overlay ${isClosing ? 'closing' : ''}`} onClick={handleOutsideClick}>
+      {!verificationSent ? (
+        <div className={`container ${isClosing ? 'closing' : ''}`} ref={modalRef} onClick={e => e.stopPropagation()}>
+          <button className="close-button" onClick={handleClose}>&times;</button>
+          <h1 className="title">Create Account</h1>
+          <p className="subtitle">Join us to get started with your journey</p>
+          
+          <div className="social-buttons">
+            <button onClick={() => handleSocialSignup(googleProvider)} className="social-button google-button">
+              <FaGoogle className="social-icon" />
+              <span>Google</span>
+            </button>
+            <button onClick={() => handleSocialSignup(githubProvider)} className="social-button github-button">
+              <FaGithub className="social-icon" />
+              <span>GitHub</span>
             </button>
           </div>
-        ) : (
-          <>
-            <form onSubmit={handleEmailSignup} className="form">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                required
-                className="input"
-              />
+          
+          <div className="divider">or continue with email</div>
+          
+          <form onSubmit={handleEmailSignup} className="form">
+            <div className="form-group">
+              <label className="form-label">Email address</label>
+              <div className="input-container">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="Enter your email"
+                  required
+                  className={`input ${emailError ? 'input-error' : ''}`}
+                />
+              </div>
+              {emailError && <div className="error-message">{emailError}</div>}
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">Create password</label>
               <div className="password-input-container">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
+                  onChange={handlePasswordChange}
+                  placeholder="Enter your password"
                   required
-                  className="input"
+                  className={`input ${passwordError ? 'input-error' : ''}`}
                 />
                 <button
                   type="button"
@@ -202,35 +305,125 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
                   {showPassword ? <FaEyeSlash /> : <EyeIcon />}
                 </button>
               </div>
-              <button type="submit" className="button primary-button">
-                <FaEnvelope className="button-icon" />
-                <span>Sign Up with Email</span>
-              </button>
-            </form>
-            <div className="social-buttons">
-              <button onClick={() => handleSocialSignup(googleProvider)} className="button google-button">
-                <FaGoogle className="social-icon" />
-                <span>Sign Up with Google</span>
-              </button>
-              <button onClick={() => handleSocialSignup(githubProvider)} className="button github-button">
-                <FaGithub className="social-icon" />
-                <span>Sign Up with GitHub</span>
-              </button>
+              {passwordError && <div className="error-message">{passwordError}</div>}
+              {hasStartedTyping && (
+                <div className="password-strength-container">
+                  <div className="password-strength">
+                    <div className="strength-label">
+                      <span className="strength-text">Password Strength</span>
+                      <span className={`strength-value strength-${passwordStrength}`}>
+                        {passwordStrength === 0 && "Very Weak"}
+                        {passwordStrength === 1 && "Weak"}
+                        {passwordStrength === 2 && "Fair"}
+                        {passwordStrength === 3 && "Good"}
+                        {passwordStrength === 4 && "Strong"}
+                        {passwordStrength === 5 && "Very Strong"}
+                      </span>
+                    </div>
+                    <style jsx>{`
+                      .password-strength-progress {
+                        width: ${passwordStrength * 20}%;
+                        --strength-color-start: ${
+                          passwordStrength <= 1 ? '#e74c3c' :
+                          passwordStrength === 2 ? '#f39c12' :
+                          passwordStrength === 3 ? '#f1c40f' :
+                          passwordStrength === 4 ? '#2ecc71' :
+                          '#27ae60'
+                        };
+                        --strength-color-end: ${
+                          passwordStrength <= 1 ? '#c0392b' :
+                          passwordStrength === 2 ? '#d35400' :
+                          passwordStrength === 3 ? '#f39c12' :
+                          passwordStrength === 4 ? '#27ae60' :
+                          '#219a52'
+                        };
+                      }
+                    `}</style>
+                    <div className="password-strength-bar">
+                      <div className="password-strength-progress" />
+                    </div>
+                  </div>
+                  
+                  <div className="requirements-container">
+                    <div className={`requirement-tag ${password.length >= 8 ? 'met' : 'unmet'}`}>
+                      {password.length >= 8 ? <FaCheckCircle /> : <FaTimes />}
+                      <span>8+ chars</span>
+                    </div>
+                    <div className={`requirement-tag ${/[A-Z]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[A-Z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Uppercase</span>
+                    </div>
+                    <div className={`requirement-tag ${/[a-z]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[a-z]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Lowercase</span>
+                    </div>
+                    <div className={`requirement-tag ${/[0-9]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[0-9]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Number</span>
+                    </div>
+                    <div className={`requirement-tag ${/[!@#$%^&*]/.test(password) ? 'met' : 'unmet'}`}>
+                      {/[!@#$%^&*]/.test(password) ? <FaCheckCircle /> : <FaTimes />}
+                      <span>Special</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <p className="login-link">
-              Already have an account? <button onClick={toggleLoginSignup} className="link-button">Log in</button>
-            </p>
-          </>
-        )}
-        {error && <p className="error">{error}</p>}
-      </div>
+            
+            <button type="submit" className="button primary-button">
+              <FaEnvelope className="button-icon" />
+              <span>Sign Up with Email</span>
+            </button>
+          </form>
+          
+          <p className="login-prompt">
+            Already have an account? <button onClick={toggleLoginSignup} className="switch-button">Log In</button>
+          </p>
+          
+          {error && <div className="error">{error}</div>}
+        </div>
+      ) : (
+        <div className="verification-modal">
+          <div className="verification-content">
+            <div className="verification-header">
+              <div className="mail-icon-container">
+                <GmailIcon />
+              </div>
+              <h2>Verify your email</h2>
+              <p className="email-display">{email}</p>
+            </div>
+            
+            <div className="verification-body">
+              <p>We've sent you a verification link. Please check your inbox and click the link to verify your account.</p>
+              
+              <div className="action-buttons">
+                <button 
+                  className="primary-action"
+                  onClick={handleResendVerification}
+                  disabled={resendDisabled}
+                >
+                  {resendDisabled ? `Resend in ${resendCooldown}s` : 'Resend email'}
+                </button>
+                
+                <button 
+                  className="secondary-action"
+                  onClick={() => window.open('https://gmail.com')}
+                >
+                  Open Gmail
+                </button>
+              </div>
+            </div>
+
+            <div className="verification-footer">
+              <small>Can't find the email? Check your spam folder</small>
+            </div>
+          </div>
+        </div>
+      )}
       {showSuccessNotification && (
         <div className="success-notification">
-          <FaCheckCircle className="success-icon" />
-          <div className="success-message">
-            <h2>Successfully Signed Up!</h2>
-            <p>Welcome to our platform.</p>
-          </div>
+          <FaCheckCircle className="icon" />
+          <span className="message">Email verified successfully!</span>
         </div>
       )}
     </div>
