@@ -9,15 +9,15 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(10px);
-  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  padding: 1rem;
 }
 
 .container {
   background: var(--background);
   width: min(420px, 95%);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 2.5rem;
   position: relative;
   animation: slideUp 0.3s ease-out;
   border: 1px solid var(--seekbar);
@@ -60,37 +60,60 @@
 }
 
 .title {
-  font-size: 1.75rem;
+  font-size: 2rem;
   color: var(--color);
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   text-align: center;
   font-weight: 700;
   letter-spacing: -0.5px;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--color);
+  opacity: 0.7;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  width: 100%;
 }
 
-.input-group {
+.form-group {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color);
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.input-container {
   position: relative;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .input {
   width: 100%;
-  padding: 0.875rem 1rem;
+  padding: 1rem 1.25rem;
   background: var(--foreground);
-  border: 1px solid var(--seekbar);
+  border: 1.5px solid var(--seekbar);
   border-radius: 12px;
+  font-size: 0.95rem;
   color: var(--color);
-  font-size: 1rem;
   transition: all 0.2s ease;
-  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: var(--color);
+  opacity: 0.5;
 }
 
 .input:hover {
@@ -166,25 +189,47 @@
 }
 
 .primary-button {
+  width: 100%;
+  padding: 1rem 1.25rem;
   background: #00cc7d;
   color: white;
-}
-
-.primary-button:hover {
-  background: #00cc7d;
-  transform: translateY(-1px);
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
   box-shadow: 0 4px 12px rgba(0, 204, 125, 0.2);
 }
 
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 204, 125, 0.3);
+  background: #00cc7d;
+}
+
+.primary-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 204, 125, 0.2);
+}
+
+.primary-button .button-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
 .divider {
-  width: 100%;
   display: flex;
   align-items: center;
   gap: 1rem;
   margin: 1.5rem 0;
-  color: var(--theme-color);
+  color: var(--color);
+  opacity: 0.5;
   font-size: 0.9rem;
-  opacity: 0.75;
 }
 
 .divider::before,
@@ -196,21 +241,34 @@
 }
 
 .social-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
-.google-button,
-.github-button {
-  padding: 1rem;
+.social-button {
+  padding: 0.875rem;
   border: none;
-  color: white;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.social-button:hover {
+  background: var(--background);
+  border-color: var(--theme-color);
 }
 
 .google-button {
   background: #db4437;
+  color: white;
 }
 
 .google-button:hover {
@@ -221,6 +279,7 @@
 
 .github-button {
   background: #333;
+  color: white;
 }
 
 .github-button:hover {
@@ -400,7 +459,8 @@
   }
 
   .form {
-    gap: 1rem;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
   }
 
   .input {
@@ -424,10 +484,11 @@
 
   .social-buttons {
     gap: 0.75rem;
+    margin: 1.5rem 0;
   }
 
   .divider {
-    margin: 1.25rem 0;
+    margin: 1.5rem 0;
     font-size: 0.85rem;
   }
 
@@ -722,5 +783,31 @@
 .requirement-tag svg {
   width: 12px;
   height: 12px;
+}
+
+.login-prompt {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 12px;
+  color: var(--color);
+  font-size: 0.95rem;
+}
+
+.switch-button {
+  background: none;
+  border: none;
+  color: var(--theme-color);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  margin-left: 0.25rem;
+}
+
+.switch-button:hover {
+  background: rgba(var(--theme-color-rgb), 0.1);
+  transform: translateY(-1px);
 }
 

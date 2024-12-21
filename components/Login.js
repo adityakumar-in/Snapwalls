@@ -109,7 +109,7 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
     <div className={`overlay ${isClosing ? 'closing' : ''}`} onClick={handleOutsideClick}>
       <div className={`container ${isClosing ? 'closing' : ''}`} ref={modalRef} onClick={e => e.stopPropagation()}>
         <button className="close-button" onClick={handleClose}>&times;</button>
-        <h1 className="title">{showForgotPassword ? "Reset Password" : "Log In"}</h1>
+        <h1 className="login-title">{showForgotPassword ? "Reset Password" : "Log In"}</h1>
         {!showForgotPassword ? (
           <>
             <form onSubmit={handleEmailLogin} className="form">
@@ -147,11 +147,11 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
             <div className="social-buttons">
               <button onClick={() => handleSocialLogin(googleProvider)} className="button google-button">
                 <FaGoogle className="social-icon" />
-                <span>Log In with Google</span>
+                <span>Google</span>
               </button>
               <button onClick={() => handleSocialLogin(githubProvider)} className="button github-button">
                 <FaGithub className="social-icon" />
-                <span>Log In with GitHub</span>
+                <span>GitHub</span>
               </button>
             </div>
             <p className="signup-prompt">
