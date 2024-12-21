@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
-import { auth, googleProvider, githubProvider } from '../components/Authentication';
+import { auth, googleProvider, githubProvider } from '../components/firebase.config';
 import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub, FaTimes } from 'react-icons/fa';
 import Login from './Login';

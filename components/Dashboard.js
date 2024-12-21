@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { auth } from '@/components/Authentication';
+import { auth } from '@/components/firebase.config';
 import { useRouter } from 'next/navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 

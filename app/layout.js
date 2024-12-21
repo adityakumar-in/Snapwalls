@@ -1,7 +1,6 @@
 import './globals.css';
 import SideBar from '@/components/SideBar';
-import Navbar from "../components/Navbar";
-import ProtectedRoute from '@/components/ProtectedRoute';
+// import Navbar from "../components/Navbar";
 
 export const metadata = {
   title: "Snapwalls - Ultra HD Wallpapers",
@@ -15,13 +14,10 @@ export default function RootLayout({ children }) {
       <body>
         <div className='snapwalls-container'>
           <div className='snapwalls-sidebar'>
-            {/* <SideBar /> */}
+            <SideBar />
           </div>
           <div className='snapwalls-content'>
-            <Navbar />
-            <ProtectedRoute>
               {children}
-            </ProtectedRoute>
           </div>
         </div>
       </body>

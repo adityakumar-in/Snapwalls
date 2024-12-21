@@ -1,7 +1,7 @@
 "use client"
 import { useState, useRef, useEffect } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
-import { auth, googleProvider, githubProvider } from '../components/Authentication';
+import { auth, googleProvider, githubProvider } from '../components/firebase.config';
 import { FaEye, FaEyeSlash, FaGoogle, FaGithub, FaEnvelope, FaCheckCircle, FaLock, FaArrowLeft } from 'react-icons/fa';
 import Signup from './Signup';
 import '@/app/styles/login.css';
