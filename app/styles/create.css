@@ -13,6 +13,7 @@
   .create-search-input {
     width: 100%;
     padding: 16px 24px;
+    padding-left: 56px;
     padding-right: 48px;
     font-size: 24px;
     font-weight: 600;
@@ -23,12 +24,20 @@
     outline: none;
     transition: border-color 0.3s ease;
     &::placeholder {
-      color: #4a4a4a99;
+      color: #69696999;
+      opacity: 1;
+      width: 90%;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+    box-sizing: border-box;
   }
   
   .create-search-input:focus {
-    border: 2px solid rgba(232, 8, 19, 0.2);
+    border: 2px solid rgba(255, 178, 0, 0.3);
+    box-shadow: 0 0 0 4px rgba(255, 178, 0, 0.1);
   }
   
   .create-tags-container {
@@ -214,6 +223,11 @@
       }
       .create-search-input {
           font-size: 22px;
+          &::placeholder {
+            font-size: 18px;
+            opacity: 0.8;
+            width: 85%;
+          }
       }
   }
   @media screen and (max-width: 490px) {
@@ -224,10 +238,21 @@
           font-size: 22px;
       }
   }
+  @media screen and (max-width: 400px) {
+    .create-search-input {
+      padding: 14px 20px;
+      &::placeholder {
+        font-size: 16px;
+        width: 80%;
+      }
+    }
+  }
   
   .input-container {
     position: relative;
     width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
   }
   
   .slash-indicator {
@@ -389,5 +414,47 @@
     .custom-days-buttons button {
       padding: 10px 20px;
       font-size: 14px;
+    }
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    color: #69696999;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  
+  @media screen and (max-width: 510px) {
+    .search-icon {
+      width: 20px;
+      height: 20px;
+      left: 20px;
+      transform: translateY(-45%);
+    }
+    
+    .create-search-input {
+      padding-left: 48px;
+    }
+  }
+  
+  @media screen and (max-width: 400px) {
+    .search-icon {
+      width: 18px;
+      height: 18px;
+      left: 16px;
+      transform: translateY(-45%);
+    }
+    
+    .create-search-input {
+      padding-left: 42px;
     }
   }
