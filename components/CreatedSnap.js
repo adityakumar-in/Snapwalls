@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
     const router = useRouter();
     const [loadingStates, setLoadingStates] = useState({});
+    const [previewWallpaper, setPreviewWallpaper] = useState(null);
+    const [isModalActive, setIsModalActive] = useState(false);
 
     const getWallpaperDimensions = (type) => {
         switch (type) {
@@ -41,6 +43,20 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
             ...prev,
             [index]: false
         }));
+    };
+
+    const openPreview = (wallpaper) => {
+        setPreviewWallpaper(wallpaper);
+        setIsModalActive(true);
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closePreview = () => {
+        setPreviewWallpaper(null);
+        setIsModalActive(false);
+        // Restore body scroll
+        document.body.style.overflow = 'unset';
     };
 
     return (
@@ -106,6 +122,15 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                                                         <div className="loading-spinner"></div>
                                                     </div>
                                                 )}
+                                                <div className="preview-overlay">
+                                                    <div className="preview-content" onClick={() => openPreview(wallpaper)}>
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                            <circle cx="12" cy="12" r="3"></circle>
+                                                        </svg>
+                                                        <span>Preview</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -114,14 +139,7 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                                         onClick={() => handleDownload(wallpaper?.imageUrl, wallpaper?.type || 'wallpaper', index)}
                                         disabled={loadingStates[index] || !wallpaper?.imageUrl}
                                     >
-                                        <svg 
-                                            width="20" 
-                                            height="20" 
-                                            viewBox="0 0 24 24" 
-                                            fill="none" 
-                                            stroke="currentColor" 
-                                            strokeWidth="2"
-                                        >
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                             <polyline points="7 10 12 15 17 10" />
                                             <line x1="12" y1="15" x2="12" y2="3" />
@@ -134,6 +152,46 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                     )}
                 </div>
             </div>
+
+            {/* Preview Modal */}
+            {isModalActive && previewWallpaper && (
+                <div className={`preview-modal-overlay active`} onClick={closePreview}>
+                    <div className={`preview-modal active`} onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={closePreview}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                        <div className="modal-image-container">
+                            <Image
+                                src={previewWallpaper.imageUrl}
+                                alt="Wallpaper Preview"
+                                className="modal-image"
+                                width={getWallpaperDimensions(previewWallpaper.type).width}
+                                height={getWallpaperDimensions(previewWallpaper.type).height}
+                                quality={100}
+                            />
+                        </div>
+                        <div className="modal-actions">
+                            <button 
+                                className="modal-download"
+                                onClick={() => {
+                                    handleDownload(previewWallpaper.imageUrl, previewWallpaper.type || 'wallpaper', 0);
+                                    closePreview();
+                                }}
+                            >
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Download Wallpaper
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>    
     );
 };
