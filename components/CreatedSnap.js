@@ -59,6 +59,13 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
         document.body.style.overflow = 'unset';
     };
 
+    const handleBackClick = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('generatedImages');
+        localStorage.removeItem('searchInput');
+        router.replace('/create');
+    };
+
     return (
         <div className='default-padding'>
             <div className="wallpaper-preview-container">
@@ -67,12 +74,7 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                         <h1>Your Generated Wallpapers</h1>
                         <button 
                             className="back-button" 
-                            onClick={() => {
-                                router.push('/create');
-                                localStorage.removeItem('generatedImages');
-                                localStorage.removeItem('searchInput');
-                                window.location.href = '/create';
-                            }}
+                            onClick={handleBackClick}
                         >
                             <span className="back-icon">←</span>
                             Back to Create
