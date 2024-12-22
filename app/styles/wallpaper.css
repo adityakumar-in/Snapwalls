@@ -3,6 +3,25 @@
   flex-wrap: wrap;
   gap: 20px;
   justify-content: space-between;
+  width: 100%;
+  min-height: calc(100vh - 60px); /* Adjust based on your navbar height */
+  padding: 24px;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.wallpaper-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.wallpaper-grid > * {
+  width: 100%;
+  max-width: 450px;
 }
 
 .wallpaper-item {
@@ -130,26 +149,56 @@
   flex-shrink: 0;
 }
 
-.loading {
+.loading-trigger {
   width: 100%;
-  text-align: center;
-  padding: 20px 0;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
-.loading img {
-  width: 70px;
-  height: 70px;
+.loading-spinner {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  color: #666;
 }
 
-.loader {
+.error-message, .no-images-message {
   width: 100%;
+  padding: 20px;
   text-align: center;
-  padding: 20px 0;
-  font-weight: bold;
-  cursor: pointer;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.no-images-message {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+@media screen and (max-width: 768px) {
+  .wallpaper-grid {
+    gap: 16px;
+  }
+  
+  .wallpaper-container {
+    padding: 16px;
+  }
 }
 
 @media screen and (max-width: 480px) {
+  .wallpaper-grid {
+    gap: 12px;
+  }
+  
+  .wallpaper-container {
+    padding: 12px;
+  }
+  
   .download-icon {
     display: flex;
     background-color: red;

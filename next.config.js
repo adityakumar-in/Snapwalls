@@ -8,8 +8,14 @@ const nextConfig = {
         port: '',
         pathname: '/prompt/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/v0/b/**',
+      },
     ],
   },
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig
