@@ -20,8 +20,8 @@ const page = () => {
   const tags = ['Mobile', 'Desktop'] // Add more tags here
   const [isInputFocused, setIsInputFocused] = useState(false);
   const inputRef = useRef(null);
-  const [generatedImage, setGeneratedImage] = useState(null);
-
+  const [generatedImages, setGeneratedImages] = useState(null);
+  const numberOfVariations = 4; // Number of wallpapers to generate
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -55,9 +55,6 @@ const page = () => {
     };
   }, []);
 
-
-
-
   const handleTagClick = (tag) => {
     setSelectedTag(tag);
   };
@@ -70,6 +67,25 @@ const page = () => {
       tag => tag.toLowerCase() === newValue.toLowerCase()
     );
     setSelectedTag(matchingTag || '');
+  };
+
+  const generateSingleWallpaper = async (prompt, tag, index) => {
+    const imageUrl = await generatePollinationImage(prompt, {
+      width: tag === 'Mobile' ? 720 : tag === '' ? window.innerWidth : 1280,
+      height: tag === 'Mobile' ? 1280 : tag === '' ? window.innerHeight : 720,
+      model: 'flux',
+      seed: Date.now() + index // Add different seed for variations
+    });
+
+    // Create a new image object to ensure it's fully loaded
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = imageUrl;
+    });
+
+    return imageUrl;
   };
 
   const handleCreate = async () => {
@@ -108,20 +124,18 @@ const page = () => {
 
     try {
       const prompt = `Create a ${searchInput} Wallpaper${selectedTag ? ` for ${selectedTag}` : 'Create a Animated Wallpaper'}`;
-      
-      const imageUrl = await generatePollinationImage(prompt, {
-        width: selectedTag === 'Mobile' ? 720 : selectedTag === '' ? window.innerWidth : 1280,
-        height: selectedTag === 'Mobile' ? 1280 : selectedTag === '' ? window.innerHeight : 720,
-        model: 'flux'
-      });
+      const generationPromises = [];
 
-      // Create a new image object to ensure it's fully loaded
-      await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = imageUrl;
-      });
+      // Generate multiple variations
+      for (let i = 0; i < numberOfVariations; i++) {
+        generationPromises.push(generateSingleWallpaper(prompt, selectedTag, i));
+      }
+
+      const imageUrls = await Promise.all(generationPromises);
+      const wallpapers = imageUrls.map(url => ({
+        imageUrl: url,
+        type: selectedTag || 'Desktop'
+      }));
 
       // Set progress to 100% and wait a moment
       setProgressPercent(100);
@@ -129,12 +143,13 @@ const page = () => {
       // Wait for progress animation
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Clear states and show generated image
+      // Clear states and show generated images
       setIsGenerating(false);
       setProgressPercent(0);
+      const currentPrompt = searchInput; // Store current prompt before clearing
       setSearchInput('');
       setSelectedTag('');
-      setGeneratedImage({ imageUrl, selectedTag });
+      setGeneratedImages({ wallpapers, prompt: currentPrompt });
 
     } catch (error) {
       console.error('Generation error:', error);
@@ -144,12 +159,10 @@ const page = () => {
     }
   };
 
-  // Add this log before the conditional render
-
-  if (generatedImage) {
+  if (generatedImages) {
     return <CreatedSnap 
-      imageUrl={generatedImage.imageUrl} 
-      selectedTag={generatedImage.selectedTag} 
+      wallpapers={generatedImages.wallpapers}
+      prompt={generatedImages.prompt}
     />;
   }
 

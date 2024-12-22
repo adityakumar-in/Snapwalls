@@ -1,42 +1,32 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import '/app/styles/createdSnap.css';
 import { useRouter } from 'next/navigation';
 
-const CreatedSnap = ({ imageUrl, selectedTag }) => {
+const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
     const router = useRouter();
+    const [loadingStates, setLoadingStates] = useState({});
 
-    const getWidth = () => {
-        switch (selectedTag) {
+    const getWallpaperDimensions = (type) => {
+        switch (type) {
             case 'Mobile':
-                return 390; // Standard mobile width
+                return { width: 390, height: 844 };
             case 'Desktop':
-                return 1280; // Standard desktop width
+                return { width: 1920, height: 1080 };
             default:
-                return 800; // Default/custom width
+                return { width: 1440, height: 900 };
         }
-    }
+    };
 
-    const getHeight = () => {
-        switch (selectedTag) {
-            case 'Mobile':
-                return 844; // Standard mobile height
-            case 'Desktop':
-                return 720; // Standard desktop height
-            default:
-                return 600; // Default/custom height
-        }
-    }
-
-    const handleDownload = async () => {
+    const handleDownload = async (imageUrl, type, index) => {
         try {
             const response = await fetch(imageUrl);
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `wallpaper-${Date.now()}.png`;
+            link.download = `snapwalls-${type.toLowerCase()}-${index + 1}.png`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -46,40 +36,102 @@ const CreatedSnap = ({ imageUrl, selectedTag }) => {
         }
     };
 
+    const handleImageLoad = (index) => {
+        setLoadingStates(prev => ({
+            ...prev,
+            [index]: false
+        }));
+    };
+
     return (
         <div className='default-padding'>
-            <div className="choose-roadmap-page">
-                <button 
-                    className="back-button" 
-                    onClick={() => router.push('/create')}
-                >
-                    ← Back to Create
-                </button>
-                <div className="choose-roadmap-header">
+            <div className="wallpaper-preview-container">
+                <div className="wallpaper-header">
                     <div className="header-content">
-                        <div className="header-main">
-                            <h1 className='choose-roadmap-title'>Generated Wallpaper</h1>
-                            <div className="image-container">
-                                <Image 
-                                    src={imageUrl} 
-                                    alt="Generated Wallpaper" 
-                                    className="generated-wallpaper"
-                                    width={getWidth()}
-                                    height={getHeight()} 
-                                    priority
-                                    style={{
-                                        width: '100%',
-                                        height: 'auto',
-                                        maxWidth: getWidth(),
-                                        objectFit: 'contain'
-                                    }}
-                                />
-                            </div>
-                            <button className="download-button" onClick={handleDownload}>
-                                Download Wallpaper
-                            </button>
-                        </div>
+                        <h1>Your Generated Wallpapers</h1>
+                        <button 
+                            className="back-button" 
+                            onClick={() => {
+                                router.push('/create');
+                                localStorage.removeItem('generatedImages');
+                                localStorage.removeItem('searchInput');
+                                window.location.href = '/create';
+                            }}
+                        >
+                            <span className="back-icon">←</span>
+                            Back to Create
+                        </button>
+                        {prompt && <p className="prompt-text">{prompt}</p>}
                     </div>
+                </div>
+                
+                <div className="wallpapers-grid">
+                    {wallpapers.length === 0 ? (
+                        <div className="no-wallpapers">
+                            <p>No wallpapers generated yet.</p>
+                            <p>Go back to create some amazing wallpapers!</p>
+                        </div>
+                    ) : (
+                        wallpapers.map((wallpaper, index) => {
+                            const dimensions = getWallpaperDimensions(wallpaper?.type || 'Desktop');
+                            return (
+                                <div key={index} className="wallpaper-card">
+                                    <div className="wallpaper-card-header">
+                                        <div className="wallpaper-info">
+                                            <span className="tag">{wallpaper?.type || 'Custom'}</span>
+                                            <span className="resolution">{dimensions.width} x {dimensions.height}</span>
+                                        </div>
+                                    </div>
+                                    <div className="wallpaper-frame-container">
+                                        <div className="wallpaper-frame">
+                                            <div className="image-wrapper">
+                                                <Image 
+                                                    src={wallpaper?.imageUrl || '/placeholder-image.jpg'} 
+                                                    alt={`Generated Wallpaper ${index + 1}`} 
+                                                    className={`wallpaper-image ${loadingStates[index] ? 'loading' : 'loaded'}`}
+                                                    width={dimensions.width}
+                                                    height={dimensions.height}
+                                                    priority={index < 2}
+                                                    onLoadingComplete={() => handleImageLoad(index)}
+                                                    style={{
+                                                        objectFit: 'cover',
+                                                        width: '100%',
+                                                        height: '100%'
+                                                    }}
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                    quality={100}
+                                                />
+                                                {loadingStates[index] && (
+                                                    <div className="loading-overlay">
+                                                        <div className="loading-spinner"></div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button 
+                                        className="download-button" 
+                                        onClick={() => handleDownload(wallpaper?.imageUrl, wallpaper?.type || 'wallpaper', index)}
+                                        disabled={loadingStates[index] || !wallpaper?.imageUrl}
+                                    >
+                                        <svg 
+                                            width="20" 
+                                            height="20" 
+                                            viewBox="0 0 24 24" 
+                                            fill="none" 
+                                            stroke="currentColor" 
+                                            strokeWidth="2"
+                                        >
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="7 10 12 15 17 10" />
+                                            <line x1="12" y1="15" x2="12" y2="3" />
+                                        </svg>
+                                        Download
+                                    </button>
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
             </div>
         </div>    
