@@ -63,7 +63,9 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
         e.preventDefault();
         localStorage.removeItem('generatedImages');
         localStorage.removeItem('searchInput');
-        router.replace('/create');
+        
+        window.location.href = '/create';
+        
     };
 
     return (
