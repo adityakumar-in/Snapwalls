@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import '@/app/styles/wallpaper.css';
+import { storage } from '/components/firebase.config'; // Assuming your firebase.js file is in the same directory
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 const Wallpaper = ({ wallpapers, fileNames }) => {
   const [favorites, setFavorites] = useState({});

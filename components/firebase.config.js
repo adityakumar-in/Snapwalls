@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
 import { getDatabase } from 'firebase/database';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,6 +20,7 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 // Initialize services
 const auth = getAuth(app);
 const db = getDatabase(app);
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
@@ -38,4 +40,4 @@ const getCurrentUserName = () => {
     return auth.currentUser?.displayName || null;
 };
 
-export { app, auth, db, googleProvider, githubProvider, getCurrentUserName };
+export { app, auth, db, storage, googleProvider, githubProvider, getCurrentUserName };
