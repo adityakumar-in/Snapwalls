@@ -39,7 +39,9 @@ const WallpaperCard = ({ imageURL, type }) => {
       <Image
         src={imageURL}
         alt="Wallpaper"
-        fill
+        width={500}
+        height={300}
+        priority
         className="firebase-wallpaper-image"
       />
       

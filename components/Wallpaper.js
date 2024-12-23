@@ -104,38 +104,24 @@ const Wallpaper = () => {
     };
   }, [currentIndex, loading, allImageRefs]);
 
-  if (error) {
-    return (
-      <div className="wallpaper-container">
-        <div className="error-message">
-          Error loading images: {error}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="wallpaper-container">
-      {images.length === 0 && !loading ? (
-        <div className="no-images-message">
-          No images found
-        </div>
-      ) : (
-        <div className="wallpaper-grid">
-          {images.map((image, index) => (
-            <WallpaperCard 
-              key={`${image.url}-${index}`}
-              imageURL={image.url}
-              type={image.type}
-            />
-          ))}
+      <div className="wallpaper-grid">
+        {images.map((image, index) => (
+          <WallpaperCard
+            key={index}
+            imageURL={image.url}
+            type={image.type || 'phone'}
+          />
+        ))}
+      </div>
+      {loading && (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
         </div>
       )}
-      
-      {/* Loading indicator and observer target */}
-      <div ref={observerTarget} className="loading-trigger">
-        {loading && <div className="loading-spinner">Loading...</div>}
-      </div>
+      {error && <div className="error-message">{error}</div>}
+      <div ref={observerTarget}></div>
     </div>
   );
 };
