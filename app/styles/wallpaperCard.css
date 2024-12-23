@@ -55,6 +55,8 @@
   left: 12px;
   padding: 0 16px;
   gap: 8px;
+  position: absolute;
+  transition: all 0.3s ease;
 }
 
 .firebase-download-button {
@@ -66,31 +68,70 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
-.firebase-download-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
+.firebase-download-button:hover {
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.firebase-download-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .firebase-download-button svg {
   width: 20px;
   height: 20px;
-  color: var(--background);
+  color: var(--theme-color);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+  transition: transform 0.3s ease;
+}
+
+.firebase-download-button:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+.firebase-download-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: rgba(0, 0, 0, 0.4);
+  transform: none;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.firebase-download-button:disabled svg {
+  transform: none;
+  filter: none;
 }
 
 .firebase-button-icon {
   width: 18px;
   height: 18px;
   color: var(--background);
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .firebase-snap-text,
 .firebase-download-text {
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.firebase-snap-text {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .firebase-card-button:hover {
@@ -118,7 +159,17 @@
 
 /* Snapped state */
 .firebase-card-button.firebase-snap-button.firebase-snapped {
-  background: rgba(0, 0, 0, 0.85);
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .firebase-snap-text.firebase-snapped {
@@ -130,6 +181,24 @@
 
 .firebase-snap-button.firebase-snapped .firebase-button-icon {
   color: var(--theme-color);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.firebase-snap-button.firebase-snapped:hover {
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.firebase-snap-button.firebase-snapped:hover .firebase-button-icon {
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+}
+
+.firebase-snap-button.firebase-snapped .firebase-snap-text {
+  opacity: 0;
+  transform: translateX(-10px);
+  position: absolute;
+  pointer-events: none;
 }
 
 .firebase-wallpaper-card:hover .firebase-card-button {
@@ -164,6 +233,77 @@
   animation: scale-check 0.5s ease-out forwards;
 }
 
+/* Snap animations */
+@keyframes snap-ring {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+    border: 2px solid var(--theme-color);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+    border: 2px solid transparent;
+  }
+}
+
+@keyframes snap-flash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 178, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 178, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 178, 0, 0);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(40);
+    opacity: 0;
+  }
+}
+
+.firebase-snap-button.firebase-snapped::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  animation: snap-ring 0.6s ease-out;
+}
+
+.firebase-snap-button.firebase-snapped {
+  animation: snap-flash 0.6s ease-out;
+  background: rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+}
+
+.firebase-snap-button.firebase-snapped::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: var(--theme-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.6s ease-out;
+}
+
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .firebase-wallpaper-image {
@@ -173,7 +313,6 @@
   
   .firebase-card-button {
     height: 38px;
-    opacity: 1;
   }
   
   .firebase-snap-button {
@@ -186,6 +325,11 @@
   
   .firebase-button-icon {
     font-size: 1.1rem;
+  }
+  
+  .firebase-snap-button.firebase-snapped {
+    width: 38px;
+    height: 38px;
   }
 }
 
@@ -204,5 +348,10 @@
   
   .firebase-button-icon {
     font-size: 1rem;
+  }
+  
+  .firebase-snap-button.firebase-snapped {
+    width: 36px;
+    height: 36px;
   }
 }
