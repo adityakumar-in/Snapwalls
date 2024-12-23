@@ -105,15 +105,35 @@ const Wallpaper = () => {
   }, [currentIndex, loading, allImageRefs]);
 
   return (
-    <div className="wallpaper-container">
-      <div className="wallpaper-grid">
-        {images.map((image, index) => (
-          <WallpaperCard
-            key={index}
-            imageURL={image.url}
-            type={image.type || 'phone'}
-          />
-        ))}
+    <div className="default-padding">
+      <div className="wallpaper-masonry">
+        <div className="wallpaper-column">
+          {images.filter((_, i) => i % 3 === 0).map((image, index) => (
+            <WallpaperCard
+              key={index * 3}
+              imageURL={image.url}
+              type={image.type || 'phone'}
+            />
+          ))}
+        </div>
+        <div className="wallpaper-column">
+          {images.filter((_, i) => i % 3 === 1).map((image, index) => (
+            <WallpaperCard
+              key={index * 3 + 1}
+              imageURL={image.url}
+              type={image.type || 'phone'}
+            />
+          ))}
+        </div>
+        <div className="wallpaper-column">
+          {images.filter((_, i) => i % 3 === 2).map((image, index) => (
+            <WallpaperCard
+              key={index * 3 + 2}
+              imageURL={image.url}
+              type={image.type || 'phone'}
+            />
+          ))}
+        </div>
       </div>
       {loading && (
         <div className="loading-container">
