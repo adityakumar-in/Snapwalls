@@ -13,7 +13,8 @@ const Wallpaper = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [error, setError] = useState(null);
   const [columnCount, setColumnCount] = useState(2);
-  const [batchSize, setBatchSize] = useState(20); // Default batch size
+  const [batchSize, setBatchSize] = useState(20);
+  const [bufferImages, setBufferImages] = useState([]); // Buffer for preloaded images
   const observerTarget = useRef(null);
 
   // Fetch all image references initially
@@ -57,7 +58,6 @@ const Wallpaper = () => {
       const newImagesPromises = refs.slice(startIndex, endIndex).map(async (imageRef) => {
         try {
           console.log('Fetching URL for:', imageRef.name);
-          // Check if URL exists in session storage
           const cachedUrl = sessionStorage.getItem(`wallpaper_${imageRef.name}`);
           let url;
           
@@ -66,7 +66,6 @@ const Wallpaper = () => {
             url = cachedUrl;
           } else {
             url = await getDownloadURL(imageRef);
-            // Store URL in session storage
             sessionStorage.setItem(`wallpaper_${imageRef.name}`, url);
           }
           
@@ -84,7 +83,12 @@ const Wallpaper = () => {
       const newImages = (await Promise.all(newImagesPromises)).filter(Boolean);
       console.log('Loaded new images:', newImages.length);
       
-      setImages(prev => [...prev, ...newImages]);
+      // Add new images to main display or buffer based on current scroll position
+      if (images.length === 0) {
+        setImages(newImages);
+      } else {
+        setBufferImages(prev => [...prev, ...newImages]);
+      }
       setCurrentIndex(endIndex);
     } catch (error) {
       console.error('Error loading more images:', error);
@@ -93,6 +97,14 @@ const Wallpaper = () => {
       setLoading(false);
     }
   };
+
+  // Effect to move buffer images to main display when needed
+  useEffect(() => {
+    if (bufferImages.length > 0) {
+      setImages(prev => [...prev, ...bufferImages]);
+      setBufferImages([]);
+    }
+  }, [bufferImages]);
 
   // Function to determine column count based on screen width
   const updateColumnCount = () => {
@@ -131,15 +143,24 @@ const Wallpaper = () => {
     return () => window.removeEventListener('resize', updateColumnCount);
   }, []);
 
-  // Set up intersection observer for infinite scrolling
+  // Set up intersection observer for earlier loading
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loading) {
+          // Move any buffered images to main display
+          if (bufferImages.length > 0) {
+            setImages(prev => [...prev, ...bufferImages]);
+            setBufferImages([]);
+          }
+          // Load more images
           loadMoreImages(allImageRefs, currentIndex);
         }
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '500px' // Start loading when within 500px of the observer
+      }
     );
 
     if (observerTarget.current) {
@@ -151,7 +172,7 @@ const Wallpaper = () => {
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [currentIndex, loading, allImageRefs]);
+  }, [currentIndex, loading, allImageRefs, bufferImages.length]);
 
   return (
     <div className="">
