@@ -56,17 +56,26 @@ const page = () => {
   }, []);
 
   const handleTagClick = (tag) => {
-    setSelectedTag(tag);
+    // If clicking the same tag that's already selected, deselect it
+    if (selectedTag === tag) {
+      setSelectedTag('');
+    } else {
+      setSelectedTag(tag);
+    }
   };
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     setSearchInput(newValue);
     
+    // Only try to match tag if the input exactly matches a tag name
+    // This prevents unselecting when typing
     const matchingTag = tags.find(
       tag => tag.toLowerCase() === newValue.toLowerCase()
     );
-    setSelectedTag(matchingTag || '');
+    if (matchingTag) {
+      setSelectedTag(matchingTag);
+    }
   };
 
   const generateSingleWallpaper = async (prompt, tag, index) => {
@@ -195,6 +204,11 @@ const page = () => {
               onChange={handleInputChange}
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchInput.trim()) {
+                  handleCreate();
+                }
+              }}
             />
             <div className={`slash-indicator ${isInputFocused ? 'hidden' : ''}`}>/</div>
           </div>
