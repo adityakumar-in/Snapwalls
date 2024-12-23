@@ -14,6 +14,7 @@ const Wallpaper = () => {
   const [allImageRefs, setAllImageRefs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [error, setError] = useState(null);
+  const [columnCount, setColumnCount] = useState(2);
   const observerTarget = useRef(null);
 
   // Fetch all image references initially
@@ -82,6 +83,27 @@ const Wallpaper = () => {
     }
   };
 
+  // Function to determine column count based on screen width
+  const updateColumnCount = () => {
+    const width = window.innerWidth;
+    if (width >= 1600) {
+      setColumnCount(5);
+    } else if (width >= 1200) {
+      setColumnCount(4);
+    } else if (width >= 768) {
+      setColumnCount(3);
+    } else {
+      setColumnCount(2);
+    }
+  };
+
+  // Add resize listener
+  useEffect(() => {
+    updateColumnCount();
+    window.addEventListener('resize', updateColumnCount);
+    return () => window.removeEventListener('resize', updateColumnCount);
+  }, []);
+
   // Set up intersection observer for infinite scrolling
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -106,34 +128,25 @@ const Wallpaper = () => {
 
   return (
     <div className="default-padding">
-      <div className="wallpaper-masonry">
-        <div className="wallpaper-column">
-          {images.filter((_, i) => i % 3 === 0).map((image, index) => (
-            <WallpaperCard
-              key={index * 3}
-              imageURL={image.url}
-              type={image.type || 'phone'}
-            />
-          ))}
-        </div>
-        <div className="wallpaper-column">
-          {images.filter((_, i) => i % 3 === 1).map((image, index) => (
-            <WallpaperCard
-              key={index * 3 + 1}
-              imageURL={image.url}
-              type={image.type || 'phone'}
-            />
-          ))}
-        </div>
-        <div className="wallpaper-column">
-          {images.filter((_, i) => i % 3 === 2).map((image, index) => (
-            <WallpaperCard
-              key={index * 3 + 2}
-              imageURL={image.url}
-              type={image.type || 'phone'}
-            />
-          ))}
-        </div>
+      <div className="wallpaper-masonry" style={{ 
+        display: 'grid',
+        gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
+        gap: '20px',
+        width: '100%',
+      }}>
+        {Array.from({ length: columnCount }, (_, colIndex) => (
+          <div key={colIndex} className="wallpaper-column">
+            {images
+              .filter((_, i) => i % columnCount === colIndex)
+              .map((image, index) => (
+                <WallpaperCard
+                  key={index * columnCount + colIndex}
+                  imageURL={image.url}
+                  type={image.type || 'phone'}
+                />
+              ))}
+          </div>
+        ))}
       </div>
       {loading && (
         <div className="loading-container">
