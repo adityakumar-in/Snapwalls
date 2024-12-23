@@ -17,6 +17,37 @@ const Wallpaper = () => {
   const [bufferImages, setBufferImages] = useState([]); // Buffer for preloaded images
   const observerTarget = useRef(null);
 
+  // Clear cache when component mounts and set up cleanup
+  useEffect(() => {
+    // Clear any stale cache on mount
+    const staleKeys = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      if (key?.startsWith('wallpaper_')) {
+        staleKeys.push(key);
+      }
+    }
+    staleKeys.forEach(key => sessionStorage.removeItem(key));
+
+    // Set up cache cleanup on window close
+    const handleUnload = () => {
+      const cacheKeys = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key?.startsWith('wallpaper_')) {
+          cacheKeys.push(key);
+        }
+      }
+      cacheKeys.forEach(key => sessionStorage.removeItem(key));
+    };
+
+    window.addEventListener('beforeunload', handleUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      handleUnload(); // Clean up cache when component unmounts
+    };
+  }, []);
+
   // Fetch all image references initially
   useEffect(() => {
     const fetchImageRefs = async () => {
@@ -57,19 +88,39 @@ const Wallpaper = () => {
       const endIndex = Math.min(startIndex + batchSize, refs.length);
       const newImagesPromises = refs.slice(startIndex, endIndex).map(async (imageRef) => {
         try {
-          console.log('Fetching URL for:', imageRef.name);
-          const cachedUrl = sessionStorage.getItem(`wallpaper_${imageRef.name}`);
+          const fileName = imageRef.name.toLowerCase();
+          const cacheKey = `wallpaper_${fileName}`;
+          
+          // Check cache with timestamp validation
+          const cachedData = sessionStorage.getItem(cacheKey);
           let url;
           
-          if (cachedUrl) {
-            console.log('Using cached URL for:', imageRef.name);
-            url = cachedUrl;
+          if (cachedData) {
+            const { url: cachedUrl, timestamp } = JSON.parse(cachedData);
+            const cacheAge = Date.now() - timestamp;
+            const maxCacheAge = 30 * 60 * 1000; // 30 minutes
+
+            if (cacheAge < maxCacheAge) {
+              console.log('Using cached URL for:', fileName);
+              url = cachedUrl;
+            } else {
+              console.log('Cache expired for:', fileName);
+              url = await getDownloadURL(imageRef);
+              // Update cache with new timestamp
+              sessionStorage.setItem(cacheKey, JSON.stringify({
+                url,
+                timestamp: Date.now()
+              }));
+            }
           } else {
             url = await getDownloadURL(imageRef);
-            sessionStorage.setItem(`wallpaper_${imageRef.name}`, url);
+            // Store in cache with timestamp
+            sessionStorage.setItem(cacheKey, JSON.stringify({
+              url,
+              timestamp: Date.now()
+            }));
           }
           
-          const fileName = imageRef.name.toLowerCase();
           const type = fileName.includes('desktop') || 
                       fileName.includes('landscape') ? 'desktop' : 'phone';
           
