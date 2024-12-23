@@ -46,7 +46,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: floatAnimation 3s ease-in-out infinite;
+  /* animation: floatAnimation 3s ease-in-out infinite; */
 }
 
 .loader-gif {
