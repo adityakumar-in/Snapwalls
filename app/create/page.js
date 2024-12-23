@@ -56,23 +56,32 @@ const page = () => {
   }, []);
 
   const handleTagClick = (tag) => {
-    setSelectedTag(tag);
+    // If clicking the same tag that's already selected, deselect it
+    if (selectedTag === tag) {
+      setSelectedTag('');
+    } else {
+      setSelectedTag(tag);
+    }
   };
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     setSearchInput(newValue);
     
+    // Only try to match tag if the input exactly matches a tag name
+    // This prevents unselecting when typing
     const matchingTag = tags.find(
       tag => tag.toLowerCase() === newValue.toLowerCase()
     );
-    setSelectedTag(matchingTag || '');
+    if (matchingTag) {
+      setSelectedTag(matchingTag);
+    }
   };
 
   const generateSingleWallpaper = async (prompt, tag, index) => {
     const imageUrl = await generatePollinationImage(prompt, {
-      width: tag === 'Mobile' ? 720 : tag === '' ? window.innerWidth : 1280,
-      height: tag === 'Mobile' ? 1280 : tag === '' ? window.innerHeight : 720,
+      width: tag === 'Mobile' ? 1440 : tag === '' ? window.innerWidth : 3840, // 4K for desktop
+      height: tag === 'Mobile' ? 2560 : tag === '' ? window.innerHeight : 2160, // 4K for desktop
       model: 'flux',
       seed: Date.now() + index // Add different seed for variations
     });
@@ -195,6 +204,11 @@ const page = () => {
               onChange={handleInputChange}
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchInput.trim()) {
+                  handleCreate();
+                }
+              }}
             />
             <div className={`slash-indicator ${isInputFocused ? 'hidden' : ''}`}>/</div>
           </div>

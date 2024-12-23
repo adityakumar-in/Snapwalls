@@ -178,7 +178,11 @@ const Page = () => {
               <div className='loading-spinner'></div>
               <div className='generating-text'>
                 <span>Generating your {currentCategory} wallpaper</span>
-                <span className='generating-dots'></span>
+                <div className='random-snap-loading-dots'>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
             </div>
           )}
@@ -191,11 +195,12 @@ const Page = () => {
                 onLoad={handleImageLoad}
               />
               {imageLoaded && (
-                <button onClick={handleDownload} className='download-button'>
+                <button onClick={handleDownload} className='random-snap-download-btn'>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM4 20V15H6V18H18V15H20V20H4Z" fill="currentColor"/>
                   </svg>
-                  Download
+                  <span>Download</span>
+                  <div className="random-snap-download-shine"></div>
                 </button>
               )}
             </div>
