@@ -23,8 +23,16 @@
   transform: scale(1.05);
 }
 
-.firebase-card-button {
+.firebase-card-buttons {
   position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.firebase-card-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,15 +45,23 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--background);
   opacity: 0;
-  z-index: 10;
   border: none;
-}
-
-.firebase-snap-button {
-  top: 12px;
-  left: 12px;
   padding: 0 16px;
   gap: 8px;
+}
+
+.firebase-button-icon {
+  font-size: 1.2rem;
+}
+
+.firebase-snap-text,
+.firebase-download-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.firebase-card-button:hover {
+  background: var(--theme-color-dark);
 }
 
 .firebase-download-button {
@@ -60,21 +76,6 @@
 
 .firebase-download-button .firebase-button-icon {
   color: var(--background);
-}
-
-.firebase-snap-text {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-  color: var(--background);
-}
-
-.firebase-button-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--background);
-  transition: transform 0.2s ease;
 }
 
 /* Hover states */
@@ -138,8 +139,7 @@
   }
   
   .firebase-button-icon {
-    width: 16px;
-    height: 16px;
+    font-size: 1.1rem;
   }
 }
 
@@ -157,7 +157,6 @@
   }
   
   .firebase-button-icon {
-    width: 15px;
-    height: 15px;
+    font-size: 1rem;
   }
 }
