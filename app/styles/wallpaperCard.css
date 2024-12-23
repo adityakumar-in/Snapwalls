@@ -78,10 +78,10 @@
 }
 
 .firebase-download-button:hover {
-  background: rgba(0, 0, 0, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   transform: translateY(-2px);
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .firebase-download-button:active {
@@ -145,12 +145,12 @@
   box-shadow: 0 4px 15px rgba(255, 178, 0, 0.2);
 }
 
-.firebase-card-button.firebase-download-button:hover {
-  transform: translateY(-1px);
-  background: var(--theme-color);
-  filter: brightness(1.1);
-  box-shadow: 0 4px 12px rgba(255, 178, 0, 0.2);
-}
+/* .firebase-card-button.firebase-download-button:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.3);
+} */
 
 .firebase-card-button.firebase-download-button:active {
   transform: translateY(1px);

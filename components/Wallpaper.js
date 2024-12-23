@@ -273,8 +273,26 @@ const Wallpaper = () => {
         })()}
       </div>
       {loading && (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          width: '100%',
+          margin: '1rem 0'
+        }}>
+          <div style={{
+            width: 'clamp(50px, 8vw, 80px)',
+            height: 'clamp(50px, 8vw, 80px)',
+            position: 'relative'
+          }}>
+            <Image
+              src="/loader.gif"
+              alt="Loading..."
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
+            />
+          </div>
         </div>
       )}
       {error && <div className="error-message">{error}</div>}

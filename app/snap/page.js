@@ -6,6 +6,7 @@ import { ref as dbRef, onValue } from 'firebase/database';
 import { db } from '/components/firebase.config';
 import WallpaperCard from '/components/WallpaperCard';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import '@/app/styles/wallpaper.css';
 
 const SnappedPage = () => {
@@ -87,8 +88,27 @@ const SnappedPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        width: '100%',
+        height: '100vh',
+        margin: '1rem 0'
+      }}>
+        <div style={{
+          width: 'clamp(50px, 8vw, 80px)',
+          height: 'clamp(50px, 8vw, 80px)',
+          position: 'relative'
+        }}>
+          <Image
+            src="/loader.gif"
+            alt="Loading..."
+            fill
+            style={{ objectFit: 'contain' }}
+            priority
+          />
+        </div>
       </div>
     );
   }
