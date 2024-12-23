@@ -1,15 +1,18 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FaCamera, FaDownload, FaFire } from 'react-icons/fa';
+import { FaCamera, FaFire } from 'react-icons/fa';
+import { DownloadIcon, LoadingIcon, CheckIcon } from './icons/DownloadIcon';
 import '../app/styles/wallpaperCard.css';
 
 const WallpaperCard = ({ imageURL, type }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isSnapped, setIsSnapped] = useState(false);
+  const [downloadState, setDownloadState] = useState('idle'); // idle, downloading, success
 
   const handleDownload = async () => {
     try {
+      setDownloadState('downloading');
       console.log('Starting download for URL:', imageURL);
       
       // Get the filename from the Firebase URL
@@ -71,10 +74,17 @@ const WallpaperCard = ({ imageURL, type }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
       
-      console.log('Download initiated');
+      console.log('Download completed');
+      setDownloadState('success');
+      
+      // Reset to idle state after showing success
+      setTimeout(() => {
+        setDownloadState('idle');
+      }, 2000);
       
     } catch (error) {
       console.error('Error downloading wallpaper:', error);
+      setDownloadState('idle');
     }
   };
 
@@ -98,32 +108,32 @@ const WallpaperCard = ({ imageURL, type }) => {
         className="firebase-wallpaper-image"
       />
       
-      <div className="firebase-card-buttons">
-        <button 
-          onClick={handleSnap}
-          className={`firebase-card-button firebase-snap-button ${isHovered ? 'opacity-100' : 'opacity-0'} ${isSnapped ? 'firebase-snapped' : ''}`}
-        >
-          {isSnapped ? (
-            <>
-              <FaFire className="firebase-button-icon" />
-              <span className="firebase-snap-text firebase-snapped">Snapped</span>
-            </>
-          ) : (
-            <>
-              <FaCamera className="firebase-button-icon" />
-              <span className="firebase-snap-text">Snap</span>
-            </>
-          )}
-        </button>
+      <button 
+        onClick={handleSnap}
+        className={`firebase-card-button firebase-snap-button ${isHovered ? 'opacity-100' : 'opacity-0'} ${isSnapped ? 'firebase-snapped' : ''}`}
+      >
+        {isSnapped ? (
+          <>
+            <FaFire className="firebase-button-icon" />
+            <span className="firebase-snap-text firebase-snapped">Snapped</span>
+          </>
+        ) : (
+          <>
+            <FaCamera className="firebase-button-icon" />
+            <span className="firebase-snap-text">Snap</span>
+          </>
+        )}
+      </button>
 
-        <button 
-          onClick={handleDownload}
-          className={`firebase-card-button firebase-download-button ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-        >
-          <FaDownload className="firebase-button-icon" />
-          <span className="firebase-download-text">Download</span>
-        </button>
-      </div>
+      <button 
+        onClick={handleDownload}
+        disabled={downloadState === 'downloading'}
+        className={`firebase-card-button firebase-download-button ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+      >
+        {downloadState === 'downloading' && <LoadingIcon />}
+        {downloadState === 'success' && <CheckIcon />}
+        {downloadState === 'idle' && <DownloadIcon />}
+      </button>
     </div>
   );
 };
