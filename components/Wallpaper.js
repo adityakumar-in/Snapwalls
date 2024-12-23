@@ -161,19 +161,52 @@ const Wallpaper = () => {
         gap: '20px',
         width: '100%',
       }}>
-        {Array.from({ length: columnCount }, (_, colIndex) => (
-          <div key={colIndex} className="wallpaper-column">
-            {images
-              .filter((_, i) => i % columnCount === colIndex)
-              .map((image, index) => (
-                <WallpaperCard
-                  key={index * columnCount + colIndex}
-                  imageURL={image.url}
-                  type={image.type || 'phone'}
-                />
-              ))}
-          </div>
-        ))}
+        {(() => {
+          // Separate desktop and phone images
+          const desktopImages = images.filter(img => img.type === 'desktop');
+          const phoneImages = images.filter(img => img.type === 'phone');
+          
+          // Calculate approx desktop images per column
+          const desktopPerColumn = Math.ceil(desktopImages.length / columnCount);
+          
+          return Array.from({ length: columnCount }, (_, colIndex) => {
+            // Calculate which desktop images go in this column
+            const startDesktopIdx = colIndex * desktopPerColumn;
+            const endDesktopIdx = Math.min((colIndex + 1) * desktopPerColumn, desktopImages.length);
+            const columnDesktopImages = desktopImages.slice(startDesktopIdx, endDesktopIdx);
+            
+            // Get phone images for this column
+            const columnPhoneImages = phoneImages.filter((_, i) => i % columnCount === colIndex);
+            
+            // Merge desktop and phone images with spacing
+            const columnImages = [];
+            const phoneImagesPerSegment = Math.ceil(columnPhoneImages.length / (columnDesktopImages.length + 1));
+            
+            // Add initial phone images
+            columnImages.push(...columnPhoneImages.slice(0, phoneImagesPerSegment));
+            
+            // Intersperse desktop images with remaining phone images
+            columnDesktopImages.forEach((desktop, idx) => {
+              columnImages.push(desktop);
+              const startIdx = (idx + 1) * phoneImagesPerSegment;
+              const endIdx = startIdx + phoneImagesPerSegment;
+              const phoneSegment = columnPhoneImages.slice(startIdx, endIdx);
+              columnImages.push(...phoneSegment);
+            });
+            
+            return (
+              <div key={colIndex} className="wallpaper-column">
+                {columnImages.map((image, index) => (
+                  <WallpaperCard
+                    key={`${colIndex}-${index}`}
+                    imageURL={image.url}
+                    type={image.type}
+                  />
+                ))}
+              </div>
+            );
+          });
+        })()}
       </div>
       {loading && (
         <div className="loading-container">
