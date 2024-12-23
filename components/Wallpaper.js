@@ -87,21 +87,32 @@ const Wallpaper = () => {
   const updateColumnCount = () => {
     const width = window.innerWidth;
     if (width > 2385) {
-      setColumnCount(9);
+      setColumnCount(10);
+      console.log('10')
     } else if (width <= 2385 && width > 2148) {
-      setColumnCount(8);
+      setColumnCount(9);
+      console.log('9')
     } else if (width <= 2148 && width > 1911) {
-      setColumnCount(7);
+      setColumnCount(8);
+      console.log('8')
     } else if (width <= 1911 && width > 1675) {
-      setColumnCount(6);
+      setColumnCount(7);
+      console.log('7')
     } else if (width <= 1675 && width > 1438) {
+      setColumnCount(6);
+      console.log('6')
+    } else if (width <= 1438 && width > 1175) {
       setColumnCount(5);
-    } else if (width <= 1438 && width > 765) {
+      console.log('5')
+    } else if (width <= 1175 && width > 800) {
       setColumnCount(4);
-    } else if (width <=  765 && width > 700) {
+      console.log('4')
+    } else if (width <=  800 && width > 425) {
       setColumnCount(3);
+      console.log('3')
     } else {
       setColumnCount(2);
+      console.log('2')
     }
   };
 
