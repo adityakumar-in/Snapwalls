@@ -13,11 +13,11 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
     const getWallpaperDimensions = (type) => {
         switch (type) {
             case 'Mobile':
-                return { width: 390, height: 844 };
+                return { width: 1440, height: 2560 }; // 2.5K for mobile
             case 'Desktop':
-                return { width: 1920, height: 1080 };
+                return { width: 3840, height: 2160 }; // 4K for desktop
             default:
-                return { width: 1440, height: 900 };
+                return { width: 3840, height: 2160 }; // Default to 4K
         }
     };
 
@@ -139,7 +139,7 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                                         </div>
                                     </div>
                                     <button 
-                                        className="download-button" 
+                                        className="created-snap-download-button" 
                                         onClick={() => handleDownload(wallpaper?.imageUrl, wallpaper?.type || 'wallpaper', index)}
                                         disabled={loadingStates[index] || !wallpaper?.imageUrl}
                                     >

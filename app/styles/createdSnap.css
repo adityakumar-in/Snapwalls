@@ -236,7 +236,7 @@
     animation: spin 1s linear infinite;
 }
 
-.download-button {
+.created-snap-download-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -254,28 +254,28 @@
     letter-spacing: 0.02em;
 }
 
-.download-button:hover {
+.created-snap-download-button:hover {
     transform: translateY(-2px);
     filter: brightness(1.1);
     box-shadow: 0 4px 12px var(--theme-shadow-color);
 }
 
-.download-button:active {
+.created-snap-download-button:active {
     transform: translateY(0);
 }
 
-.download-button:disabled {
+.created-snap-download-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
 }
 
-.download-button svg {
+.created-snap-download-button svg {
     transition: transform 0.3s ease;
 }
 
-.download-button:hover svg {
+.created-snap-download-button:hover svg {
     transform: translateY(2px);
 }
 

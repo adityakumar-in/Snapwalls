@@ -80,8 +80,8 @@ const page = () => {
 
   const generateSingleWallpaper = async (prompt, tag, index) => {
     const imageUrl = await generatePollinationImage(prompt, {
-      width: tag === 'Mobile' ? 720 : tag === '' ? window.innerWidth : 1280,
-      height: tag === 'Mobile' ? 1280 : tag === '' ? window.innerHeight : 720,
+      width: tag === 'Mobile' ? 1440 : tag === '' ? window.innerWidth : 3840, // 4K for desktop
+      height: tag === 'Mobile' ? 2560 : tag === '' ? window.innerHeight : 2160, // 4K for desktop
       model: 'flux',
       seed: Date.now() + index // Add different seed for variations
     });
