@@ -1,14 +1,41 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaCamera, FaFire } from 'react-icons/fa';
 import { DownloadIcon, LoadingIcon, CheckIcon } from './icons/DownloadIcon';
+import { db } from '/components/firebase.config';
+import { getAuth } from 'firebase/auth';
+import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
 import '../app/styles/wallpaperCard.css';
 
 const WallpaperCard = ({ imageURL, type }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isSnapped, setIsSnapped] = useState(false);
   const [downloadState, setDownloadState] = useState('idle'); // idle, downloading, success
+  const auth = getAuth();
+
+  const getWallpaperKey = (url) => {
+    // Create a simple hash of the URL
+    let hash = 0;
+    for (let i = 0; i < url.length; i++) {
+      const char = url.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    // Make sure it's positive and convert to base36 for shorter string
+    return Math.abs(hash).toString(36);
+  };
+
+  useEffect(() => {
+    if (!auth.currentUser) return;
+    
+    const wallpaperKey = getWallpaperKey(imageURL);
+    const snappedRef = ref(db, `users/${auth.currentUser.uid}/snapped/${wallpaperKey}`);
+    
+    onValue(snappedRef, (snapshot) => {
+      setIsSnapped(snapshot.exists());
+    });
+  }, [imageURL, auth.currentUser]);
 
   const handleDownload = async () => {
     try {
@@ -88,9 +115,28 @@ const WallpaperCard = ({ imageURL, type }) => {
     }
   };
 
-  const handleSnap = (e) => {
+  const handleSnap = async (e) => {
     e.stopPropagation();
-    setIsSnapped(!isSnapped);
+    if (!auth.currentUser) {
+      alert('Please login to snap wallpapers');
+      return;
+    }
+
+    const wallpaperKey = getWallpaperKey(imageURL);
+    const snappedRef = ref(db, `users/${auth.currentUser.uid}/snapped/${wallpaperKey}`);
+    
+    try {
+      if (isSnapped) {
+        await remove(snappedRef);
+      } else {
+        await set(snappedRef, {
+          url: imageURL,
+          timestamp: Date.now()
+        });
+      }
+    } catch (error) {
+      console.error('Error updating snap status:', error);
+    }
   };
 
   return (
