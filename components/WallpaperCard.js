@@ -1,11 +1,12 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
-import { FaCamera, FaDownload } from 'react-icons/fa';
+import { FaCamera, FaDownload, FaFire } from 'react-icons/fa';
 import '../app/styles/wallpaperCard.css';
 
 const WallpaperCard = ({ imageURL, type }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isSnapped, setIsSnapped] = useState(false);
 
   const handleDownload = async () => {
     try {
@@ -24,9 +25,14 @@ const WallpaperCard = ({ imageURL, type }) => {
     }
   };
 
+  const handleSnap = (e) => {
+    e.stopPropagation();
+    setIsSnapped(!isSnapped);
+  };
+
   return (
     <div 
-      className={`wallpaper-card wallpaper-card-${type}`}
+      className={`firebase-wallpaper-card firebase-wallpaper-card-${type}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -34,22 +40,31 @@ const WallpaperCard = ({ imageURL, type }) => {
         src={imageURL}
         alt="Wallpaper"
         fill
-        className="wallpaper-image"
+        className="firebase-wallpaper-image"
       />
       
-      {/* Snap Button */}
       <button 
-        className={`card-button snap-button ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        onClick={handleSnap}
+        className={`firebase-card-button firebase-snap-button ${isHovered ? 'opacity-100' : 'opacity-0'} ${isSnapped ? 'firebase-snapped' : ''}`}
       >
-        <FaCamera className="button-icon" />
+        {isSnapped ? (
+          <>
+            <FaFire className="firebase-button-icon" />
+            <span className="firebase-snap-text firebase-snapped">Snapped</span>
+          </>
+        ) : (
+          <>
+            <FaCamera className="firebase-button-icon" />
+            <span className="firebase-snap-text">Snap</span>
+          </>
+        )}
       </button>
 
-      {/* Download Button */}
       <button 
         onClick={handleDownload}
-        className={`card-button download-button ${isHovered ? 'opacity-100' : 'opacity-0'}`}
+        className={`firebase-card-button firebase-download-button ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       >
-        <FaDownload className="button-icon" />
+        <FaDownload className="firebase-button-icon" />
       </button>
     </div>
   );
