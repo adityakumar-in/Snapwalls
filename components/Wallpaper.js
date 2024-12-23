@@ -53,18 +53,14 @@ const Wallpaper = () => {
     const fetchImageRefs = async () => {
       setLoading(true);
       try {
-        console.log('Fetching image references...');
         const storageRef = ref(storage, '/'); 
-        console.log('Storage ref:', storageRef);
         
         const result = await listAll(storageRef);
-        console.log('Found images:', result.items.length);
         
         setAllImageRefs(result.items);
         if (result.items.length > 0) {
           loadMoreImages(result.items, 0);
         } else {
-          console.log('No images found in storage');
           setError('No images found in storage');
         }
       } catch (error) {
@@ -84,7 +80,6 @@ const Wallpaper = () => {
 
     setLoading(true);
     try {
-      console.log(`Loading images from index ${startIndex}`);
       const endIndex = Math.min(startIndex + batchSize, refs.length);
       const newImagesPromises = refs.slice(startIndex, endIndex).map(async (imageRef) => {
         try {
@@ -101,10 +96,8 @@ const Wallpaper = () => {
             const maxCacheAge = 30 * 60 * 1000; // 30 minutes
 
             if (cacheAge < maxCacheAge) {
-              console.log('Using cached URL for:', fileName);
               url = cachedUrl;
             } else {
-              console.log('Cache expired for:', fileName);
               url = await getDownloadURL(imageRef);
               // Update cache with new timestamp
               sessionStorage.setItem(cacheKey, JSON.stringify({
@@ -132,7 +125,6 @@ const Wallpaper = () => {
       });
 
       const newImages = (await Promise.all(newImagesPromises)).filter(Boolean);
-      console.log('Loaded new images:', newImages.length);
       
       // Add new images to main display or buffer based on current scroll position
       if (images.length === 0) {

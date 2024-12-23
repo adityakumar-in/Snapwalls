@@ -40,24 +40,20 @@ const WallpaperCard = ({ imageURL, type }) => {
   const handleDownload = async () => {
     try {
       setDownloadState('downloading');
-      console.log('Starting download for URL:', imageURL);
       
       // Get the filename from the Firebase URL
       const urlObj = new URL(imageURL);
       const pathSegments = urlObj.pathname.split('/');
       const encodedFilename = pathSegments[pathSegments.length - 1].split('?')[0];
       const filename = decodeURIComponent(encodedFilename);
-      console.log('Original filename:', filename);
       
       const parts = filename.split('_');
-      console.log('Filename parts:', parts);
       
       let name = '';
       
       if (parts.length >= 2) {
         // Get the second to last part
         const rawName = parts[parts.length - 2];
-        console.log('Raw name part:', rawName);
         
         // Remove any numbers from the end and split by hyphen
         name = rawName.replace(/-\d+$/, '').split('-')
@@ -66,11 +62,9 @@ const WallpaperCard = ({ imageURL, type }) => {
       } else {
         name = 'wallpaper';
       }
-      console.log('Final name:', name);
       
       const extension = filename.split('.').pop();
       const finalFilename = `${name}.${extension}`;
-      console.log('Final filename:', finalFilename);
 
       // Create the download URL with parameters
       const downloadUrl = `/api/download?url=${encodeURIComponent(imageURL)}&filename=${encodeURIComponent(finalFilename)}`;
@@ -101,7 +95,6 @@ const WallpaperCard = ({ imageURL, type }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
       
-      console.log('Download completed');
       setDownloadState('success');
       
       // Reset to idle state after showing success
