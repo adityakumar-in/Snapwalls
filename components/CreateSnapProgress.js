@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import '/app/styles/createSnapProgress.css';
 
 const CreateSnapProgress = ({ progress }) => {
@@ -17,7 +18,6 @@ const CreateSnapProgress = ({ progress }) => {
   return (
     <div className="progress-overlay">
       <div className="progress-modal">
-        {/* Glowing Background Effect */}
         <div className="glow-effect"></div>
 
         {showSuccess ? (
@@ -32,65 +32,71 @@ const CreateSnapProgress = ({ progress }) => {
             <p className="success-message">Your personalized learning journey is ready</p>
           </div>
         ) : (
-          <>
-
-            {/* Main Progress Circle */}
-            <div className="progress-circle">
-              <svg className="progress-ring" viewBox="0 0 160 160" width="160" height="160">
-                <circle
-                  className="progress-ring-bg"
-                  strokeWidth="6"
-                  fill="transparent"
-                  r="74"
-                  cx="80"
-                  cy="80"
-                />
-                <circle
-                  className="progress-ring-fill"
-                  strokeWidth="6"
-                  fill="transparent"
-                  r="74"
-                  cx="80"
-                  cy="80"
-                  style={{
-                    strokeDasharray: `${2 * Math.PI * 74}`,
-                    strokeDashoffset: `${2 * Math.PI * 74 * (1 - progress / 100)}`
-                  }}
-                />
-              </svg>
-              <div className="progress-number-wrapper">
-                <div className="progress-number">
-                  <span>{Math.round(progress)}%</span>
-                </div>
+          <div className="loading-container">
+            {/* Loader GIF Container */}
+            <div className="loader-wrapper">
+              <img 
+                src="/loader.gif" 
+                alt="Loading..."
+                className="loader-gif"
+              />
+              <div className="progress-indicator">
+                <svg viewBox="0 0 100 100" className="progress-svg">
+                  <circle
+                    className="progress-circle-bg"
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    strokeWidth="5"
+                  />
+                  <circle
+                    className="progress-circle-fill"
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    strokeWidth="5"
+                    style={{
+                      strokeDasharray: `${2 * Math.PI * 45}`,
+                      strokeDashoffset: `${2 * Math.PI * 45 * (1 - progress / 100)}`
+                    }}
+                  />
+                </svg>
+              </div>
+              <div className="progress-badge">
+                {Math.round(progress)}%
               </div>
             </div>
 
-            {/* Progress Information */}
-            <div className="progress-info">
-              <h3>Creating Your Roadmap</h3>
-              <div className="progress-bar-container">
+            {/* Status Information */}
+            <div className="status-container">
+              <h3 className="status-title">Creating Your Wallpaper</h3>
+              <div className="status-bar">
                 <div 
-                  className="progress-bar-fill"
+                  className="status-fill"
                   style={{ width: `${progress}%` }}
                 >
-                  <div className="progress-glow"></div>
+                  <div className="status-glow"></div>
                 </div>
               </div>
               <p className="status-text">
-                {progress < 33 && "Analyzing your learning goals..."}
-                {progress >= 33 && progress < 66 && "Crafting personalized milestones..."}
-                {progress >= 66 && progress < 100 && "Optimizing your learning journey..."}
-                {progress === 100 && "Almost ready!"}
+                {progress < 25 && "Analyzing image details..."}
+                {progress >= 25 && progress < 50 && "Enhancing image quality..."}
+                {progress >= 50 && progress < 75 && "Optimizing for your device..."}
+                {progress >= 75 && progress < 90 && "Adding finishing touches..."}
+                {progress >= 90 && progress < 100 && "Preparing download..."}
+                {progress === 100 && "Wallpaper ready!"}
               </p>
             </div>
 
-            {/* Animated Dots */}
+            {/* Loading Dots */}
             <div className="loading-dots">
               <div className="dot"></div>
               <div className="dot"></div>
               <div className="dot"></div>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
