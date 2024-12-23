@@ -86,11 +86,19 @@ const Wallpaper = () => {
   // Function to determine column count based on screen width
   const updateColumnCount = () => {
     const width = window.innerWidth;
-    if (width >= 1600) {
+    if (width > 2385) {
+      setColumnCount(9);
+    } else if (width <= 2385 && width > 2148) {
+      setColumnCount(8);
+    } else if (width <= 2148 && width > 1911) {
+      setColumnCount(7);
+    } else if (width <= 1911 && width > 1675) {
+      setColumnCount(6);
+    } else if (width <= 1675 && width > 1438) {
       setColumnCount(5);
-    } else if (width >= 1200) {
+    } else if (width <= 1438 && width > 765) {
       setColumnCount(4);
-    } else if (width >= 768) {
+    } else if (width <=  765 && width > 700) {
       setColumnCount(3);
     } else {
       setColumnCount(2);
@@ -127,7 +135,7 @@ const Wallpaper = () => {
   }, [currentIndex, loading, allImageRefs]);
 
   return (
-    <div className="default-padding">
+    <div className="">
       <div className="wallpaper-masonry" style={{ 
         display: 'grid',
         gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
