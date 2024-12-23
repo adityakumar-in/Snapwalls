@@ -6,8 +6,6 @@ import WallpaperCard from './WallpaperCard';
 import { storage } from '/components/firebase.config';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 
-const IMAGES_PER_PAGE = 40;
-
 const Wallpaper = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,6 +13,7 @@ const Wallpaper = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [error, setError] = useState(null);
   const [columnCount, setColumnCount] = useState(2);
+  const [batchSize, setBatchSize] = useState(20); // Default batch size
   const observerTarget = useRef(null);
 
   // Fetch all image references initially
@@ -54,11 +53,23 @@ const Wallpaper = () => {
     setLoading(true);
     try {
       console.log(`Loading images from index ${startIndex}`);
-      const endIndex = Math.min(startIndex + IMAGES_PER_PAGE, refs.length);
+      const endIndex = Math.min(startIndex + batchSize, refs.length);
       const newImagesPromises = refs.slice(startIndex, endIndex).map(async (imageRef) => {
         try {
           console.log('Fetching URL for:', imageRef.name);
-          const url = await getDownloadURL(imageRef);
+          // Check if URL exists in session storage
+          const cachedUrl = sessionStorage.getItem(`wallpaper_${imageRef.name}`);
+          let url;
+          
+          if (cachedUrl) {
+            console.log('Using cached URL for:', imageRef.name);
+            url = cachedUrl;
+          } else {
+            url = await getDownloadURL(imageRef);
+            // Store URL in session storage
+            sessionStorage.setItem(`wallpaper_${imageRef.name}`, url);
+          }
+          
           const fileName = imageRef.name.toLowerCase();
           const type = fileName.includes('desktop') || 
                       fileName.includes('landscape') ? 'desktop' : 'phone';
@@ -86,34 +97,31 @@ const Wallpaper = () => {
   // Function to determine column count based on screen width
   const updateColumnCount = () => {
     const width = window.innerWidth;
+    let newColumnCount;
+    
     if (width > 2385) {
-      setColumnCount(10);
-      console.log('10')
+      newColumnCount = 10;
     } else if (width <= 2385 && width > 2148) {
-      setColumnCount(9);
-      console.log('9')
+      newColumnCount = 9;
     } else if (width <= 2148 && width > 1911) {
-      setColumnCount(8);
-      console.log('8')
+      newColumnCount = 8;
     } else if (width <= 1911 && width > 1675) {
-      setColumnCount(7);
-      console.log('7')
+      newColumnCount = 7;
     } else if (width <= 1675 && width > 1438) {
-      setColumnCount(6);
-      console.log('6')
+      newColumnCount = 6;
     } else if (width <= 1438 && width > 1175) {
-      setColumnCount(5);
-      console.log('5')
+      newColumnCount = 5;
     } else if (width <= 1175 && width > 800) {
-      setColumnCount(4);
-      console.log('4')
-    } else if (width <=  800 && width > 425) {
-      setColumnCount(3);
-      console.log('3')
+      newColumnCount = 4;
+    } else if (width <= 800 && width > 425) {
+      newColumnCount = 3;
     } else {
-      setColumnCount(2);
-      console.log('2')
+      newColumnCount = 2;
     }
+    
+    setColumnCount(newColumnCount);
+    // Update batch size based on column count (columnCount * 10)
+    setBatchSize(newColumnCount * 10);
   };
 
   // Add resize listener
