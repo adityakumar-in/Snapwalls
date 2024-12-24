@@ -244,15 +244,14 @@
   height: min(85vh, 700px);
   margin: 2rem auto;
   border-radius: 32px;
-  padding: 12px;
+  padding: 12px 12px 12px;
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.1),
     rgba(255, 255, 255, 0.05)
   );
+  position: relative;
 }
-
-
 
 .image-container.phone .image-wrapper {
   border-radius: 20px;
@@ -260,22 +259,24 @@
   height: 100%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   position: relative;
+  background: var(--foreground);
 }
 
 /* iPhone Notch */
-.notch {
+.image-container.phone .notch {
   position: absolute;
-  top: min(12px, 3%);
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: min(120px, 35%);
   height: min(32px, 4%);
   background: #000000;
-  border-radius: 50px;
-  z-index: 100;
+  border-radius: 0 0 50px 50px;
+  z-index: 102;
+  margin-top: 4px;
 }
 
-.notch::after {
+.image-container.phone .notch::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -284,8 +285,116 @@
   width: min(90px, 75%);
   height: min(28px, 85%);
   background: #000000;
-  border-radius: 50px;
+  border-radius: 0 0 40px 40px;
   z-index: 101;
+}
+
+/* iPhone Time and Date Display */
+.phone-time-display {
+  position: absolute;
+  top: min(90px, 12%);
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  z-index: 100;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+}
+
+.phone-date {
+  font-size: min(22px, 3.2vw);
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.95;
+  letter-spacing: 0.3px;
+  color: rgba(255, 255, 255, 0.95);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.phone-time {
+  font-size: min(110px, 14vw);
+  font-weight: 300;
+  margin: 0;
+  line-height: 0.9;
+  letter-spacing: -1px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 480px) {
+  .phone-time-display {
+    top: min(85px, 11%);
+  }
+  
+  .image-container.phone .notch {
+    margin-top: 3px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .phone-time-display {
+    top: min(80px, 10%);
+  }
+  
+  .image-container.phone .notch {
+    margin-top: 3px;
+    height: min(30px, 3.8%);
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .phone-time-display {
+    top: min(75px, 9%);
+  }
+  
+  .image-container.phone .notch {
+    margin-top: 2px;
+    height: min(28px, 3.6%);
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .phone-time-display {
+    top: min(70px, 8%);
+  }
+  
+  .image-container.phone .notch {
+    margin-top: 2px;
+    height: min(26px, 3.4%);
+  }
+}
+
+/* Tall screens */
+@media screen and (min-height: 800px) {
+  .phone-time-display {
+    top: min(100px, 13%);
+  }
+  
+  .image-container.phone .notch {
+    margin-top: 5px;
+    height: min(34px, 4.2%);
+  }
+}
+
+/* Extra tall screens */
+@media screen and (min-height: 1000px) {
+  .phone-time-display {
+    top: min(110px, 14%);
+  }
+  
+  .image-container.phone .notch {
+    margin-top: 6px;
+    height: min(36px, 4.4%);
+  }
 }
 
 .image-wrapper {
@@ -1652,7 +1761,6 @@
   display: flex;
   gap: 0.6rem;
 }
-
 .gallery-action-btn {
   background: rgba(255, 255, 255, 0.15);
   border: none;

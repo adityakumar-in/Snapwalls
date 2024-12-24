@@ -251,6 +251,40 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
   );
 };
 
+// Time and Date Display Component
+const PhoneTimeDisplay = () => {
+  const [dateTime, setDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDateTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  return (
+    <div className="phone-time-display">
+      <div className="phone-date">{formatDate(dateTime)}</div>
+      <div className="phone-time">{formatTime(dateTime)}</div>
+    </div>
+  );
+};
+
 const Page = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -706,7 +740,12 @@ const Page = () => {
           )}
           {imageUrl && !loading && (
             <div className={`image-wrapper ${imageLoaded ? 'loaded' : ''}`}>
-              {wallpaperType === 'phone' && <div className="notch"></div>}
+              {wallpaperType === 'phone' && (
+                <>
+                  <div className="notch"></div>
+                  <PhoneTimeDisplay />
+                </>
+              )}
               <img 
                 src={imageUrl} 
                 alt={`Generated ${currentCategory} wallpaper`}
