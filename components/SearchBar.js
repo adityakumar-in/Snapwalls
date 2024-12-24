@@ -6,20 +6,46 @@ import '../app/styles/searchbar.css';
 
 const SearchBar = ({ onSearch }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [suggestions, setSuggestions] = useState({ genres: [], categories: [], names: [] });
+    const [suggestions, setSuggestions] = useState({ categories: [], series: [], characters: [] });
     const [allImageNames, setAllImageNames] = useState([]);
+
+    // Helper function to format display names
+    const formatDisplayName = (name) => {
+        return name
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+            .replace(/\d+$/, ''); // Remove numbers at the end
+    };
 
     // Helper function to extract structured data from filename
     const parseFileName = (filename) => {
-        // Remove file extension and _mobile/_desktop suffix
+        // Remove file extension and device type
         const baseName = filename.replace(/\.(png|jpg|jpeg)$/, '').replace(/_(mobile|desktop)$/, '');
         const parts = baseName.split('_');
         
+        // Extract series and character names
+        const category = parts[0] || '';
+        const seriesName = parts[1] || '';
+        const characterName = parts[2] || '';
+
+        // Get all searchable terms
+        const searchTerms = filename
+            .toLowerCase()
+            .replace(/\.(png|jpg|jpeg)$/, '')
+            .replace(/_(mobile|desktop)$/, '')
+            .split(/[_-]/)
+            .filter(term => term.length > 0);
+
         return {
-            genre: parts[0] || '',
-            category: parts[1] || '',
-            name: parts[2] || '',
-            fullName: parts.join(' ')
+            category: category,
+            series: seriesName,
+            character: characterName,
+            displayCategory: formatDisplayName(category),
+            displaySeries: formatDisplayName(seriesName),
+            displayCharacter: formatDisplayName(characterName),
+            searchTerms: searchTerms,
+            deviceType: filename.includes('_mobile') ? 'mobile' : 'desktop'
         };
     };
 
@@ -58,33 +84,49 @@ const SearchBar = ({ onSearch }) => {
     }, [onSearch]);
 
     const generateSuggestions = useCallback((term) => {
-        if (!term) return { genres: [], categories: [], names: [] };
+        if (!term) return { categories: [], series: [], characters: [] };
 
-        const searchTerm = term.toLowerCase();
+        const searchTerms = term.toLowerCase().split(' ');
         const matches = allImageNames.filter(image => 
-            image.genre.toLowerCase().includes(searchTerm) ||
-            image.category.toLowerCase().includes(searchTerm) ||
-            image.name.toLowerCase().includes(searchTerm)
+            searchTerms.every(term => 
+                image.searchTerms.some(searchTerm => 
+                    searchTerm.includes(term)
+                )
+            )
         );
 
         // Get unique values
-        const genres = [...new Set(matches.map(m => m.genre))]
-            .filter(genre => genre.toLowerCase().includes(searchTerm));
         const categories = [...new Set(matches.map(m => m.category))]
-            .filter(category => category.toLowerCase().includes(searchTerm));
-        const names = [...new Set(matches.map(m => m.name))]
-            .filter(name => name.toLowerCase().includes(searchTerm));
+            .filter(category => 
+                searchTerms.every(term => 
+                    category.toLowerCase().includes(term)
+                )
+            );
+
+        const series = [...new Set(matches.map(m => m.series))]
+            .filter(series => 
+                searchTerms.every(term => 
+                    series.toLowerCase().includes(term)
+                )
+            );
+
+        // Get unique character names for the matching series
+        const characters = [...new Set(
+            matches
+                .filter(m => m.character && !m.character.includes(series[0])) // Exclude series names from characters
+                .map(m => m.character)
+        )];
 
         return {
-            genres: genres.slice(0, 3),    // Limit to 3 suggestions per category
-            categories: categories.slice(0, 3),
-            names: names.slice(0, 3)
+            categories: categories.map(formatDisplayName).slice(0, 3),
+            series: series.map(formatDisplayName).slice(0, 3),
+            characters: characters.map(formatDisplayName).slice(0, 5)
         };
     }, [allImageNames]);
 
     const handleSearch = useCallback((term) => {
         if (term.trim() === '') {
-            setSuggestions({ genres: [], categories: [], names: [] });
+            setSuggestions({ categories: [], series: [], characters: [] });
             onSearch(allImageNames);
             return;
         }
@@ -92,11 +134,14 @@ const SearchBar = ({ onSearch }) => {
         const newSuggestions = generateSuggestions(term);
         setSuggestions(newSuggestions);
 
-        // Filter wallpapers based on the search term
+        // Filter wallpapers based on search terms
+        const searchTerms = term.toLowerCase().split(' ');
         const filtered = allImageNames.filter(image =>
-            image.genre.toLowerCase().includes(term.toLowerCase()) ||
-            image.category.toLowerCase().includes(term.toLowerCase()) ||
-            image.name.toLowerCase().includes(term.toLowerCase())
+            searchTerms.every(term =>
+                image.searchTerms.some(searchTerm =>
+                    searchTerm.includes(term)
+                )
+            )
         );
 
         onSearch(filtered);
@@ -105,7 +150,7 @@ const SearchBar = ({ onSearch }) => {
     const handleSuggestionClick = (value) => {
         setSearchTerm(value);
         handleSearch(value);
-        setSuggestions({ genres: [], categories: [], names: [] });
+        setSuggestions({ categories: [], series: [], characters: [] });
     };
 
     useEffect(() => {
@@ -128,26 +173,12 @@ const SearchBar = ({ onSearch }) => {
                     onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                             handleSearch(searchTerm);
-                            setSuggestions({ genres: [], categories: [], names: [] });
+                            setSuggestions({ categories: [], series: [], characters: [] });
                         }
                     }}
                 />
-                {searchTerm && (suggestions.genres.length > 0 || suggestions.categories.length > 0 || suggestions.names.length > 0) && (
+                {searchTerm && (suggestions.categories.length > 0 || suggestions.series.length > 0 || suggestions.characters.length > 0) && (
                     <div className="suggestions-container">
-                        {suggestions.genres.length > 0 && (
-                            <div className="suggestion-category">
-                                <div className="suggestion-category-title">Genres</div>
-                                {suggestions.genres.map((genre, index) => (
-                                    <div
-                                        key={`genre-${index}`}
-                                        className="suggestion-item"
-                                        onClick={() => handleSuggestionClick(genre)}
-                                    >
-                                        {genre}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                         {suggestions.categories.length > 0 && (
                             <div className="suggestion-category">
                                 <div className="suggestion-category-title">Categories</div>
@@ -162,16 +193,30 @@ const SearchBar = ({ onSearch }) => {
                                 ))}
                             </div>
                         )}
-                        {suggestions.names.length > 0 && (
+                        {suggestions.series.length > 0 && (
                             <div className="suggestion-category">
-                                <div className="suggestion-category-title">Names</div>
-                                {suggestions.names.map((name, index) => (
+                                <div className="suggestion-category-title">Series</div>
+                                {suggestions.series.map((series, index) => (
                                     <div
-                                        key={`name-${index}`}
+                                        key={`series-${index}`}
                                         className="suggestion-item"
-                                        onClick={() => handleSuggestionClick(name)}
+                                        onClick={() => handleSuggestionClick(series)}
                                     >
-                                        {name}
+                                        {series}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {suggestions.characters.length > 0 && (
+                            <div className="suggestion-category">
+                                <div className="suggestion-category-title">Characters</div>
+                                {suggestions.characters.map((character, index) => (
+                                    <div
+                                        key={`character-${index}`}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(character)}
+                                    >
+                                        {character}
                                     </div>
                                 ))}
                             </div>
