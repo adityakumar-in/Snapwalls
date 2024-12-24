@@ -6,51 +6,37 @@ import '../app/styles/searchbar.css';
 
 const SearchBar = ({ onSearch }) => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState({ genres: [], categories: [], names: [] });
     const [allImageNames, setAllImageNames] = useState([]);
 
-    // Helper function to extract searchable terms from filename
-    const getSearchableTerms = (filename) => {
-        // Remove file extension and _mobile suffix
-        const baseName = filename.replace(/\.(png|jpg|jpeg)$/, '').replace(/_mobile$/, '');
-        // Split by underscores and hyphens
-        const terms = baseName.split(/[_-]/).filter(term => term.length > 0);
-        return terms;
+    // Helper function to extract structured data from filename
+    const parseFileName = (filename) => {
+        // Remove file extension and _mobile/_desktop suffix
+        const baseName = filename.replace(/\.(png|jpg|jpeg)$/, '').replace(/_(mobile|desktop)$/, '');
+        const parts = baseName.split('_');
+        
+        return {
+            genre: parts[0] || '',
+            category: parts[1] || '',
+            name: parts[2] || '',
+            fullName: parts.join(' ')
+        };
     };
 
     useEffect(() => {
         const fetchImageNames = async () => {
-            console.log('Storage instance:', storage);
             try {
-                console.log('Storage bucket:', storage.app.options.storageBucket);
-                
-                // Create reference to the root since images might be at root level
                 const storageRef = ref(storage, '/');
-                console.log('Storage reference:', storageRef.fullPath);
-
-                console.log('Listing items from storage...');
                 const result = await listAll(storageRef);
-                console.log('Items found:', result.items.length);
-                console.log('Items:', result.items.map(item => item.fullPath));
-
-                if (result.items.length === 0) {
-                    console.log('No items found in storage');
-                    return;
-                }
 
                 const namesPromises = result.items.map(async (item) => {
                     try {
-                        console.log('Fetching URL for:', item.fullPath);
                         const url = await getDownloadURL(item);
-                        console.log('Successfully got URL for:', item.fullPath);
-                        
-                        // Get searchable terms from the filename
-                        const searchTerms = getSearchableTerms(item.name);
+                        const parsedData = parseFileName(item.name);
                         
                         return {
-                            name: item.name,
-                            searchTerms: searchTerms,
-                            displayName: searchTerms.join(' '), // For display in suggestions
+                            ...parsedData,
+                            originalName: item.name,
                             url: url,
                             fullPath: item.fullPath
                         };
@@ -61,54 +47,65 @@ const SearchBar = ({ onSearch }) => {
                 });
                 
                 const imageData = (await Promise.all(namesPromises)).filter(Boolean);
-                console.log('Final image data:', imageData);
-                
-                if (imageData.length > 0) {
-                    setAllImageNames(imageData);
-                    onSearch(imageData);
-                } else {
-                    console.log('No valid images found after processing');
-                }
+                setAllImageNames(imageData);
+                onSearch(imageData);
             } catch (error) {
                 console.error('Error in fetchImageNames:', error);
-                console.error('Error details:', {
-                    code: error.code,
-                    message: error.message,
-                    serverResponse: error.serverResponse
-                });
             }
         };
 
         fetchImageNames();
     }, [onSearch]);
 
+    const generateSuggestions = useCallback((term) => {
+        if (!term) return { genres: [], categories: [], names: [] };
+
+        const searchTerm = term.toLowerCase();
+        const matches = allImageNames.filter(image => 
+            image.genre.toLowerCase().includes(searchTerm) ||
+            image.category.toLowerCase().includes(searchTerm) ||
+            image.name.toLowerCase().includes(searchTerm)
+        );
+
+        // Get unique values
+        const genres = [...new Set(matches.map(m => m.genre))]
+            .filter(genre => genre.toLowerCase().includes(searchTerm));
+        const categories = [...new Set(matches.map(m => m.category))]
+            .filter(category => category.toLowerCase().includes(searchTerm));
+        const names = [...new Set(matches.map(m => m.name))]
+            .filter(name => name.toLowerCase().includes(searchTerm));
+
+        return {
+            genres: genres.slice(0, 3),    // Limit to 3 suggestions per category
+            categories: categories.slice(0, 3),
+            names: names.slice(0, 3)
+        };
+    }, [allImageNames]);
+
     const handleSearch = useCallback((term) => {
-        console.log('Searching for:', term);
         if (term.trim() === '') {
-            setSuggestions([]);
+            setSuggestions({ genres: [], categories: [], names: [] });
             onSearch(allImageNames);
             return;
         }
 
-        const searchTerm = term.toLowerCase();
+        const newSuggestions = generateSuggestions(term);
+        setSuggestions(newSuggestions);
+
+        // Filter wallpapers based on the search term
         const filtered = allImageNames.filter(image =>
-            // Search through all terms extracted from the filename
-            image.searchTerms.some(term => 
-                term.toLowerCase().includes(searchTerm)
-            )
+            image.genre.toLowerCase().includes(term.toLowerCase()) ||
+            image.category.toLowerCase().includes(term.toLowerCase()) ||
+            image.name.toLowerCase().includes(term.toLowerCase())
         );
-        console.log('Filtered results:', filtered);
 
-        setSuggestions(filtered);
         onSearch(filtered);
-    }, [allImageNames, onSearch]);
+    }, [allImageNames, onSearch, generateSuggestions]);
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            console.log('Enter pressed with term:', searchTerm);
-            handleSearch(searchTerm);
-            setSuggestions([]);
-        }
+    const handleSuggestionClick = (value) => {
+        setSearchTerm(value);
+        handleSearch(value);
+        setSuggestions({ genres: [], categories: [], names: [] });
     };
 
     useEffect(() => {
@@ -128,23 +125,57 @@ const SearchBar = ({ onSearch }) => {
                     placeholder="Search wallpapers..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSearch(searchTerm);
+                            setSuggestions({ genres: [], categories: [], names: [] });
+                        }
+                    }}
                 />
-                {searchTerm && suggestions.length > 0 && (
+                {searchTerm && (suggestions.genres.length > 0 || suggestions.categories.length > 0 || suggestions.names.length > 0) && (
                     <div className="suggestions-container">
-                        {suggestions.map((image, index) => (
-                            <div
-                                key={index}
-                                className="suggestion-item"
-                                onClick={() => {
-                                    setSearchTerm(image.displayName);
-                                    handleSearch(image.displayName);
-                                    setSuggestions([]);
-                                }}
-                            >
-                                {image.displayName}
+                        {suggestions.genres.length > 0 && (
+                            <div className="suggestion-category">
+                                <div className="suggestion-category-title">Genres</div>
+                                {suggestions.genres.map((genre, index) => (
+                                    <div
+                                        key={`genre-${index}`}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(genre)}
+                                    >
+                                        {genre}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        )}
+                        {suggestions.categories.length > 0 && (
+                            <div className="suggestion-category">
+                                <div className="suggestion-category-title">Categories</div>
+                                {suggestions.categories.map((category, index) => (
+                                    <div
+                                        key={`category-${index}`}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(category)}
+                                    >
+                                        {category}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {suggestions.names.length > 0 && (
+                            <div className="suggestion-category">
+                                <div className="suggestion-category-title">Names</div>
+                                {suggestions.names.map((name, index) => (
+                                    <div
+                                        key={`name-${index}`}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(name)}
+                                    >
+                                        {name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
