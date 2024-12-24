@@ -706,6 +706,7 @@ const Page = () => {
           )}
           {imageUrl && !loading && (
             <div className={`image-wrapper ${imageLoaded ? 'loaded' : ''}`}>
+              {wallpaperType === 'phone' && <div className="notch"></div>}
               <img 
                 src={imageUrl} 
                 alt={`Generated ${currentCategory} wallpaper`}
