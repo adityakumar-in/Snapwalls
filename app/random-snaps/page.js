@@ -722,6 +722,16 @@ const Page = () => {
     item.addEventListener('touchend', handleTouchEnd);
   };
 
+  const handleGalleryItemAction = (item) => {
+    setImageUrl(item.url);
+    setCurrentCategory(item.category);
+    setWallpaperType(item.type);
+    setSelectedQuality(item.quality);
+    setSelectedStyle(item.style);
+    setImageLoaded(true);
+    handleCloseDrawer(); // Use handleCloseDrawer instead of just setting isGalleryOpen
+  };
+
   return (
     <div className='default-padding'>
       <div 
@@ -929,20 +939,21 @@ const Page = () => {
                   <img src={item.url} alt={`${item.category} wallpaper`} />
                   <div className="gallery-item-info">
                     <div className="gallery-item-details">
-                      <span className="category">{item.category}</span>
-                      <span className="type">{item.type}</span>
+                      <div className="category">{item.category}</div>
+                      <div className="type">{item.type}</div>
+                      <div className="timestamp">
+                        {new Date(item.timestamp).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
                     </div>
                     <div className="gallery-item-actions">
                       <button 
-                        onClick={() => {
-                          setImageUrl(item.url);
-                          setCurrentCategory(item.category);
-                          setWallpaperType(item.type);
-                          setSelectedQuality(item.quality);
-                          setSelectedStyle(item.style);
-                          setImageLoaded(true);
-                          setIsGalleryOpen(false);
-                        }}
+                        onClick={() => handleGalleryItemAction(item)}
                         className="gallery-action-btn"
                         title="Use this wallpaper"
                       >
@@ -1025,20 +1036,21 @@ const Page = () => {
                   <img src={item.url} alt={`${item.category} wallpaper`} />
                   <div className="gallery-item-info">
                     <div className="gallery-item-details">
-                      <span className="category">{item.category}</span>
-                      <span className="type">{item.type}</span>
+                      <div className="category">{item.category}</div>
+                      <div className="type">{item.type}</div>
+                      <div className="timestamp">
+                        {new Date(item.timestamp).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
                     </div>
                     <div className="gallery-item-actions">
                       <button 
-                        onClick={() => {
-                          setImageUrl(item.url);
-                          setCurrentCategory(item.category);
-                          setWallpaperType(item.type);
-                          setSelectedQuality(item.quality);
-                          setSelectedStyle(item.style);
-                          setImageLoaded(true);
-                          setIsGalleryOpen(false);
-                        }}
+                        onClick={() => handleGalleryItemAction(item)}
                         className="gallery-action-btn"
                         title="Use this wallpaper"
                       >
