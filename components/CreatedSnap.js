@@ -97,7 +97,7 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                             return (
                                 <div key={index} className="wallpaper-card">
                                     <div className="wallpaper-card-header">
-                                        <div className="wallpaper-info">
+                                        <div className="create-wallpaper-info">
                                             <span className="tag">{wallpaper?.type || 'Custom'}</span>
                                             <span className="resolution">{dimensions.width} x {dimensions.height}</span>
                                         </div>
