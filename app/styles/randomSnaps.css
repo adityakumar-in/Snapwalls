@@ -244,7 +244,7 @@
   height: min(85vh, 700px);
   margin: 2rem auto;
   border-radius: 32px;
-  padding: 12px 12px 12px;
+  padding: 8px 8px 8px;
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.1),
