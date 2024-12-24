@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import SearchBar from '@/components/SearchBar';
 import WallpaperCard from '@/components/WallpaperCard';
 import '../styles/explore.css';
+import { useRouter } from 'next/navigation';
 
 const ExplorePage = () => {
+    const router = useRouter();
     const [wallpapers, setWallpapers] = useState([]);
     const [searchInfo, setSearchInfo] = useState(null);
     const [columnCount, setColumnCount] = useState(2);
@@ -100,6 +102,16 @@ const ExplorePage = () => {
                                 Character: {searchInfo.character}
                             </span>
                         )}
+                        <button 
+                            className="clear-button"
+                            onClick={() => {
+                                setWallpapers([]);
+                                setSearchInfo(null);
+                                router.refresh();
+                            }}
+                        >
+                            Clear
+                        </button>
                     </div>
                 )}
             </div>

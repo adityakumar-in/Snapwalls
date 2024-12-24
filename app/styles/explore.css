@@ -61,6 +61,26 @@
     margin: 20px 0;
 }
 
+.clear-button {
+    background-color: #ff4444;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.clear-button:hover {
+    background-color: #ff2222;
+}
+
+.clear-button:active {
+    transform: scale(0.98);
+}
+
 @media (min-width: 768px) {
     .wallpaper-masonry {
         column-count: 3;
