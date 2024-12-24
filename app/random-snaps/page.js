@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { generatePollinationImage } from '@/utils/pollinations'
 import '/app/styles/randomSnaps.css'
+import { createPortal } from 'react-dom';
 
 const QUALITY_PRESETS = {
   standard: {
@@ -88,6 +89,166 @@ const WALLPAPER_CATEGORIES = {
       'magical fantasy realm, ethereal landscape'
     ]
   }
+};
+
+const CustomSelect = ({ options, value, onChange, placeholder }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const selectRef = useRef(null);
+  const selectedOption = options.find(opt => opt.value === value) || options[0];
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+      // Close other dropdowns by dispatching a custom event
+      const event = new CustomEvent('closeOtherDropdowns', { detail: { currentSelect: selectRef.current } });
+      document.dispatchEvent(event);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
+
+  // Listen for close events from other dropdowns
+  useEffect(() => {
+    const handleCloseOthers = (event) => {
+      if (event.detail.currentSelect !== selectRef.current) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('closeOtherDropdowns', handleCloseOthers);
+    return () => {
+      document.removeEventListener('closeOtherDropdowns', handleCloseOthers);
+    };
+  }, []);
+
+  const updateDropdownPosition = () => {
+    if (selectRef.current) {
+      const rect = selectRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const idealHeight = Math.min(280, options.length * 40);
+
+      if (isMobile) {
+        // For mobile, position in the middle of the screen
+        setDropdownPosition({
+          top: `${Math.min(rect.bottom + 8, window.innerHeight - idealHeight - 20)}px`,
+          left: '50%',
+          width: `${Math.min(rect.width, window.innerWidth - 32)}px`
+        });
+      } else {
+        // For desktop, position relative to the select
+        let top;
+        if (spaceBelow >= idealHeight || spaceBelow >= spaceAbove) {
+          top = rect.bottom + 8;
+        } else {
+          top = rect.top - idealHeight - 8;
+        }
+
+        setDropdownPosition({
+          top: `${top}px`,
+          left: `${rect.left}px`,
+          width: `${rect.width}px`,
+        });
+      }
+    }
+  };
+
+  const handleTriggerClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isOpen) {
+      updateDropdownPosition();
+    }
+    setIsOpen(!isOpen);
+  };
+
+  const handleOptionClick = (optionValue, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  // Update position on scroll or resize
+  useEffect(() => {
+    if (isOpen) {
+      const handleUpdate = () => {
+        updateDropdownPosition();
+      };
+
+      window.addEventListener('scroll', handleUpdate, true);
+      window.addEventListener('resize', handleUpdate);
+
+      return () => {
+        window.removeEventListener('scroll', handleUpdate, true);
+        window.removeEventListener('resize', handleUpdate);
+      };
+    }
+  }, [isOpen]);
+
+  return (
+    <div 
+      className={`custom-select ${isOpen ? 'open' : ''}`} 
+      ref={selectRef}
+    >
+      <button
+        type="button"
+        className={`select-trigger ${isOpen ? 'open' : ''}`}
+        onClick={handleTriggerClick}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+      >
+        <span>{selectedOption?.label || placeholder}</span>
+        <svg className="select-arrow" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7 10l5 5 5-5z"/>
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div 
+          className="select-options"
+          role="listbox"
+          aria-label={placeholder}
+          style={{
+            top: dropdownPosition.top,
+            width: dropdownPosition.width,
+            transform: isMobile ? 'translateX(-50%)' : 'none'
+          }}
+        >
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`select-option ${option.value === value ? 'selected' : ''}`}
+              onClick={(e) => handleOptionClick(option.value, e)}
+              role="option"
+              aria-selected={option.value === value}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 const Page = () => {
@@ -462,38 +623,38 @@ const Page = () => {
             </div>
 
             <div className="select-group">
-              <select 
-                value={selectedCategory} 
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="control-select"
-              >
-                <option value="random">Random Category</option>
-                {Object.keys(WALLPAPER_CATEGORIES).map(category => (
-                  <option key={category} value={category}>
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </option>
-                ))}
-              </select>
+              <CustomSelect
+                options={[
+                  { value: 'random', label: 'Random Category' },
+                  ...Object.keys(WALLPAPER_CATEGORIES).map(category => ({
+                    value: category,
+                    label: category.charAt(0).toUpperCase() + category.slice(1)
+                  }))
+                ]}
+                value={selectedCategory}
+                onChange={setSelectedCategory}
+                placeholder="Random Category"
+              />
 
-              <select
+              <CustomSelect
+                options={Object.entries(QUALITY_PRESETS).map(([key, { label }]) => ({
+                  value: key,
+                  label
+                }))}
                 value={selectedQuality}
-                onChange={(e) => setSelectedQuality(e.target.value)}
-                className="control-select"
-              >
-                {Object.entries(QUALITY_PRESETS).map(([key, { label }]) => (
-                  <option key={key} value={key}>{label}</option>
-                ))}
-              </select>
+                onChange={setSelectedQuality}
+                placeholder="Select Quality"
+              />
 
-              <select
+              <CustomSelect
+                options={Object.entries(STYLE_PRESETS).map(([key, { label }]) => ({
+                  value: key,
+                  label
+                }))}
                 value={selectedStyle}
-                onChange={(e) => setSelectedStyle(e.target.value)}
-                className="control-select"
-              >
-                {Object.entries(STYLE_PRESETS).map(([key, { label }]) => (
-                  <option key={key} value={key}>{label}</option>
-                ))}
-              </select>
+                onChange={setSelectedStyle}
+                placeholder="Select Style"
+              />
             </div>
           </div>
           
