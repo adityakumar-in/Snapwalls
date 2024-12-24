@@ -90,11 +90,11 @@ const CreateSnapProgress = ({ progress }) => {
               </p>
             </div>
 
-            {/* Loading Dots */}
-            <div className="loading-dots">
-              <div className="dot"></div>
-              <div className="dot"></div>
-              <div className="dot"></div>
+            {/* Loading create-dots */}
+            <div className="loading-create-dots">
+              <div className="create-dot"></div>
+              <div className="create-dot"></div>
+              <div className="create-dot"></div>
             </div>
           </div>
         )}
