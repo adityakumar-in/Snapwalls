@@ -1,5 +1,15 @@
 'use client';
 
+// Suppress hydration warnings in development
+const originalError = console.error;
+if (process.env.NODE_ENV === 'development') {
+  console.error = (...args) => {
+    if (args[0]?.includes('Warning: Text content did not match')) return;
+    if (args[0]?.includes('Warning: An error occurred during hydration')) return;
+    originalError.call(console, ...args);
+  };
+}
+
 import React, { useState, useEffect, useRef } from 'react'
 import { generatePollinationImage } from '@/utils/pollinations'
 import '/app/styles/randomSnaps.css'
@@ -253,15 +263,22 @@ const CustomSelect = ({ options, value, onChange, placeholder }) => {
 
 // Time and Date Display Component
 const PhoneTimeDisplay = () => {
+  const [mounted, setMounted] = useState(false);
   const [dateTime, setDateTime] = useState(new Date());
 
   useEffect(() => {
+    setMounted(true);
     const timer = setInterval(() => {
       setDateTime(new Date());
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
+
+  // Don't render anything until mounted (client-side)
+  if (!mounted) {
+    return null;
+  }
 
   const formatTime = (date) => {
     const hours = date.getHours();
@@ -285,6 +302,75 @@ const PhoneTimeDisplay = () => {
   );
 };
 
+// Add this custom hook before the Page component
+const useLocalStorage = (key, initialValue) => {
+  // State to store our value
+  // Pass initial state function to useState so logic is only executed once
+  const [storedValue, setStoredValue] = useState(() => {
+    if (typeof window === 'undefined') {
+      return initialValue;
+    }
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error('Error reading from localStorage:', error);
+      return initialValue;
+    }
+  });
+
+  // Return a wrapped version of useState's setter function that persists the new value to localStorage
+  const setValue = (value) => {
+    try {
+      // Allow value to be a function so we have same API as useState
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  };
+
+  return [storedValue, setValue];
+};
+
+// Add this new component before the Page component
+const GalleryCounts = ({ favorites, history }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return (
+    <div className="gallery-counts">
+      <span className="favorite-count">{favorites.length}</span>
+      <span className="history-count">{history.length}</span>
+    </div>
+  );
+};
+
+// Add this new component before the Page component
+const ClientOnly = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return children;
+};
+
 const Page = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -294,8 +380,6 @@ const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState('random');
   const [selectedQuality, setSelectedQuality] = useState('ultra');
   const [selectedStyle, setSelectedStyle] = useState('default');
-  const [history, setHistory] = useState([]);
-  const [favorites, setFavorites] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [error, setError] = useState('');
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -317,18 +401,9 @@ const Page = () => {
   const currentYRef = useRef(null);
   const lastPositionRef = useRef(0);
 
-  // Load favorites from localStorage
-  useEffect(() => {
-    const savedFavorites = localStorage.getItem('wallpaperFavorites');
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
-    }
-  }, []);
-
-  // Save favorites to localStorage
-  useEffect(() => {
-    localStorage.setItem('wallpaperFavorites', JSON.stringify(favorites));
-  }, [favorites]);
+  // Replace the useState and useEffect for favorites and history with useLocalStorage
+  const [favorites, setFavorites] = useLocalStorage('wallpaperFavorites', []);
+  const [history, setHistory] = useLocalStorage('wallpaperHistory', []);
 
   // Handle body scroll lock when gallery is open
   useEffect(() => {
@@ -455,7 +530,7 @@ const Page = () => {
       const url = await generatePollinationImage(prompt, dimensions);
       setImageUrl(url);
 
-      // Add to history
+      // Add to history using the setter function from useLocalStorage
       const newHistoryItem = {
         url,
         category: chosenCategory,
@@ -464,7 +539,11 @@ const Page = () => {
         style: selectedStyle,
         timestamp: new Date().toISOString()
       };
-      setHistory(prev => [newHistoryItem, ...prev].slice(0, 12));
+      
+      setHistory(prevHistory => {
+        const newHistory = [newHistoryItem, ...prevHistory].slice(0, 12);
+        return newHistory;
+      });
 
     } catch (error) {
       console.error('Error generating image:', error);
@@ -518,8 +597,9 @@ const Page = () => {
     if (!imageUrl) return;
     
     const isFavorite = favorites.some(fav => fav.url === imageUrl);
+    
     if (isFavorite) {
-      setFavorites(prev => prev.filter(fav => fav.url !== imageUrl));
+      setFavorites(favorites.filter(fav => fav.url !== imageUrl));
     } else {
       const newFavorite = {
         url: imageUrl,
@@ -529,7 +609,7 @@ const Page = () => {
         style: selectedStyle,
         timestamp: new Date().toISOString()
       };
-      setFavorites(prev => [newFavorite, ...prev]);
+      setFavorites([newFavorite, ...favorites]);
     }
   };
 
@@ -618,6 +698,28 @@ const Page = () => {
     if (e.target.closest('.bottom-sheet-handle')) {
       handleCloseDrawer();
     }
+  };
+
+  const handleDeleteItem = (item, isHistoryItem) => {
+    if (isHistoryItem) {
+      setHistory(prevHistory => prevHistory.filter(h => h.timestamp !== item.timestamp));
+    } else {
+      setFavorites(prevFavorites => prevFavorites.filter(f => f.timestamp !== item.timestamp));
+    }
+  };
+
+  const handleGalleryItemTouch = (e) => {
+    const item = e.currentTarget;
+    item.classList.add('touched');
+    
+    const handleTouchEnd = () => {
+      setTimeout(() => {
+        item.classList.remove('touched');
+      }, 3000); // Hide info after 3 seconds
+      item.removeEventListener('touchend', handleTouchEnd);
+    };
+    
+    item.addEventListener('touchend', handleTouchEnd);
   };
 
   return (
@@ -710,10 +812,7 @@ const Page = () => {
               <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
                 <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z" />
               </svg>
-              <div className="gallery-counts">
-                <span className="favorite-count">{favorites.length}</span>
-                <span className="history-count">{history.length}</span>
-              </div>
+              <GalleryCounts favorites={favorites} history={history} />
             </button>
           </div>
         </div>
@@ -822,7 +921,11 @@ const Page = () => {
           <div className="gallery-drawer-content">
             <div className="gallery-grid">
               {(showHistory ? history : favorites).map((item, index) => (
-                <div key={item.timestamp} className="gallery-item">
+                <div 
+                  key={item.timestamp} 
+                  className="gallery-item"
+                  onTouchStart={handleGalleryItemTouch}
+                >
                   <img src={item.url} alt={`${item.category} wallpaper`} />
                   <div className="gallery-item-info">
                     <div className="gallery-item-details">
@@ -849,9 +952,20 @@ const Page = () => {
                       </button>
                       {!showHistory && (
                         <button 
-                          onClick={() => setFavorites(prev => prev.filter(fav => fav.timestamp !== item.timestamp))}
+                          onClick={() => handleDeleteItem(item, false)}
                           className="gallery-action-btn remove"
                           title="Remove from favorites"
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                          </svg>
+                        </button>
+                      )}
+                      {showHistory && (
+                        <button 
+                          onClick={() => handleDeleteItem(item, true)}
+                          className="gallery-action-btn remove"
+                          title="Remove from history"
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
@@ -903,7 +1017,11 @@ const Page = () => {
             <div className="gallery-grid">
               {/* Same gallery items as above */}
               {(showHistory ? history : favorites).map((item, index) => (
-                <div key={item.timestamp} className="gallery-item">
+                <div 
+                  key={item.timestamp} 
+                  className="gallery-item"
+                  onTouchStart={handleGalleryItemTouch}
+                >
                   <img src={item.url} alt={`${item.category} wallpaper`} />
                   <div className="gallery-item-info">
                     <div className="gallery-item-details">
@@ -930,9 +1048,20 @@ const Page = () => {
                       </button>
                       {!showHistory && (
                         <button 
-                          onClick={() => setFavorites(prev => prev.filter(fav => fav.timestamp !== item.timestamp))}
+                          onClick={() => handleDeleteItem(item, false)}
                           className="gallery-action-btn remove"
                           title="Remove from favorites"
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                          </svg>
+                        </button>
+                      )}
+                      {showHistory && (
+                        <button 
+                          onClick={() => handleDeleteItem(item, true)}
+                          className="gallery-action-btn remove"
+                          title="Remove from history"
                         >
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
@@ -951,4 +1080,13 @@ const Page = () => {
   )
 }
 
-export default Page
+// Wrap the Page component with ClientOnly
+const RandomSnapsPage = () => {
+  return (
+    <ClientOnly>
+      <Page />
+    </ClientOnly>
+  );
+};
+
+export default RandomSnapsPage;
