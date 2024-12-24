@@ -95,34 +95,63 @@ const SearchBar = ({ onSearch }) => {
             )
         );
 
-        // Get unique values
-        const categories = [...new Set(matches.map(m => m.category))]
-            .filter(category => 
-                searchTerms.every(term => 
-                    category.toLowerCase().includes(term)
-                )
-            );
+        // Find the most specific match type
+        const isCharacterSearch = matches.some(m => 
+            m.character.toLowerCase().includes(searchTerms[searchTerms.length - 1])
+        );
+        const isSeriesSearch = matches.some(m => 
+            m.series.toLowerCase().includes(searchTerms[searchTerms.length - 1])
+        );
 
-        const series = [...new Set(matches.map(m => m.series))]
-            .filter(series => 
-                searchTerms.every(term => 
-                    series.toLowerCase().includes(term)
-                )
-            );
+        // Get unique categories
+        const categories = [...new Set(matches.map(m => m.category))];
 
-        // Get unique character names for the matching series
+        // Get unique series names
+        const series = [...new Set(matches.map(m => m.series))];
+
+        // Get unique character names, excluding series names and numbers
         const characters = [...new Set(
             matches
-                .filter(m => m.character && !m.character.includes(series[0])) // Exclude series names from characters
-                .map(m => m.character)
+                .filter(m => m.character && !series.includes(m.character))
+                .map(m => m.character.replace(/-\d+$/, '')) // Remove numbers at the end
         )];
 
+        // If searching for a character, always show its series and category
+        if (isCharacterSearch) {
+            const characterMatches = matches.filter(m => 
+                characters.some(char => m.character.startsWith(char))
+            );
+            const relatedSeries = [...new Set(characterMatches.map(m => m.series))];
+            const relatedCategories = [...new Set(characterMatches.map(m => m.category))];
+            
+            return {
+                categories: relatedCategories.map(formatDisplayName),
+                series: relatedSeries.map(formatDisplayName),
+                characters: characters.map(formatDisplayName)
+            };
+        }
+
+        // If searching for a series, show its category and characters
+        if (isSeriesSearch) {
+            const seriesMatches = matches.filter(m => 
+                series.some(s => m.series === s)
+            );
+            const relatedCategories = [...new Set(seriesMatches.map(m => m.category))];
+            
+            return {
+                categories: relatedCategories.map(formatDisplayName),
+                series: series.map(formatDisplayName),
+                characters: characters.map(formatDisplayName)
+            };
+        }
+
+        // Default case: show all relevant suggestions
         return {
-            categories: categories.map(formatDisplayName).slice(0, 3),
-            series: series.map(formatDisplayName).slice(0, 3),
-            characters: characters.map(formatDisplayName).slice(0, 5)
+            categories: categories.map(formatDisplayName),
+            series: series.map(formatDisplayName),
+            characters: characters.map(formatDisplayName)
         };
-    }, [allImageNames]);
+    }, [allImageNames, formatDisplayName]);
 
     const handleSearch = useCallback((term) => {
         if (term.trim() === '') {
@@ -177,7 +206,7 @@ const SearchBar = ({ onSearch }) => {
                         }
                     }}
                 />
-                {searchTerm && (suggestions.categories.length > 0 || suggestions.series.length > 0 || suggestions.characters.length > 0) && (
+                {searchTerm && (
                     <div className="suggestions-container">
                         {suggestions.categories.length > 0 && (
                             <div className="suggestion-category">
