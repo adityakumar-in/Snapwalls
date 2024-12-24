@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { storage } from '@/components/firebase.config';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 import { FaSearch } from 'react-icons/fa';
@@ -10,6 +10,7 @@ const SearchBar = ({ onSearch }) => {
     const [suggestions, setSuggestions] = useState({ categories: [], series: [], characters: [] });
     const [allImageNames, setAllImageNames] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const inputRef = useRef(null);
 
     // Helper function to format display names
     const formatDisplayName = (name) => {
@@ -82,6 +83,18 @@ const SearchBar = ({ onSearch }) => {
         };
 
         fetchImageNames();
+    }, []);
+
+    useEffect(() => {
+        const handleKeyPress = (e) => {
+            if (e.key === '/' && document.activeElement !== inputRef.current) {
+                e.preventDefault();
+                inputRef.current?.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyPress);
+        return () => document.removeEventListener('keydown', handleKeyPress);
     }, []);
 
     const generateSuggestions = useCallback((term) => {
@@ -176,7 +189,6 @@ const SearchBar = ({ onSearch }) => {
             )
         );
 
-        // Get search information
         const searchInfo = {
             category: newSuggestions.categories[0] || null,
             series: newSuggestions.series[0] || null,
@@ -188,6 +200,10 @@ const SearchBar = ({ onSearch }) => {
             wallpapers: filtered,
             searchInfo: searchInfo
         });
+        
+        // Clear search input after search
+        setSearchTerm('');
+        setShowSuggestions(false);
     }, [allImageNames, onSearch, generateSuggestions]);
 
     const handleInputChange = (e) => {
@@ -204,23 +220,24 @@ const SearchBar = ({ onSearch }) => {
     };
 
     const handleSuggestionClick = (value) => {
-        setSearchTerm(value);
-        setShowSuggestions(false);
         handleSearch(value);
     };
 
     const handleSearchClick = () => {
-        setShowSuggestions(false);
         handleSearch(searchTerm);
     };
 
     return (
         <div className="search-container">
             <div className="search-input-container">
+                <div className="search-icon">
+                    <FaSearch />
+                </div>
                 <input
+                    ref={inputRef}
                     type="text"
                     className="search-input"
-                    placeholder="Search wallpapers..."
+                    placeholder="Search wallpapers... Press '/' to focus"
                     value={searchTerm}
                     onChange={handleInputChange}
                     onKeyPress={(e) => {
@@ -230,13 +247,7 @@ const SearchBar = ({ onSearch }) => {
                         }
                     }}
                 />
-                <button 
-                    className="search-button"
-                    onClick={handleSearchClick}
-                    aria-label="Search"
-                >
-                    <FaSearch />
-                </button>
+                <div className="search-slash">/</div>
                 {searchTerm && showSuggestions && (
                     <div className="suggestions-container">
                         {suggestions.categories.length > 0 && (

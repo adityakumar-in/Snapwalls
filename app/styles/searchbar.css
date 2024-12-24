@@ -1,7 +1,7 @@
 .search-container {
     width: 100%;
     max-width: 600px;
-    margin: 20px auto;
+    margin: 0 auto;
     position: relative;
 }
 
@@ -12,19 +12,39 @@
 
 .search-input {
     width: 100%;
-    padding: 12px 20px;
-    border: 2px solid #e0e0e0;
+    padding: 12px 45px;
+    border: 1px solid #ddd;
     border-radius: 25px;
     font-size: 16px;
-    transition: all 0.3s ease;
-    background-color: white;
-    color: #333;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-input:focus {
-    outline: none;
-    border-color: #2196F3;
-    box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    pointer-events: none;
+}
+
+.search-slash {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 14px;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    pointer-events: none;
 }
 
 .suggestions-container {
@@ -32,45 +52,55 @@
     top: 100%;
     left: 0;
     right: 0;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-top: 5px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
     max-height: 400px;
     overflow-y: auto;
-    z-index: 1000;
-    padding: 8px 0;
+    border: 1px solid #eee;
 }
 
 .suggestion-category {
-    padding: 8px 0;
+    padding: 10px 0;
+}
+
+.suggestion-category:not(:last-child) {
     border-bottom: 1px solid #eee;
 }
 
-.suggestion-category:last-child {
-    border-bottom: none;
-}
-
 .suggestion-category-title {
-    padding: 4px 20px;
-    font-size: 0.9rem;
+    padding: 5px 15px;
+    font-size: 0.9em;
     color: #666;
     font-weight: 600;
     text-transform: uppercase;
-    background-color: #f8f9fa;
+    letter-spacing: 0.5px;
 }
 
 .suggestion-item {
-    padding: 8px 20px;
+    padding: 8px 15px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    color: #333;
-    display: flex;
-    align-items: center;
+    transition: background-color 0.2s;
 }
 
 .suggestion-item:hover {
     background-color: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        max-width: 100%;
+    }
+    
+    .search-input {
+        font-size: 14px;
+    }
+    
+    .suggestions-container {
+        max-height: 300px;
+    }
 }
 
 /* Scrollbar styling */

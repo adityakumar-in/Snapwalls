@@ -14,7 +14,8 @@ const ExplorePage = () => {
     };
 
     return (
-        <div className="explore-container">
+        <div className="default-padding">
+            <h1 className="explore-title">Explore Wallpapers</h1>
             <div className="search-section">
                 <SearchBar onSearch={handleSearch} />
                 {searchInfo && (
