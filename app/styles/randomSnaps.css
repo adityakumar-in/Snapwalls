@@ -1791,7 +1791,7 @@
   background: var(--foreground);
   border-radius: 20px 20px 0 0;
   transform: translateY(100%);
-  z-index: 1000;
+  z-index: 100000;
   height: 85vh;
   display: flex;
   flex-direction: column;
@@ -1806,7 +1806,7 @@
 }
 
 .gallery-bottom-sheet.open {
-  transform: translateY(70%); /* Show 30% initially */
+  transform: translateY(80%); /* Show 30% initially */
 }
 
 .gallery-bottom-sheet.dragging {
