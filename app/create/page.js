@@ -79,9 +79,14 @@ const page = () => {
   };
 
   const generateSingleWallpaper = async (prompt, tag, index) => {
+    // Default to 4K resolution for best quality while maintaining performance
+    const dimensions = tag === 'Mobile' 
+      ? { width: 1440, height: 2560 }  // 2.5K for mobile
+      : { width: 3840, height: 2160 }; // 4K for desktop/default
+
     const imageUrl = await generatePollinationImage(prompt, {
-      width: tag === 'Mobile' ? 1440 : tag === '' ? window.innerWidth : 3840, // 4K for desktop
-      height: tag === 'Mobile' ? 2560 : tag === '' ? window.innerHeight : 2160, // 4K for desktop
+      width: dimensions.width,
+      height: dimensions.height,
       model: 'flux',
       seed: Date.now() + index // Add different seed for variations
     });

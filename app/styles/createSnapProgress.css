@@ -327,6 +327,7 @@
   .progress-modal {
     padding: 2rem;
     gap: 1.5rem;
+    width: 80%;
   }
 
   .loader-wrapper {
