@@ -245,11 +245,8 @@
   margin: 2rem auto;
   border-radius: 32px;
   padding: 8px 8px 8px;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.05)
-  );
+  background: black;
+  border: 2px solid #868889;
   position: relative;
 }
 
@@ -273,7 +270,6 @@
   background: #000000;
   border-radius: 0 0 50px 50px;
   z-index: 102;
-  margin-top: 4px;
 }
 
 .image-container.phone .notch::after {
@@ -380,7 +376,6 @@
   }
   
   .image-container.phone .notch {
-    margin-top: 5px;
     height: min(34px, 4.2%);
   }
 }
@@ -2232,7 +2227,7 @@
   }
   
   .image-container.phone .notch {
-    width: 85px;
+    width: 80px;
     height: 23px;
     top: 6px;
     border-radius: 30px;
