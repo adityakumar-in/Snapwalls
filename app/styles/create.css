@@ -272,6 +272,14 @@
       border-radius: 6px;
     }
   }
+  @media screen and (max-width: 480px) {
+    .create-search-input {
+        font-size: 15px !important;
+        padding: 12px 20px !important;
+        padding-left: 48px !important;
+        padding-right: 40px !important;
+    }
+  }
   
   .input-container {
     position: relative;
