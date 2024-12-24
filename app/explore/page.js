@@ -90,17 +90,17 @@ const ExplorePage = () => {
                     <div className="search-info">
                         {searchInfo.category && (
                             <span className="search-tag">
-                                Category: {searchInfo.category}
+                                <span className="search-tag-inner">Category: </span> {searchInfo.category}
                             </span>
                         )}
                         {searchInfo.series && (
                             <span className="search-tag">
-                                Series: {searchInfo.series}
+                                <span className="search-tag-inner">Series: </span> {searchInfo.series}
                             </span>
                         )}
                         {searchInfo.character && (
                             <span className="search-tag">
-                                Character: {searchInfo.character}
+                                <span className="search-tag-inner">Character: </span> {searchInfo.character}
                             </span>
                         )}
                         <button 
