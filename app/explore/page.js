@@ -4,6 +4,7 @@ import SearchBar from '@/components/SearchBar';
 import WallpaperCard from '@/components/WallpaperCard';
 import '../styles/explore.css';
 import { useRouter } from 'next/navigation';
+import Wallpaper from '@/components/Wallpaper';
 
 const ExplorePage = () => {
     const router = useRouter();
@@ -122,7 +123,9 @@ const ExplorePage = () => {
                 width: '100%',
             }}>
                 {wallpapers.length === 0 ? (
-                    <div className="no-results">No wallpapers found</div>
+                    <div className="empty-state" style={{ gridColumn: '1 / -1' }}>
+                        <Wallpaper />
+                    </div>
                 ) : (
                     distributeWallpapers()
                 )}
