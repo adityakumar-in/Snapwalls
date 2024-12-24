@@ -15,6 +15,7 @@ const Wallpaper = () => {
   const [columnCount, setColumnCount] = useState(2);
   const [batchSize, setBatchSize] = useState(20);
   const [bufferImages, setBufferImages] = useState([]); // Buffer for preloaded images
+  const [preloadingBatchCount, setPreloadingBatchCount] = useState(3); // Number of batches to preload
   const observerTarget = useRef(null);
 
   // Clear cache when component mounts and set up cleanup
@@ -80,7 +81,11 @@ const Wallpaper = () => {
 
     setLoading(true);
     try {
-      const endIndex = Math.min(startIndex + batchSize, refs.length);
+      // Load multiple batches at once
+      const batchesToLoad = preloadingBatchCount;
+      const totalItemsToLoad = batchSize * batchesToLoad;
+      const endIndex = Math.min(startIndex + totalItemsToLoad, refs.length);
+      
       const newImagesPromises = refs.slice(startIndex, endIndex).map(async (imageRef) => {
         try {
           const fileName = imageRef.name.toLowerCase();
@@ -117,22 +122,28 @@ const Wallpaper = () => {
           const type = fileName.includes('desktop') || 
                       fileName.includes('landscape') ? 'desktop' : 'phone';
           
-          return { url, type };
+          return {
+            url,
+            type
+          };
         } catch (error) {
-          console.error('Error fetching URL for', imageRef.name, error);
+          console.error(`Error loading image ${imageRef.name}:`, error);
           return null;
         }
       });
 
-      const newImages = (await Promise.all(newImagesPromises)).filter(Boolean);
+      const newImages = (await Promise.all(newImagesPromises)).filter(img => img !== null);
       
-      // Add new images to main display or buffer based on current scroll position
-      if (images.length === 0) {
-        setImages(newImages);
-      } else {
-        setBufferImages(prev => [...prev, ...newImages]);
-      }
+      setImages(prevImages => [...prevImages, ...newImages]);
       setCurrentIndex(endIndex);
+
+      // If we still have more images to load, trigger the next batch automatically
+      if (endIndex < refs.length) {
+        // Small delay to prevent overwhelming the system
+        setTimeout(() => {
+          loadMoreImages(refs, endIndex);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Error loading more images:', error);
       setError(error.message);
@@ -140,14 +151,6 @@ const Wallpaper = () => {
       setLoading(false);
     }
   };
-
-  // Effect to move buffer images to main display when needed
-  useEffect(() => {
-    if (bufferImages.length > 0) {
-      setImages(prev => [...prev, ...bufferImages]);
-      setBufferImages([]);
-    }
-  }, [bufferImages]);
 
   // Function to determine column count based on screen width
   const updateColumnCount = () => {
