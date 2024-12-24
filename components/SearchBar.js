@@ -1,13 +1,15 @@
 'use client'
 import React, { useState, useEffect, useCallback } from 'react';
-import { storage } from '/components/firebase.config';
+import { storage } from '@/components/firebase.config';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
-import '../app/styles/searchbar.css';
+import { FaSearch } from 'react-icons/fa';
+import '@/app/styles/searchbar.css';
 
 const SearchBar = ({ onSearch }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState({ categories: [], series: [], characters: [] });
     const [allImageNames, setAllImageNames] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
 
     // Helper function to format display names
     const formatDisplayName = (name) => {
@@ -74,14 +76,13 @@ const SearchBar = ({ onSearch }) => {
                 
                 const imageData = (await Promise.all(namesPromises)).filter(Boolean);
                 setAllImageNames(imageData);
-                onSearch(imageData);
             } catch (error) {
                 console.error('Error in fetchImageNames:', error);
             }
         };
 
         fetchImageNames();
-    }, [onSearch]);
+    }, []);
 
     const generateSuggestions = useCallback((term) => {
         if (!term) return { categories: [], series: [], characters: [] };
@@ -156,14 +157,16 @@ const SearchBar = ({ onSearch }) => {
     const handleSearch = useCallback((term) => {
         if (term.trim() === '') {
             setSuggestions({ categories: [], series: [], characters: [] });
-            onSearch(allImageNames);
+            onSearch({ 
+                wallpapers: allImageNames,
+                searchInfo: null
+            });
             return;
         }
 
         const newSuggestions = generateSuggestions(term);
         setSuggestions(newSuggestions);
 
-        // Filter wallpapers based on search terms
         const searchTerms = term.toLowerCase().split(' ');
         const filtered = allImageNames.filter(image =>
             searchTerms.every(term =>
@@ -173,22 +176,43 @@ const SearchBar = ({ onSearch }) => {
             )
         );
 
-        onSearch(filtered);
+        // Get search information
+        const searchInfo = {
+            category: newSuggestions.categories[0] || null,
+            series: newSuggestions.series[0] || null,
+            character: newSuggestions.characters[0] || null,
+            searchTerm: term
+        };
+
+        onSearch({ 
+            wallpapers: filtered,
+            searchInfo: searchInfo
+        });
     }, [allImageNames, onSearch, generateSuggestions]);
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        if (value.trim()) {
+            const newSuggestions = generateSuggestions(value);
+            setSuggestions(newSuggestions);
+            setShowSuggestions(true);
+        } else {
+            setSuggestions({ categories: [], series: [], characters: [] });
+            setShowSuggestions(false);
+        }
+    };
 
     const handleSuggestionClick = (value) => {
         setSearchTerm(value);
+        setShowSuggestions(false);
         handleSearch(value);
-        setSuggestions({ categories: [], series: [], characters: [] });
     };
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            handleSearch(searchTerm);
-        }, 300);
-
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm, handleSearch]);
+    const handleSearchClick = () => {
+        setShowSuggestions(false);
+        handleSearch(searchTerm);
+    };
 
     return (
         <div className="search-container">
@@ -198,15 +222,22 @@ const SearchBar = ({ onSearch }) => {
                     className="search-input"
                     placeholder="Search wallpapers..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleInputChange}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter') {
+                            setShowSuggestions(false);
                             handleSearch(searchTerm);
-                            setSuggestions({ categories: [], series: [], characters: [] });
                         }
                     }}
                 />
-                {searchTerm && (
+                <button 
+                    className="search-button"
+                    onClick={handleSearchClick}
+                    aria-label="Search"
+                >
+                    <FaSearch />
+                </button>
+                {searchTerm && showSuggestions && (
                     <div className="suggestions-container">
                         {suggestions.categories.length > 0 && (
                             <div className="suggestion-category">

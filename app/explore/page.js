@@ -1,37 +1,58 @@
 'use client'
-import React, { useState, useCallback } from 'react'
-import '/app/styles/explore.css'
-import SearchBar from '/components/SearchBar'
-import WallpaperCard from '/components/WallpaperCard'
+import React, { useState } from 'react';
+import SearchBar from '@/components/SearchBar';
+import WallpaperCard from '@/components/WallpaperCard';
+import '../styles/explore.css';
 
-const Page = () => {
-  const [filteredWallpapers, setFilteredWallpapers] = useState([]);
+const ExplorePage = () => {
+    const [wallpapers, setWallpapers] = useState([]);
+    const [searchInfo, setSearchInfo] = useState(null);
 
-  const handleSearch = useCallback((wallpapers) => {
-    console.log('Explore page received wallpapers:', wallpapers);
-    setFilteredWallpapers(wallpapers);
-  }, []);
+    const handleSearch = ({ wallpapers, searchInfo }) => {
+        setWallpapers(wallpapers);
+        setSearchInfo(searchInfo);
+    };
 
-  return (
-    <div className='default-padding'>
-      <h1 className='explore-title'>Explore Wallpapers</h1>
-      <SearchBar onSearch={handleSearch} />
-      <div className='wallpaper-grid'>
-        {filteredWallpapers.length === 0 ? (
-          <div className="no-results">No wallpapers found</div>
-        ) : (
-          filteredWallpapers.map((wallpaper, index) => (
-            <WallpaperCard
-              key={`${wallpaper.name}-${index}`}
-              imageURL={wallpaper.url}
-              type="explore"
-              title={wallpaper.displayName}
-            />
-          ))
-        )}
-      </div>
-    </div>
-  )
-}
+    return (
+        <div className="explore-container">
+            <div className="search-section">
+                <SearchBar onSearch={handleSearch} />
+                {searchInfo && (
+                    <div className="search-info">
+                        {searchInfo.category && (
+                            <span className="search-tag">
+                                Category: {searchInfo.category}
+                            </span>
+                        )}
+                        {searchInfo.series && (
+                            <span className="search-tag">
+                                Series: {searchInfo.series}
+                            </span>
+                        )}
+                        {searchInfo.character && (
+                            <span className="search-tag">
+                                Character: {searchInfo.character}
+                            </span>
+                        )}
+                    </div>
+                )}
+            </div>
+            <div className="wallpaper-grid">
+                {wallpapers.length === 0 ? (
+                    <div className="no-results">No wallpapers found</div>
+                ) : (
+                    wallpapers.map((wallpaper, index) => (
+                        <WallpaperCard
+                            key={`${wallpaper.originalName}-${index}`}
+                            imageURL={wallpaper.url}
+                            type="explore"
+                            title={wallpaper.displayName}
+                        />
+                    ))
+                )}
+            </div>
+        </div>
+    );
+};
 
-export default Page
+export default ExplorePage;
