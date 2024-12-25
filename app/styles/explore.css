@@ -48,19 +48,23 @@
     display: flex;
     gap: 0.8rem;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
     padding: 0.5rem;
+    position: relative;
 }
 
 .search-tag {
     background: rgba(35, 35, 35, 0.75);
-    padding: 0.6rem 1rem;
+    padding: 0.7rem 1.2rem;
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: rgba(255, 255, 255, 0.9);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    height: 41px;
+    box-sizing: border-box;
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     box-shadow: 
@@ -81,26 +85,29 @@
 .search-tag-inner {
     color: var(--theme-color);
     font-weight: 600;
+    font-size: 0.95rem;
 }
 
 .clear-button {
-    background: rgba(159, 12, 12, 0.75);
-    color: rgba(255, 255, 255, 0.95);
-    padding: 0.6rem 1.2rem;
+    background: rgba(35, 35, 35, 0.85);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     box-shadow: 
-        0 2px 8px rgba(159, 12, 12, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.15),
         inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .clear-button::before {
@@ -108,39 +115,60 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(
-        225deg,
-        rgba(255, 255, 255, 0.1),
-        transparent 40%
+        135deg,
+        rgba(255, 59, 59, 0.1) 0%,
+        rgba(255, 59, 59, 0.2) 50%,
+        transparent 100%
     );
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
+    transform: translateX(-100%);
+}
+
+.clear-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 59, 59, 0.3);
+    border-radius: 12px;
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
 .clear-button:hover {
-    background: rgba(159, 12, 12, 0.85);
-    transform: translateY(-1px);
+    background: rgba(40, 40, 40, 0.95);
+    transform: translateY(-2px);
     box-shadow: 
-        0 4px 12px rgba(159, 12, 12, 0.3),
-        inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+        0 4px 15px rgba(255, 59, 59, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 0.5px rgba(255, 59, 59, 0.2);
 }
 
 .clear-button:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.clear-button:hover::after {
     opacity: 1;
 }
 
 .clear-button:active {
     transform: translateY(0) scale(0.98);
     box-shadow: 
-        0 2px 8px rgba(255, 34, 34, 0.2),
-        0 1px 4px rgba(0, 0, 0, 0.1);
+        0 2px 8px rgba(255, 59, 59, 0.1),
+        inset 0 0 0 0.5px rgba(255, 59, 59, 0.3);
 }
 
 .custom-filter-dropdown {
     position: relative;
     margin: 0 0.5rem;
+    width: 160px;
 }
 
 .custom-filter-button {
+    width: 100%;
+    min-width: 160px;
     background: rgba(35, 35, 35, 0.75);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -156,7 +184,9 @@
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 0.8rem;
+    white-space: nowrap;
 }
 
 .custom-filter-button:hover {
@@ -292,33 +322,52 @@
     .search-info {
         padding: 0.3rem;
         margin: 0.8rem 0.3rem;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .search-tag {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.85rem;
-        border-radius: 10px;
         width: calc(100% - 1rem);
         justify-content: center;
         margin: 0 0.5rem;
+    }
+
+    .search-tag-inner {
+        font-size: 0.95rem;
+    }
+
+    .custom-filter-dropdown {
+        width: 150px;
+        min-width: unset;
+        margin: 0.3rem 0.5rem;
+    }
+
+    .custom-filter-button {
+        min-width: unset;
+        width: 100%;
+        margin: 0;
+        justify-content: space-between;
+        padding: 0.6rem 1.2rem;
+        height: 41px;
         box-sizing: border-box;
     }
 
     .clear-button {
-        padding: 0.5rem 1rem;
+        width: auto;
+        min-width: 90px;
+        padding: 0.6rem 1.2rem;
+        margin: 0.3rem 0.5rem;
         font-size: 0.85rem;
-        border-radius: 10px;
-        width: calc(100% - 1rem);
+        text-align: center;
         justify-content: center;
-        margin: 0.5rem 0.5rem 0;
+        height: 41px;
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
     }
 
-    .custom-filter-button {
-        width: calc(100% - 1rem);
-        margin: 0.3rem 0.5rem;
-        justify-content: space-between;
-    }
-    
     .custom-filter-options {
         position: fixed;
         top: auto;

@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import SearchBar from '@/components/SearchBar';
 import WallpaperCard from '@/components/WallpaperCard';
 import '../styles/explore.css';
@@ -13,6 +13,7 @@ const ExplorePage = () => {
     const [columnCount, setColumnCount] = useState(2);
     const [selectedFilter, setSelectedFilter] = useState('all');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         const updateColumnCount = () => {
@@ -28,6 +29,19 @@ const ExplorePage = () => {
         return () => window.removeEventListener('resize', updateColumnCount);
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleSearch = ({ wallpapers, searchInfo }) => {
         setWallpapers(wallpapers);
         setSearchInfo(searchInfo);
@@ -35,6 +49,11 @@ const ExplorePage = () => {
 
     const distributeWallpapers = () => {
         if (wallpapers.length === 0) return [];
+
+        // TODO: Filter wallpapers based on selectedFilter before distribution
+        // If selectedFilter is 'desktop', only show desktop wallpapers
+        // If selectedFilter is 'phone', only show phone wallpapers
+        // If selectedFilter is 'all', show both (current behavior)
 
         // Separate desktop and phone wallpapers
         const desktopWallpapers = wallpapers.filter(wp => wp.type === 'desktop' || !wp.type);
@@ -105,71 +124,73 @@ const ExplorePage = () => {
                                 <span className="search-tag-inner">Character: </span> {searchInfo.character}
                             </span>
                         )}
-                        <div className="custom-filter-dropdown">
-                            <button 
-                                className="custom-filter-button"
-                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            >
-                                {selectedFilter === 'all' ? 'All Types' : 
-                                 selectedFilter === 'desktop' ? 'Desktop Only' : 
-                                 'Mobile Only'}
-                                <svg 
-                                    className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
-                                    width="10" 
-                                    height="6" 
-                                    viewBox="0 0 10 6"
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <div className="custom-filter-dropdown" ref={dropdownRef}>
+                                <button 
+                                    className="custom-filter-button"
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                 >
-                                    <path 
-                                        d="M1 1L5 5L9 1" 
-                                        stroke="currentColor" 
-                                        strokeWidth="1.5" 
-                                        fill="none"
-                                    />
-                                </svg>
+                                    {selectedFilter === 'all' ? 'All Types' : 
+                                     selectedFilter === 'desktop' ? 'Desktop Only' : 
+                                     'Mobile Only'}
+                                    <svg 
+                                        className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
+                                        width="10" 
+                                        height="6" 
+                                        viewBox="0 0 10 6"
+                                    >
+                                        <path 
+                                            d="M1 1L5 5L9 1" 
+                                            stroke="currentColor" 
+                                            strokeWidth="1.5" 
+                                            fill="none"
+                                        />
+                                    </svg>
+                                </button>
+                                {isDropdownOpen && (
+                                    <div className="custom-filter-options">
+                                        <div 
+                                            className={`filter-option ${selectedFilter === 'all' ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setSelectedFilter('all');
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            All Types
+                                        </div>
+                                        <div 
+                                            className={`filter-option ${selectedFilter === 'desktop' ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setSelectedFilter('desktop');
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            Desktop Only
+                                        </div>
+                                        <div 
+                                            className={`filter-option ${selectedFilter === 'phone' ? 'active' : ''}`}
+                                            onClick={() => {
+                                                setSelectedFilter('phone');
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            Mobile Only
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                            <button 
+                                className="clear-button"
+                                onClick={() => {
+                                    setWallpapers([]);
+                                    setSearchInfo(null);
+                                    setSelectedFilter('all');
+                                    router.refresh();
+                                }}
+                            >
+                                Clear
                             </button>
-                            {isDropdownOpen && (
-                                <div className="custom-filter-options">
-                                    <div 
-                                        className={`filter-option ${selectedFilter === 'all' ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setSelectedFilter('all');
-                                            setIsDropdownOpen(false);
-                                        }}
-                                    >
-                                        All Types
-                                    </div>
-                                    <div 
-                                        className={`filter-option ${selectedFilter === 'desktop' ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setSelectedFilter('desktop');
-                                            setIsDropdownOpen(false);
-                                        }}
-                                    >
-                                        Desktop Only
-                                    </div>
-                                    <div 
-                                        className={`filter-option ${selectedFilter === 'phone' ? 'active' : ''}`}
-                                        onClick={() => {
-                                            setSelectedFilter('phone');
-                                            setIsDropdownOpen(false);
-                                        }}
-                                    >
-                                        Mobile Only
-                                    </div>
-                                </div>
-                            )}
                         </div>
-                        <button 
-                            className="clear-button"
-                            onClick={() => {
-                                setWallpapers([]);
-                                setSearchInfo(null);
-                                setSelectedFilter('all');
-                                router.refresh();
-                            }}
-                        >
-                            Clear
-                        </button>
                     </div>
                 )}
             </div>
