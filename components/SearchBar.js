@@ -255,10 +255,6 @@ const SearchBar = ({ onSearch }) => {
                         setSuggestions({ categories: [], series: [], characters: [] });
                         setShowSuggestions(false);
                         inputRef.current?.focus();
-                        onSearch({ 
-                            wallpapers: allImageNames,
-                            searchInfo: null
-                        });
                     }}
                     aria-label="Clear search"
                 >
