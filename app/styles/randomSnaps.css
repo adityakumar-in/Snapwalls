@@ -353,6 +353,7 @@
   cursor: pointer;
   position: relative;
   transform-origin: center bottom;
+  z-index: 1001;
 }
 
 .dock-icon:hover {
@@ -364,66 +365,55 @@
 
 .dock-tooltip {
   position: absolute;
-  top: -40px;
+  top: -45px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.75);
   color: white;
   padding: 5px 12px;
-  border-radius: 7px;
+  border-radius: 6px;
   font-size: 12px;
   white-space: nowrap;
   opacity: 0;
-  transition: all 0.15s ease;
+  visibility: visible;
+  transition: all 0.2s ease;
   pointer-events: none;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight: 400;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1002;
 }
 
 .dock-tooltip::after {
   content: '';
   position: absolute;
-  bottom: -3px;
+  bottom: -4px;
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  width: 6px;
-  height: 6px;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  width: 8px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .dock-icon:hover .dock-tooltip {
   opacity: 1;
-  transform: translateX(-50%) translateY(-5px);
+  transform: translateX(-50%) translateY(-10px);
 }
 
-.dock-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  cursor: pointer;
-  position: relative;
-  transform-origin: center bottom;
+/* Remove any conflicting styles */
+@media screen and (min-width: 481px) {
+  .dock-tooltip {
+    display: block !important;
+  }
 }
 
-.dock-icon:hover {
-  transform: scale(1.15) translateY(-5px);
-  filter: brightness(1.1);
-}
-
-.dock-divider {
-  width: 1px;
-  height: 45px;
-  background: rgba(255, 255, 255, 0.3);
-  margin: 0 4px;
+@media screen and (max-width: 480px) {
+  .dock-tooltip {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 768px) {
