@@ -305,6 +305,109 @@ const PhoneTimeDisplay = () => {
   );
 };
 
+// Add this component after PhoneTimeDisplay
+const DesktopFrame = ({ imageUrl, onDownload, onShare, onFavorite, isFavorite, imageLoaded }) => {
+  const [mounted, setMounted] = useState(false);
+  const [dateTime, setDateTime] = useState(new Date());
+
+  useEffect(() => {
+    setMounted(true);
+    const timer = setInterval(() => {
+      setDateTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  if (!mounted) return null;
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  return (
+    <>
+      <div className="desktop-menubar">
+        <div className="desktop-menubar-left">
+          <span className="desktop-apple-logo"></span>
+          <div className="desktop-menu-items">
+            <span>Finder</span>
+            <span>File</span>
+            <span>Edit</span>
+            <span>View</span>
+            <span>Go</span>
+            <span>Window</span>
+            <span>Help</span>
+          </div>
+        </div>
+        <div className="desktop-menubar-right">
+          <div className="desktop-status-icons">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+            </svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
+            </svg>
+          </div>
+          <div className="desktop-time">
+            {formatTime(dateTime)}
+          </div>
+        </div>
+      </div>
+      {imageLoaded && (
+        <div className="desktop-dock">
+          <div className="dock-icon finder">
+            <img src="/macos-finder.png" alt="Finder" />
+            <span className="dock-tooltip">Finder</span>
+          </div>
+          <div className="dock-icon settings">
+            <img src="/macos-settings.png" alt="System Settings" />
+            <span className="dock-tooltip">System Settings</span>
+          </div>
+          <div className="dock-icon launchpad">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="4" width="10" height="10" rx="2" fill="#FF9800"/>
+              <rect x="18" y="4" width="10" height="10" rx="2" fill="#4CAF50"/>
+              <rect x="4" y="18" width="10" height="10" rx="2" fill="#F44336"/>
+              <rect x="18" y="18" width="10" height="10" rx="2" fill="#2196F3"/>
+            </svg>
+            <span className="dock-tooltip">Launchpad</span>
+          </div>
+          <div className="dock-divider"></div>
+          <div className="dock-icon download" onClick={onDownload} title="Download">
+            <img src="/macos-download.png" alt="Download" />
+            <span className="dock-tooltip">Download Wallpaper</span>
+          </div>
+          <div className="dock-icon share" onClick={onShare} title="Share">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/>
+            </svg>
+            <span className="dock-tooltip">Share Wallpaper</span>
+          </div>
+          <div className={`dock-icon favorite ${isFavorite ? 'active' : ''}`} onClick={onFavorite} title="Favorite">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d={isFavorite 
+                ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"}
+              />
+            </svg>
+            <span className="dock-tooltip">Add to Favorites</span>
+          </div>
+          <div className="dock-divider"></div>
+          <div className="dock-icon trash">
+            <img src="/macos-trash.png" alt="Trash" />
+            <span className="dock-tooltip">Trash</span>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 // Add this custom hook before the Page component
 const useLocalStorage = (key, initialValue) => {
   // State to store our value
@@ -875,8 +978,13 @@ const Page = () => {
         <div className={`image-container ${wallpaperType}`}>
           {loading && (
             <div className='skeleton-container'>
-              <div className="notch"></div>
-              <PhoneTimeDisplay />
+              {wallpaperType === 'phone' && (
+                <>
+                  <div className="notch"></div>
+                  <PhoneTimeDisplay />
+                </>
+              )}
+              {wallpaperType === 'desktop' && <DesktopFrame imageLoaded={false} />}
               <div className='loading-spinner'></div>
               <div className='generating-text'>
                 <span>Generating your {currentCategory} wallpaper</span>
@@ -894,7 +1002,64 @@ const Page = () => {
                 <>
                   <div className="notch"></div>
                   <PhoneTimeDisplay />
+                  <div className="image-actions">
+                    <button 
+                      className="random-snap-action-btn download-btn" 
+                      onClick={handleDownload}
+                      title="Download Wallpaper"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                      </svg>
+                      <span>Download</span>
+                    </button>
+                    <button 
+                      className="random-snap-action-btn" 
+                      onClick={handleShare}
+                      title="Share Wallpaper"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/>
+                      </svg>
+                      <span>Share</span>
+                    </button>
+                    <button 
+                      className={`random-snap-action-btn favorite-btn ${favorites.some(fav => fav.url === imageUrl) ? 'active' : ''}`}
+                      onClick={() => toggleFavorite({ 
+                        url: imageUrl, 
+                        category: currentCategory, 
+                        type: wallpaperType, 
+                        quality: selectedQuality, 
+                        style: selectedStyle 
+                      })}
+                      title="Add to Favorites"
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d={favorites.some(fav => fav.url === imageUrl)
+                          ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                          : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"}
+                        />
+                      </svg>
+                      <span>Favorite</span>
+                    </button>
+                  </div>
                 </>
+              )}
+              {wallpaperType === 'desktop' && (
+                <DesktopFrame 
+                  imageUrl={imageUrl}
+                  onDownload={handleDownload}
+                  onShare={handleShare}
+                  onFavorite={() => toggleFavorite({ 
+                    url: imageUrl, 
+                    category: currentCategory, 
+                    type: wallpaperType, 
+                    quality: selectedQuality, 
+                    style: selectedStyle 
+                  })}
+                  isFavorite={favorites.some(fav => fav.url === imageUrl)}
+                  imageLoaded={imageLoaded}
+                />
               )}
               <img 
                 src={imageUrl} 
@@ -902,40 +1067,17 @@ const Page = () => {
                 className='generated-image'
                 onLoad={handleImageLoad}
               />
-              {imageLoaded && (
-                <div className="image-actions">
-                  <button onClick={handleDownload} className='random-snap-action-btn download-btn' title="Press 'D' to download">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM4 20V15H6V18H18V15H20V20H4Z" fill="currentColor"/>
-                    </svg>
-                    <span>Download</span>
-                  </button>
-                  <button onClick={handleShare} className='random-snap-action-btn share-btn'>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-                    </svg>
-                    <span>Share</span>
-                  </button>
-                  <button 
-                    onClick={() => toggleFavorite({ url: imageUrl, category: currentCategory, type: wallpaperType, quality: selectedQuality, style: selectedStyle })} 
-                    className={`random-snap-action-btn favorite-btn ${favorites.some(fav => fav.url === imageUrl) ? 'active' : ''}`}
-                  >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d={favorites.some(fav => fav.url === imageUrl) 
-                        ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                        : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"}
-                      />
-                    </svg>
-                    <span>{favorites.some(fav => fav.url === imageUrl) ? 'Favorited' : 'Add to Favorites'}</span>
-                  </button>
-                </div>
-              )}
             </div>
           )}
           {!loading && !imageUrl && (
             <div className='skeleton-container empty'>
-              <div className="notch"></div>
-              <PhoneTimeDisplay />
+              {wallpaperType === 'phone' && (
+                <>
+                  <div className="notch"></div>
+                  <PhoneTimeDisplay />
+                </>
+              )}
+              {wallpaperType === 'desktop' && <DesktopFrame imageLoaded={false} />}
               <div className="placeholder-text">Click 'Generate' to Create Random Wallpaper</div>
             </div>
           )}
