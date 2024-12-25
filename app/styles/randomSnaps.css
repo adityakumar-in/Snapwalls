@@ -537,6 +537,11 @@
   .dock-divider {
     height: 35px;
   }
+  .dock-icon.share,
+  .dock-icon.favorite{
+    color: white;
+    background: transparent;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -565,6 +570,11 @@
     width: 18px;
     height: 18px;
   }
+  .dock-icon.share,
+  .dock-icon.favorite{
+    color: white;
+    background: transparent;
+  }
 }
 
 .dock-icon.share svg,
@@ -573,6 +583,7 @@
   height: 24px;
   color: white;
 }
+
 
 .dock-tooltip {
   position: absolute;
@@ -1933,7 +1944,6 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  border-radius: 32px;
 }
 
 .gallery-drawer-content {
@@ -2975,5 +2985,104 @@
   .desktop-apple-logo::before {
     width: 11px;
     height: 11px;
+  }
+}
+
+.gallery-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clear-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 45, 85, 0.15);
+  border: 1px solid rgba(255, 45, 85, 0.3);
+  border-radius: 10px;
+  color: #ff375f;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-all-btn:hover {
+  background: rgba(255, 45, 85, 0.2);
+  transform: translateY(-1px);
+}
+
+.clear-all-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.gallery-close-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gallery-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+.gallery-close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .gallery-drawer-header {
+    padding: 1.2rem;
+  }
+
+  .clear-all-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .clear-all-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .gallery-drawer-header {
+    padding: 1rem;
+  }
+
+  .gallery-header-title-and-actions {
+    margin-bottom: 0.8rem;
+  }
+
+  .gallery-drawer-title {
+    font-size: 1.2rem;
+  }
+
+  .clear-all-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .clear-all-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .gallery-close-btn {
+    width: 32px;
+    height: 32px;
   }
 }
