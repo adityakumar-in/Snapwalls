@@ -28,6 +28,8 @@ const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false)
   const [showProf, setShowProf] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [scrollDirection, setScrollDirection] = useState("up");
 
   const closeRef = useRef(null);
   const siteRef = useRef(null);
@@ -146,9 +148,29 @@ const Navbar = () => {
     return email.length > 16 ? email.substring(0, 16) + '...' : email;
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY) {
+        setScrollDirection("down");
+      } else if (currentScrollY < lastScrollY) {
+        setScrollDirection("up");
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
   return (
     <div className="navbar-wrapper">
-      <div className={`navbar-container ${siteActive ? 'navbar-container-active' : ''} ${isClosing ? 'navbar-container-closing' : ''}`} ref={siteRef}>
+      <div className={`navbar-container ${siteActive ? 'navbar-container-active' : ''} ${isClosing ? 'navbar-container-closing' : ''} ${scrollDirection}`} ref={siteRef}>
 
 
         <div className="navbar-header">
