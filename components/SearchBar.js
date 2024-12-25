@@ -230,7 +230,7 @@ const SearchBar = ({ onSearch }) => {
     return (
         <div className="search-container">
             <div className="search-input-container">
-                <div className="search-icon">
+                <div className="explore-search-icon">
                 <svg viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 11.1455C5.49956 8.21437 7.56975 5.69108 10.4445 5.11883C13.3193 4.54659 16.198 6.08477 17.32 8.79267C18.4421 11.5006 17.495 14.624 15.058 16.2528C12.621 17.8815 9.37287 17.562 7.3 15.4895C6.14763 14.3376 5.50014 12.775 5.5 11.1455Z" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.989 15.4905L19.5 19.0015" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                 </div>
                 <input
@@ -248,6 +248,24 @@ const SearchBar = ({ onSearch }) => {
                     }}
                 />
                 <div className="search-slash">/</div>
+                <button 
+                    className="search-clear" 
+                    onClick={() => {
+                        setSearchTerm('');
+                        setSuggestions({ categories: [], series: [], characters: [] });
+                        setShowSuggestions(false);
+                        inputRef.current?.focus();
+                        onSearch({ 
+                            wallpapers: allImageNames,
+                            searchInfo: null
+                        });
+                    }}
+                    aria-label="Clear search"
+                >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </button>
                 {searchTerm && showSuggestions && (suggestions.categories.length > 0 || suggestions.series.length > 0 || suggestions.characters.length > 0) && (
                     <div className="suggestions-container">
                         {suggestions.categories.length > 0 && (

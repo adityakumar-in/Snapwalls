@@ -355,3 +355,24 @@
     height: 36px;
   }
 }
+
+.suggestions-container:not(:empty) ~ .firebase-wallpaper-card {
+  pointer-events: none;
+}
+
+.suggestions-container:not(:empty) ~ .firebase-wallpaper-card .firebase-card-button {
+  opacity: 0 !important;
+  pointer-events: none;
+  visibility: hidden;
+  transition: none;
+}
+
+.suggestions-container:not(:empty) ~ .firebase-wallpaper-card:hover .firebase-card-button {
+  opacity: 0 !important;
+  transform: none !important;
+  visibility: hidden !important;
+}
+
+.suggestions-container:not(:empty) ~ .firebase-wallpaper-card:hover .firebase-wallpaper-image {
+  transform: none;
+}
