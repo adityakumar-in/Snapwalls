@@ -16,6 +16,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
   const [batchSize, setBatchSize] = useState(20);
   const [bufferImages, setBufferImages] = useState([]); // Buffer for preloaded images
   const [preloadingBatchCount, setPreloadingBatchCount] = useState(3); // Number of batches to preload
+  const [usedImageIndices, setUsedImageIndices] = useState(new Set());
   const observerTarget = useRef(null);
 
   // Clear cache when component mounts and set up cleanup
@@ -75,18 +76,42 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
     fetchImageRefs();
   }, []);
 
+  // Function to get random unused indices
+  const getRandomUnusedIndices = (refs, count) => {
+    const availableIndices = [];
+    for (let i = 0; i < refs.length; i++) {
+      if (!usedImageIndices.has(i)) {
+        availableIndices.push(i);
+      }
+    }
+    
+    const selectedIndices = [];
+    while (selectedIndices.length < count && availableIndices.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableIndices.length);
+      selectedIndices.push(availableIndices[randomIndex]);
+      availableIndices.splice(randomIndex, 1);
+    }
+    
+    return selectedIndices;
+  };
+
   // Function to load more images
   const loadMoreImages = async (refs, startIndex) => {
-    if (loading || startIndex >= refs.length) return;
+    if (loading || refs.length === 0) return;
 
     setLoading(true);
     try {
-      // Load multiple batches at once
-      const batchesToLoad = preloadingBatchCount;
-      const totalItemsToLoad = batchSize * batchesToLoad;
-      const endIndex = Math.min(startIndex + totalItemsToLoad, refs.length);
+      const totalItemsToLoad = batchSize * preloadingBatchCount;
+      const randomIndices = getRandomUnusedIndices(refs, totalItemsToLoad);
       
-      const newImagesPromises = refs.slice(startIndex, endIndex).map(async (imageRef) => {
+      if (randomIndices.length === 0) {
+        // Reset used indices if we've shown all images
+        setUsedImageIndices(new Set());
+        return loadMoreImages(refs, 0);
+      }
+
+      const newImagesPromises = randomIndices.map(async (index) => {
+        const imageRef = refs[index];
         try {
           const fileName = imageRef.name.toLowerCase();
           const cacheKey = `wallpaper_${fileName}`;
@@ -104,7 +129,6 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
               url = cachedUrl;
             } else {
               url = await getDownloadURL(imageRef);
-              // Update cache with new timestamp
               sessionStorage.setItem(cacheKey, JSON.stringify({
                 url,
                 timestamp: Date.now()
@@ -112,7 +136,6 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
             }
           } else {
             url = await getDownloadURL(imageRef);
-            // Store in cache with timestamp
             sessionStorage.setItem(cacheKey, JSON.stringify({
               url,
               timestamp: Date.now()
@@ -124,7 +147,8 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
           
           return {
             url,
-            type
+            type,
+            index
           };
         } catch (error) {
           console.error(`Error loading image ${imageRef.name}:`, error);
@@ -134,14 +158,19 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
 
       const newImages = (await Promise.all(newImagesPromises)).filter(img => img !== null);
       
-      setImages(prevImages => [...prevImages, ...newImages]);
-      setCurrentIndex(endIndex);
+      // Update used indices
+      setUsedImageIndices(prev => {
+        const newSet = new Set(prev);
+        newImages.forEach(img => newSet.add(img.index));
+        return newSet;
+      });
 
-      // If we still have more images to load, trigger the next batch automatically
-      if (endIndex < refs.length) {
-        // Small delay to prevent overwhelming the system
+      setImages(prevImages => [...prevImages, ...newImages]);
+
+      // If we still have unused images, trigger the next batch automatically
+      if (usedImageIndices.size < refs.length) {
         setTimeout(() => {
-          loadMoreImages(refs, endIndex);
+          loadMoreImages(refs, 0);
         }, 1000);
       }
     } catch (error) {
@@ -200,7 +229,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
             setBufferImages([]);
           }
           // Load more images
-          loadMoreImages(allImageRefs, currentIndex);
+          loadMoreImages(allImageRefs, 0);
         }
       },
       { 
@@ -218,7 +247,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [currentIndex, loading, allImageRefs, bufferImages.length]);
+  }, [allImageRefs, loading, bufferImages.length]);
 
   return (
     <div className="">
