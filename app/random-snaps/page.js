@@ -484,7 +484,7 @@ const Page = () => {
   const getWallpaperDimensions = () => {
     return wallpaperType === 'desktop' 
       ? { width: 1920, height: 1080 }
-      : { width: 1440, height: 2560 };
+      : { width: 1440, height: 2736 };
   };
 
   const getRandomCategory = () => {
