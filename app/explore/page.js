@@ -110,7 +110,7 @@ const ExplorePage = () => {
             <h1 className="explore-title">Explore Wallpapers</h1>
             <div className="search-section">
                 <SearchBar onSearch={handleSearch} />
-                {searchInfo && (
+                {searchInfo && wallpapers.length > 0 && (
                     <div className="search-info">
                         {searchInfo.category && (
                             <span className="search-tag">
