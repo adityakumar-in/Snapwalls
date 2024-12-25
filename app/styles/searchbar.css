@@ -14,49 +14,59 @@
     width: 100%;
     padding: 16px 45px;
     border: 1px solid rgba(78, 78, 78, 0.85);
-    color: #d4d4d4;
+    color: #e0e0e0;
     border-radius: 16px;
     font-size: 20px;
     outline: none;
-    background-color: rgba(47, 47, 47, 0.6);
+    background-color: rgba(47, 47, 47, 0.75);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-input::placeholder {
-    font-weight: bold;
-    opacity: 0.6;
-    color: #9d9d9d;
+    font-weight: 500;
+    opacity: 0.7;
+    color: #b0b0b0;
 }
 
 .search-input:focus {
     border-color: var(--theme-color);
-    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.15);
-    background-color: rgba(47, 47, 47, 0.8);
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.15),
+                0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: rgba(47, 47, 47, 0.9);
+    transform: translateY(-1px);
 }
 
 .search-icon {
     position: absolute;
-    left: 18px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #888;
+    color: #e0e0e0;
     pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.85;
+    opacity: 1;
+    transition: all 0.3s ease;
+    z-index: 2;
 }
 
 .search-icon svg {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     stroke-width: 2;
+    stroke: currentColor;
+    fill: none;
+    display: block;
 }
 
 .search-input:focus + .search-icon {
     color: var(--theme-color);
     opacity: 1;
+    transform: translateY(-50%) scale(1.05);
 }
 
 .search-slash {
@@ -64,14 +74,16 @@
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666666bc;
-    font-size: 18px;
-    padding: 5px 10px;
-    background-color: #2f2f2f92;
+    color: #a0a0a0;
+    font-size: 19px;
+    padding: 6px 12px;
+    background-color: rgba(47, 47, 47, 0.9);
     border-radius: 8px;
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
 }
 
 .search-input:focus ~ .search-slash {
@@ -140,14 +152,14 @@
     }
     
     .search-icon svg {
-        width: 23px;
-        height: 23px;
+        width: 24px;
+        height: 24px;
     }
 
     .search-slash {
         right: 15px;
-        font-size: 16px;
-        padding: 4px 8px;
+        font-size: 17px;
+        padding: 5px 10px;
     }
 }
 
@@ -169,8 +181,8 @@
     }
     
     .search-icon svg {
-        width: 22px;
-        height: 22px;
+        width: 23px;
+        height: 23px;
     }
     
     .search-slash {
