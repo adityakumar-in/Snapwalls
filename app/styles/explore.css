@@ -53,7 +53,7 @@
 }
 
 .search-tag {
-    background-color: rgba(47, 47, 47, 0.8);
+    background: rgba(35, 35, 35, 0.75);
     padding: 0.6rem 1rem;
     border-radius: 12px;
     font-size: 0.9rem;
@@ -61,16 +61,21 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
     transition: all 0.2s ease;
 }
 
 .search-tag:hover {
+    background: rgba(40, 40, 40, 0.85);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    background-color: rgba(47, 47, 47, 0.9);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
 }
 
 .search-tag-inner {
@@ -79,7 +84,7 @@
 }
 
 .clear-button {
-    background: rgba(159, 12, 12, 0.4);
+    background: rgba(159, 12, 12, 0.75);
     color: rgba(255, 255, 255, 0.95);
     padding: 0.6rem 1.2rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -87,17 +92,15 @@
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     box-shadow: 
-        0 4px 15px rgba(159, 12, 12, 0.2),
-        0 2px 8px rgba(0, 0, 0, 0.1);
+        0 2px 8px rgba(159, 12, 12, 0.2),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    position: relative;
-    overflow: hidden;
+    transition: all 0.2s ease;
 }
 
 .clear-button::before {
@@ -114,12 +117,11 @@
 }
 
 .clear-button:hover {
-    background: rgba(255, 34, 34, 0.5);
-    transform: translateY(-2px);
+    background: rgba(159, 12, 12, 0.85);
+    transform: translateY(-1px);
     box-shadow: 
-        0 6px 20px rgba(255, 34, 34, 0.25),
-        0 4px 12px rgba(0, 0, 0, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+        0 4px 12px rgba(159, 12, 12, 0.3),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
 }
 
 .clear-button:hover::before {
@@ -131,6 +133,98 @@
     box-shadow: 
         0 2px 8px rgba(255, 34, 34, 0.2),
         0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-filter-dropdown {
+    position: relative;
+    margin: 0 0.5rem;
+}
+
+.custom-filter-button {
+    background: rgba(35, 35, 35, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.custom-filter-button:hover {
+    background: rgba(40, 40, 40, 0.85);
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-arrow {
+    transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.custom-filter-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 100%;
+    background: rgba(28, 28, 28, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+    animation: dropdownFadeIn 0.2s ease;
+    z-index: 100000;
+}
+
+.filter-option {
+    padding: 0.8rem 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-option:last-child {
+    border-bottom: none;
+}
+
+.filter-option:hover {
+    background: rgba(45, 45, 45, 0.95);
+    color: rgba(255, 255, 255, 1);
+}
+
+.filter-option.active {
+    color: var(--theme-color);
+    background: rgba(50, 50, 50, 0.95);
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Responsive styles */
@@ -217,6 +311,37 @@
         width: calc(100% - 1rem);
         justify-content: center;
         margin: 0.5rem 0.5rem 0;
+    }
+
+    .custom-filter-button {
+        width: calc(100% - 1rem);
+        margin: 0.3rem 0.5rem;
+        justify-content: space-between;
+    }
+    
+    .custom-filter-options {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 20px 20px 0 0;
+        padding: 0.5rem 0;
+        animation: slideUp 0.3s ease;
+    }
+
+    .filter-option {
+        padding: 1rem 1.5rem;
+        text-align: center;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(100%);
+        }
+        to {
+            transform: translateY(0);
+        }
     }
 }
 

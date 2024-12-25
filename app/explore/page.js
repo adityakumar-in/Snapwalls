@@ -11,6 +11,8 @@ const ExplorePage = () => {
     const [wallpapers, setWallpapers] = useState([]);
     const [searchInfo, setSearchInfo] = useState(null);
     const [columnCount, setColumnCount] = useState(2);
+    const [selectedFilter, setSelectedFilter] = useState('all');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
         const updateColumnCount = () => {
@@ -103,11 +105,66 @@ const ExplorePage = () => {
                                 <span className="search-tag-inner">Character: </span> {searchInfo.character}
                             </span>
                         )}
+                        <div className="custom-filter-dropdown">
+                            <button 
+                                className="custom-filter-button"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            >
+                                {selectedFilter === 'all' ? 'All Types' : 
+                                 selectedFilter === 'desktop' ? 'Desktop Only' : 
+                                 'Mobile Only'}
+                                <svg 
+                                    className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
+                                    width="10" 
+                                    height="6" 
+                                    viewBox="0 0 10 6"
+                                >
+                                    <path 
+                                        d="M1 1L5 5L9 1" 
+                                        stroke="currentColor" 
+                                        strokeWidth="1.5" 
+                                        fill="none"
+                                    />
+                                </svg>
+                            </button>
+                            {isDropdownOpen && (
+                                <div className="custom-filter-options">
+                                    <div 
+                                        className={`filter-option ${selectedFilter === 'all' ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedFilter('all');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        All Types
+                                    </div>
+                                    <div 
+                                        className={`filter-option ${selectedFilter === 'desktop' ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedFilter('desktop');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        Desktop Only
+                                    </div>
+                                    <div 
+                                        className={`filter-option ${selectedFilter === 'phone' ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedFilter('phone');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        Mobile Only
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                         <button 
                             className="clear-button"
                             onClick={() => {
                                 setWallpapers([]);
                                 setSearchInfo(null);
+                                setSelectedFilter('all');
                                 router.refresh();
                             }}
                         >
