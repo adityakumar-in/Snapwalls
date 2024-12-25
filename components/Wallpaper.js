@@ -14,8 +14,6 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
   const [error, setError] = useState(null);
   const [columnCount, setColumnCount] = useState(2);
   const [batchSize, setBatchSize] = useState(20);
-  const [bufferImages, setBufferImages] = useState([]); // Buffer for preloaded images
-  const [preloadingBatchCount, setPreloadingBatchCount] = useState(3); // Number of batches to preload
   const [usedImageIndices, setUsedImageIndices] = useState(new Set());
   const observerTarget = useRef(null);
 
@@ -101,7 +99,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
 
     setLoading(true);
     try {
-      const totalItemsToLoad = batchSize * preloadingBatchCount;
+      const totalItemsToLoad = batchSize;
       const randomIndices = getRandomUnusedIndices(refs, totalItemsToLoad);
       
       if (randomIndices.length === 0) {
@@ -166,13 +164,6 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
       });
 
       setImages(prevImages => [...prevImages, ...newImages]);
-
-      // If we still have unused images, trigger the next batch automatically
-      if (usedImageIndices.size < refs.length) {
-        setTimeout(() => {
-          loadMoreImages(refs, 0);
-        }, 1000);
-      }
     } catch (error) {
       console.error('Error loading more images:', error);
       setError(error.message);
@@ -218,36 +209,23 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
     return () => window.removeEventListener('resize', updateColumnCount);
   }, []);
 
-  // Set up intersection observer for earlier loading
+  // Set up scroll listener for scroll-based loading
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          // Move any buffered images to main display
-          if (bufferImages.length > 0) {
-            setImages(prev => [...prev, ...bufferImages]);
-            setBufferImages([]);
-          }
-          // Load more images
-          loadMoreImages(allImageRefs, 0);
-        }
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: '500px' // Start loading when within 500px of the observer
-      }
-    );
+    const handleScroll = () => {
+      if (loading) return;
+      
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const totalHeight = document.documentElement.scrollHeight;
+      const scrollPercentage = (scrollPosition / totalHeight) * 100;
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
+      if (scrollPercentage > 70) {
+        loadMoreImages(allImageRefs, 0);
       }
     };
-  }, [allImageRefs, loading, bufferImages.length]);
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [allImageRefs, loading]);
 
   return (
     <div className="">
@@ -333,7 +311,6 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
         </div>
       )}
       {error && <div className="error-message">{error}</div>}
-      <div ref={observerTarget}></div>
     </div>
   );
 };
