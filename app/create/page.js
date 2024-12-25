@@ -174,6 +174,46 @@ const page = () => {
     }
   };
 
+  useEffect(() => {
+    const handleTagMouseMove = (e) => {
+      const tag = e.currentTarget;
+      const rect = tag.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / tag.clientWidth) * 100;
+      const y = ((e.clientY - rect.top) / tag.clientHeight) * 100;
+      tag.style.setProperty('--mouse-x', `${x}%`);
+      tag.style.setProperty('--mouse-y', `${y}%`);
+    };
+
+    const handleButtonMouseMove = (e) => {
+      const button = e.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / button.clientWidth) * 100;
+      const y = ((e.clientY - rect.top) / button.clientHeight) * 100;
+      button.style.setProperty('--mouse-x', `${x}%`);
+      button.style.setProperty('--mouse-y', `${y}%`);
+    };
+
+    const tags = document.querySelectorAll('.create-tag');
+    const createButton = document.querySelector('.create-button');
+
+    tags.forEach(tag => {
+      tag.addEventListener('mousemove', handleTagMouseMove);
+    });
+
+    if (createButton) {
+      createButton.addEventListener('mousemove', handleButtonMouseMove);
+    }
+
+    return () => {
+      tags.forEach(tag => {
+        tag.removeEventListener('mousemove', handleTagMouseMove);
+      });
+      if (createButton) {
+        createButton.removeEventListener('mousemove', handleButtonMouseMove);
+      }
+    };
+  }, []); // Empty dependency array since we want this to run once
+
   if (generatedImages) {
     return <CreatedSnap 
       wallpapers={generatedImages.wallpapers}
