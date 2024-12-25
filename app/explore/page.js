@@ -82,7 +82,7 @@ const ExplorePage = () => {
     };
 
     return (
-        <div className="default-padding">
+        <div className="default-padding explore-container">
             <h1 className="explore-title">Explore Wallpapers</h1>
             <div className="search-section">
                 <SearchBar onSearch={handleSearch} />

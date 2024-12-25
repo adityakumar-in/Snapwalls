@@ -12,53 +12,70 @@
 
 .search-input {
     width: 100%;
-    padding: 0;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 50px;
-    border: 1px solid #4e4e4e;
-    color: #4e4e4e;
-    border-radius: 25px;
-    font-size: 22px;
+    padding: 16px 45px;
+    border: 1px solid rgba(78, 78, 78, 0.85);
+    color: #d4d4d4;
+    border-radius: 16px;
+    font-size: 20px;
     outline: none;
-    background-color: transparent;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: rgba(47, 47, 47, 0.6);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
 }
+
 .search-input::placeholder {
     font-weight: bold;
-  opacity: 0.5;
-  color: #4e4e4e;
+    opacity: 0.6;
+    color: #9d9d9d;
 }
 
 .search-input:focus {
-    border-color: #ffb3007d;
-    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.1);
+    border-color: var(--theme-color);
+    box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.15);
+    background-color: rgba(47, 47, 47, 0.8);
 }
 
 .search-icon {
     position: absolute;
-    left: 15px;
-    top: 51%;
+    left: 18px;
+    top: 50%;
     transform: translateY(-50%);
-    color: #666;
+    color: #888;
     pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
 }
+
 .search-icon svg {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+}
+
+.search-input:focus + .search-icon {
+    color: var(--theme-color);
+    opacity: 1;
 }
 
 .search-slash {
     position: absolute;
-    right: -29px;
+    right: 15px;
     top: 50%;
     transform: translateY(-50%);
     color: #666666bc;
-    font-size: 22px;
-    padding: 5px 7px;
+    font-size: 18px;
+    padding: 5px 10px;
     background-color: #2f2f2f92;
-    border-radius: 6px;
+    border-radius: 8px;
     pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.search-input:focus ~ .search-slash {
+    opacity: 0;
 }
 
 .suggestions-container {
@@ -106,15 +123,58 @@
 
 @media (max-width: 768px) {
     .search-container {
-        max-width: 100%;
+        width: 100%;
+        padding: 0 15px;
+        margin: 0 auto;
+        box-sizing: border-box;
     }
     
     .search-input {
-        font-size: 14px;
+        padding: 15px 42px;
+        font-size: 18px;
+        background-color: rgba(47, 47, 47, 0.65);
+    }
+
+    .search-icon {
+        left: 16px;
     }
     
-    .suggestions-container {
-        max-height: 300px;
+    .search-icon svg {
+        width: 23px;
+        height: 23px;
+    }
+
+    .search-slash {
+        right: 15px;
+        font-size: 16px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container {
+        width: 100%;
+        padding: 0 12px;
+    }
+    
+    .search-input {
+        padding: 14px 40px;
+        font-size: 16px;
+        border-radius: 14px;
+        background-color: rgba(47, 47, 47, 0.7);
+    }
+
+    .search-icon {
+        left: 14px;
+    }
+    
+    .search-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .search-slash {
+        display: none;
     }
 }
 
