@@ -71,7 +71,7 @@
 
 .search-icon {
     position: absolute;
-    left: 15px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: #e0e0e0;
@@ -85,8 +85,8 @@
 }
 
 .search-icon svg {
-    width: 28px;
-    height: 28px;
+    width: 34px;
+    height: 34px;
     stroke-width: 2;
     stroke: currentColor;
     fill: none;
@@ -198,8 +198,8 @@
     }
     
     .search-icon svg {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
     }
 
     .search-slash {
@@ -232,8 +232,8 @@
     }
     
     .search-icon svg {
-        width: 23px;
-        height: 23px;
+        width: 26px;
+        height: 26px;
     }
     
     .search-slash {
