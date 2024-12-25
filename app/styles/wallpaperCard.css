@@ -355,3 +355,9 @@
     height: 36px;
   }
 }
+
+.suggestions-container:not(:empty) ~ .firebase-wallpaper-card .firebase-card-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
