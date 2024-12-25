@@ -765,9 +765,8 @@ const Page = () => {
     const touch = e.touches[0];
     isDraggingRef.current = true;
     startYRef.current = touch.clientY;
-    lastPositionRef.current = 0;
 
-    // Remove transition while dragging
+    // Disable transitions while dragging
     if (drawerRef.current) {
       drawerRef.current.style.transition = 'none';
       drawerRef.current.classList.add('dragging');
@@ -779,17 +778,19 @@ const Page = () => {
     
     const touch = e.touches[0];
     const deltaY = touch.clientY - startYRef.current;
-    const drawerHeight = drawerRef.current.clientHeight;
     
-    // Calculate new position with boundaries
+    // Get current position
+    const currentTransform = getComputedStyle(drawerRef.current).transform;
+    const currentY = currentTransform === 'none' ? 0 : parseInt(currentTransform.split(',')[5]);
+    
+    // Calculate new position
     let newY = Math.max(0, Math.min(drawerHeight * 0.7, deltaY));
-    lastPositionRef.current = newY;
     
-    // Apply the transform directly following the finger
+    // Apply the transform
     if (drawerRef.current) {
       drawerRef.current.style.transform = `translateY(${newY}px)`;
       
-      // Update classes based on position
+      // Add or remove fully-expanded class based on position
       if (newY < drawerHeight * 0.3) {
         drawerRef.current.classList.add('fully-expanded');
       } else {
@@ -806,37 +807,25 @@ const Page = () => {
       drawerRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
       drawerRef.current.classList.remove('dragging');
       
-      const drawerHeight = drawerRef.current.clientHeight;
-      const currentY = lastPositionRef.current;
-      const velocity = Math.abs(currentY - startYRef.current) / 100; // Simple velocity calculation
+      const currentTransform = getComputedStyle(drawerRef.current).transform;
+      const currentY = currentTransform === 'none' ? 0 : parseInt(currentTransform.split(',')[5]);
 
-      // Fast swipe detection
-      if (velocity > 0.5) {
-        if (currentY > 50) { // Swipe down
-          setIsGalleryOpen(false);
-          drawerRef.current.style.transform = 'translateY(100%)';
-        } else { // Swipe up
-          drawerRef.current.style.transform = 'translateY(0)';
-          drawerRef.current.classList.add('fully-expanded');
-        }
+      // Only close if dragged down significantly
+      if (currentY > drawerHeight * 0.5) {
+        setIsGalleryOpen(false);
+        drawerRef.current.style.transform = 'translateY(100%)';
       } else {
-        // Slow drag - snap to closest position
-        if (currentY > drawerHeight * 0.5) {
-          setIsGalleryOpen(false);
-          drawerRef.current.style.transform = 'translateY(100%)';
-        } else if (currentY > drawerHeight * 0.3) {
-          drawerRef.current.style.transform = `translateY(${drawerHeight * 0.7}px)`;
-          drawerRef.current.classList.remove('fully-expanded');
-        } else {
-          drawerRef.current.style.transform = 'translateY(0)';
-          drawerRef.current.classList.add('fully-expanded');
-        }
+        // Stay at current position or snap to nearest point
+        const snapPoints = [0, drawerHeight * 0.3, drawerHeight * 0.7];
+        const closest = snapPoints.reduce((prev, curr) => {
+          return (Math.abs(curr - currentY) < Math.abs(prev - currentY) ? curr : prev);
+        });
+        drawerRef.current.style.transform = `translateY(${closest}px)`;
       }
     }
 
     isDraggingRef.current = false;
     startYRef.current = null;
-    lastPositionRef.current = 0;
   };
 
   const handleCloseDrawer = () => {
