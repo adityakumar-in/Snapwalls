@@ -204,9 +204,60 @@ const ExplorePage = () => {
                 width: '100%',
             }}>
                 {wallpapers.length === 0 ? (
-                    <div className="empty-state" style={{ gridColumn: '1 / -1' }}>
-                        <Wallpaper />
-                    </div>
+                    <>
+                        <div className="custom-filter-dropdown" ref={dropdownRef} style={{ gridColumn: '1 / -1', marginBottom: '20px' }}>
+                            <button 
+                                className="custom-filter-button"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            >
+                                {selectedFilter === 'all' ? 'All Types' : 
+                                 selectedFilter === 'desktop' ? 'Desktop Only' : 
+                                 'Mobile Only'}
+                                <svg 
+                                    className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}
+                                    width="10" 
+                                    height="6" 
+                                    viewBox="0 0 10 6"
+                                >
+                                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="2" fill="none"/>
+                                </svg>
+                            </button>
+                            {isDropdownOpen && (
+                                <div className="custom-filter-options">
+                                    <div 
+                                        className={`filter-option ${selectedFilter === 'all' ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedFilter('all');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        All Types
+                                    </div>
+                                    <div 
+                                        className={`filter-option ${selectedFilter === 'desktop' ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedFilter('desktop');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        Desktop Only
+                                    </div>
+                                    <div 
+                                        className={`filter-option ${selectedFilter === 'phone' ? 'active' : ''}`}
+                                        onClick={() => {
+                                            setSelectedFilter('phone');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        Mobile Only
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        <div style={{ gridColumn: '1 / -1' }}>
+                            <Wallpaper selectedFilter={selectedFilter} />
+                        </div>
+                    </>
                 ) : (
                     distributeWallpapers()
                 )}

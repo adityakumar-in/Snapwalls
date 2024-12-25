@@ -6,7 +6,7 @@ import WallpaperCard from './WallpaperCard';
 import { storage } from '/components/firebase.config';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 
-const Wallpaper = () => {
+const Wallpaper = ({ selectedFilter = 'all' }) => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [allImageRefs, setAllImageRefs] = useState([]);
@@ -229,9 +229,14 @@ const Wallpaper = () => {
         width: '100%',
       }}>
         {(() => {
-          // Separate desktop and phone images
-          const desktopImages = images.filter(img => img.type === 'desktop');
-          const phoneImages = images.filter(img => img.type === 'phone');
+          // Filter images based on selectedFilter
+          const filteredImages = selectedFilter === 'all' 
+            ? images 
+            : images.filter(img => img.type === selectedFilter);
+
+          // Separate desktop and phone images from filtered images
+          const desktopImages = filteredImages.filter(img => img.type === 'desktop');
+          const phoneImages = filteredImages.filter(img => img.type === 'phone');
           
           // Calculate approx desktop images per column
           const desktopPerColumn = Math.ceil(desktopImages.length / columnCount);
