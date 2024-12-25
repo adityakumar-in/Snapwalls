@@ -14,6 +14,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import { generatePollinationImage } from '@/utils/pollinations'
 import '/app/styles/randomSnaps.css'
 import { createPortal } from 'react-dom';
+import { db } from '/components/firebase.config';
+import { getAuth } from 'firebase/auth';
+import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
 
 const QUALITY_PRESETS = {
   standard: {
@@ -401,9 +404,60 @@ const Page = () => {
   const currentYRef = useRef(null);
   const lastPositionRef = useRef(0);
 
-  // Replace the useState and useEffect for favorites and history with useLocalStorage
-  const [favorites, setFavorites] = useLocalStorage('wallpaperFavorites', []);
+  // Replace the useState and useEffect for favorites with Firebase and keep history in localStorage
+  const [favorites, setFavorites] = useState([]);
   const [history, setHistory] = useLocalStorage('wallpaperHistory', []);
+  const auth = getAuth();
+
+  // Load favorites from Firebase when user auth state changes
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        const favRef = ref(db, `users/${user.uid}/favourites`);
+        onValue(favRef, (snapshot) => {
+          const data = snapshot.val();
+          setFavorites(data ? Object.values(data) : []);
+        });
+      } else {
+        setFavorites([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const toggleFavorite = async (wallpaper) => {
+    if (!auth.currentUser) {
+      setError('Please sign in to save favorites');
+      return;
+    }
+
+    try {
+      const favRef = ref(db, `users/${auth.currentUser.uid}/favourites`);
+      const isFavorite = favorites.some(fav => fav.url === wallpaper.url);
+
+      if (isFavorite) {
+        // Remove from favorites
+        const snapshot = await get(favRef);
+        const data = snapshot.val() || {};
+        const keyToRemove = Object.keys(data).find(key => data[key].url === wallpaper.url);
+        if (keyToRemove) {
+          await remove(ref(db, `users/${auth.currentUser.uid}/favourites/${keyToRemove}`));
+        }
+      } else {
+        // Add to favorites
+        const newFavorite = {
+          ...wallpaper,
+          timestamp: new Date().toISOString()
+        };
+        const newFavRef = push(favRef);
+        await set(newFavRef, newFavorite);
+      }
+    } catch (error) {
+      console.error('Error updating favorites:', error);
+      setError('Failed to update favorites. Please try again.');
+    }
+  };
 
   // Handle body scroll lock when gallery is open
   useEffect(() => {
@@ -593,28 +647,6 @@ const Page = () => {
     }
   };
 
-  const toggleFavorite = () => {
-    if (!imageUrl) return;
-    
-    const isFavorite = favorites.some(fav => fav.url === imageUrl);
-    
-    if (isFavorite) {
-      setFavorites(favorites.filter(fav => fav.url !== imageUrl));
-    } else {
-      const newFavorite = {
-        url: imageUrl,
-        category: currentCategory,
-        type: wallpaperType,
-        quality: selectedQuality,
-        style: selectedStyle,
-        timestamp: new Date().toISOString()
-      };
-      setFavorites([newFavorite, ...favorites]);
-    }
-  };
-
-  const isFavorite = imageUrl && favorites.some(fav => fav.url === imageUrl);
-
   const handleGalleryToggle = () => {
     setIsGalleryOpen(true);
     // Reset any transform styles when opening
@@ -704,7 +736,14 @@ const Page = () => {
     if (isHistoryItem) {
       setHistory(prevHistory => prevHistory.filter(h => h.timestamp !== item.timestamp));
     } else {
-      setFavorites(prevFavorites => prevFavorites.filter(f => f.timestamp !== item.timestamp));
+      // Remove from Firebase
+      const favRef = ref(db, `users/${auth.currentUser.uid}/favourites`);
+      const snapshot = get(favRef);
+      const data = snapshot.val() || {};
+      const keyToRemove = Object.keys(data).find(key => data[key].url === item.url);
+      if (keyToRemove) {
+        remove(ref(db, `users/${auth.currentUser.uid}/favourites/${keyToRemove}`));
+      }
     }
   };
 
@@ -820,7 +859,7 @@ const Page = () => {
               title="View Gallery"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z" />
+                <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/>
               </svg>
               <GalleryCounts favorites={favorites} history={history} />
             </button>
@@ -878,16 +917,16 @@ const Page = () => {
                     <span>Share</span>
                   </button>
                   <button 
-                    onClick={toggleFavorite} 
-                    className={`random-snap-action-btn favorite-btn ${isFavorite ? 'active' : ''}`}
+                    onClick={() => toggleFavorite({ url: imageUrl, category: currentCategory, type: wallpaperType, quality: selectedQuality, style: selectedStyle })} 
+                    className={`random-snap-action-btn favorite-btn ${favorites.some(fav => fav.url === imageUrl) ? 'active' : ''}`}
                   >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path d={isFavorite 
+                      <path d={favorites.some(fav => fav.url === imageUrl) 
                         ? "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
                         : "M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"}
                       />
                     </svg>
-                    <span>{isFavorite ? 'Favorited' : 'Add to Favorites'}</span>
+                    <span>{favorites.some(fav => fav.url === imageUrl) ? 'Favorited' : 'Add to Favorites'}</span>
                   </button>
                 </div>
               )}
@@ -897,7 +936,7 @@ const Page = () => {
             <div className='skeleton-container empty'>
               <div className="notch"></div>
               <PhoneTimeDisplay />
-              <div className="placeholder-text">Click 'Generate' to create random wallpaper</div>
+              <div className="placeholder-text">Click 'Generate' to Create Random Wallpaper</div>
             </div>
           )}
         </div>
