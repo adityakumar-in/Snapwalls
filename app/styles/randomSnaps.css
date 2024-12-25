@@ -281,7 +281,8 @@
 }
 
 /* iPhone Notch */
-.image-container.phone .notch {
+.image-container.phone .notch,
+.skeleton-container .notch {
   position: absolute;
   top: 1.8%;
   left: 50%;
@@ -293,9 +294,9 @@
   z-index: 102;
 }
 
-
 /* iPhone Time and Date Display */
-.phone-time-display {
+.phone-time-display,
+.skeleton-container .phone-time-display {
   position: absolute;
   top: 14%;
   left: 0;
@@ -335,7 +336,6 @@
   line-height: 0.9;
   letter-spacing: -1px;
 }
-
 
 .image-wrapper {
   position: relative;
@@ -452,8 +452,8 @@
   width: 100%;
   height: 100%;
   aspect-ratio: 19/10;
-  background: var(--foreground);
-  border-radius: inherit;
+  background: #2c2c2c;
+  border-radius: 45px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -463,11 +463,7 @@
 }
 
 .skeleton-container.empty {
-  background: linear-gradient(
-    135deg,
-    var(--foreground),
-    rgba(var(--theme-rgb), 0.05)
-  );
+  background: #2c2c2c
 }
 
 .placeholder-text {
@@ -2399,7 +2395,7 @@
 
 
 @media screen and (max-width: 480px) {
-  .image-container.phone .image-wrapper {
+  .image-container.phone .image-wrapper, .skeleton-container {
     border-radius: 45px;
   }
   .image-container.phone {
@@ -2425,7 +2421,7 @@
 }
 }
 @media screen and (max-width: 420px) {
-  .image-container.phone .image-wrapper {
+  .image-container.phone .image-wrapper, .skeleton-container {
     border-radius: 40px;
   }
   .image-container.phone {
@@ -2440,7 +2436,7 @@
   }
 }
 @media screen and (max-width: 396px) {
-  .image-container.phone .image-wrapper {
+  .image-container.phone .image-wrapper, .skeleton-container {
     border-radius: 35px;
     
   }

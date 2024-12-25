@@ -820,7 +820,7 @@ const Page = () => {
               title="View Gallery"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z" />
+                <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h3l-1 1v2h12v-2l-1-1h3c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z" />
               </svg>
               <GalleryCounts favorites={favorites} history={history} />
             </button>
@@ -836,6 +836,8 @@ const Page = () => {
         <div className={`image-container ${wallpaperType}`}>
           {loading && (
             <div className='skeleton-container'>
+              <div className="notch"></div>
+              <PhoneTimeDisplay />
               <div className='loading-spinner'></div>
               <div className='generating-text'>
                 <span>Generating your {currentCategory} wallpaper</span>
@@ -864,7 +866,7 @@ const Page = () => {
               {imageLoaded && (
                 <div className="image-actions">
                   <button onClick={handleDownload} className='random-snap-action-btn download-btn' title="Press 'D' to download">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM4 20V15H6V18H18V15H20V20H4Z" fill="currentColor"/>
                     </svg>
                     <span>Download</span>
@@ -893,9 +895,9 @@ const Page = () => {
           )}
           {!loading && !imageUrl && (
             <div className='skeleton-container empty'>
-              <div className='placeholder-text'>
-                Click Generate to create a random {wallpaperType} wallpaper
-              </div>
+              <div className="notch"></div>
+              <PhoneTimeDisplay />
+              <div className="placeholder-text">Click 'Generate' to create random wallpaper</div>
             </div>
           )}
         </div>
