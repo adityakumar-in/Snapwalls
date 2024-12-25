@@ -265,3 +265,74 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
+
+.search-clear {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(35, 35, 35, 0.65);
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(35px) saturate(140%);
+    -webkit-backdrop-filter: blur(35px) saturate(140%);
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+}
+
+.search-clear svg {
+    width: 16px;
+    height: 16px;
+}
+
+.search-clear:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.search-input:not(:placeholder-shown) ~ .search-clear {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-input:not(:placeholder-shown) ~ .search-slash {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-5px);
+}
+
+@media (max-width: 768px) {
+    .search-clear {
+        width: 26px;
+        height: 26px;
+        right: 12px;
+    }
+    
+    .search-clear svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-clear {
+        width: 24px;
+        height: 24px;
+        right: 10px;
+    }
+    
+    .search-clear svg {
+        width: 13px;
+        height: 13px;
+    }
+}

@@ -248,6 +248,24 @@ const SearchBar = ({ onSearch }) => {
                     }}
                 />
                 <div className="search-slash">/</div>
+                <button 
+                    className="search-clear" 
+                    onClick={() => {
+                        setSearchTerm('');
+                        setSuggestions({ categories: [], series: [], characters: [] });
+                        setShowSuggestions(false);
+                        inputRef.current?.focus();
+                        onSearch({ 
+                            wallpapers: allImageNames,
+                            searchInfo: null
+                        });
+                    }}
+                    aria-label="Clear search"
+                >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </button>
                 {searchTerm && showSuggestions && (suggestions.categories.length > 0 || suggestions.series.length > 0 || suggestions.characters.length > 0) && (
                     <div className="suggestions-container">
                         {suggestions.categories.length > 0 && (
