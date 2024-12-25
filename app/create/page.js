@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Typed from 'typed.js';
 import { getAuth } from 'firebase/auth';
 import '/app/styles/create.css';
+import '/app/styles/searchbar.css';
 import { useRouter } from 'next/navigation';
 import { generatePollinationImage } from '/utils/pollinations';
 import CreateSnapProgress from '@/components/CreateSnapProgress';
@@ -173,6 +174,46 @@ const page = () => {
     }
   };
 
+  useEffect(() => {
+    const handleTagMouseMove = (e) => {
+      const tag = e.currentTarget;
+      const rect = tag.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / tag.clientWidth) * 100;
+      const y = ((e.clientY - rect.top) / tag.clientHeight) * 100;
+      tag.style.setProperty('--mouse-x', `${x}%`);
+      tag.style.setProperty('--mouse-y', `${y}%`);
+    };
+
+    const handleButtonMouseMove = (e) => {
+      const button = e.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / button.clientWidth) * 100;
+      const y = ((e.clientY - rect.top) / button.clientHeight) * 100;
+      button.style.setProperty('--mouse-x', `${x}%`);
+      button.style.setProperty('--mouse-y', `${y}%`);
+    };
+
+    const tags = document.querySelectorAll('.create-tag');
+    const createButton = document.querySelector('.create-button');
+
+    tags.forEach(tag => {
+      tag.addEventListener('mousemove', handleTagMouseMove);
+    });
+
+    if (createButton) {
+      createButton.addEventListener('mousemove', handleButtonMouseMove);
+    }
+
+    return () => {
+      tags.forEach(tag => {
+        tag.removeEventListener('mousemove', handleTagMouseMove);
+      });
+      if (createButton) {
+        createButton.removeEventListener('mousemove', handleButtonMouseMove);
+      }
+    };
+  }, []); // Empty dependency array since we want this to run once
+
   if (generatedImages) {
     return <CreatedSnap 
       wallpapers={generatedImages.wallpapers}
@@ -186,55 +227,47 @@ const page = () => {
       <div className='default-padding'>
         <div className="create-search-container">
           <h1 className="create-search-heading">Generate <span className='bold' ref={el} /></h1>
-          <div className="input-container">
-            <svg 
-              className="search-icon" 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-              ref={inputRef}
-              type="text"
-              className="create-search-input"
-              placeholder="Describe your Wallpaper"
-              value={searchInput}
-              onChange={handleInputChange}
-              onFocus={() => setIsInputFocused(true)}
-              onBlur={() => setIsInputFocused(false)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchInput.trim()) {
-                  handleCreate();
-                }
-              }}
-            />
-            <button 
-              className="create-clear-button"
-              onClick={() => {
-                setSearchInput('');
-                inputRef.current?.focus();
-              }}
-              type="button"
-              aria-label="Clear search"
-            >
-              <svg 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
+          <div className="search-container">
+            <div className="search-input-container">
+              <div className="explore-search-icon">
+                <svg viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 11.1455C5.49956 8.21437 7.56975 5.69108 10.4445 5.11883C13.3193 4.54659 16.198 6.08477 17.32 8.79267C18.4421 11.5006 17.495 14.624 15.058 16.2528C12.621 17.8815 9.37287 17.562 7.3 15.4895C6.14763 14.3376 5.50014 12.775 5.5 11.1455Z" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M15.989 15.4905L19.5 19.0015" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </g>
+                </svg>
+              </div>
+              <input
+                ref={inputRef}
+                type="text"
+                className="search-input"
+                placeholder="Describe your Wallpaper"
+                value={searchInput}
+                onChange={handleInputChange}
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setIsInputFocused(false)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchInput.trim()) {
+                    handleCreate();
+                  }
+                }}
+              />
+              <div className={`search-slash ${isInputFocused ? 'hidden' : ''}`}>/</div>
+              <button 
+                className="search-clear" 
+                onClick={() => {
+                  setSearchInput('');
+                  inputRef.current?.focus();
+                }}
+                aria-label="Clear search"
               >
-                <path d="M18 6L6 18M6 6l12 12"/>
-              </svg>
-            </button>
-            <div className={`slash-indicator ${isInputFocused ? 'hidden' : ''}`}>/</div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
           </div>
           
           <div className="create-tags-container">
