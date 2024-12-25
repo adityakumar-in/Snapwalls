@@ -79,29 +79,58 @@
 }
 
 .clear-button {
-    background-color: rgba(159, 12, 12, 0.9);
+    background: rgba(159, 12, 12, 0.4);
     color: rgba(255, 255, 255, 0.95);
     padding: 0.6rem 1.2rem;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 15px rgba(159, 12, 12, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.1);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.clear-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        225deg,
+        rgba(255, 255, 255, 0.1),
+        transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .clear-button:hover {
-    background-color: #ff2222;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(255, 34, 34, 0.2);
+    background: rgba(255, 34, 34, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 20px rgba(255, 34, 34, 0.25),
+        0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.clear-button:hover::before {
+    opacity: 1;
 }
 
 .clear-button:active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.98);
+    box-shadow: 
+        0 2px 8px rgba(255, 34, 34, 0.2),
+        0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive styles */
