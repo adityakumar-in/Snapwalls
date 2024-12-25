@@ -209,7 +209,9 @@
     }
 
     .suggestions-container {
-        width: calc(100% - 30px);
+        width: 100%;
+        left: 0;
+        transform: none;
     }
 }
 
@@ -239,7 +241,9 @@
     }
 
     .suggestions-container {
-        width: calc(100% - 24px);
+        width: 100%;
+        left: 0;
+        transform: none;
     }
 }
 
