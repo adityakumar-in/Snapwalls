@@ -50,14 +50,17 @@ const ExplorePage = () => {
     const distributeWallpapers = () => {
         if (wallpapers.length === 0) return [];
 
-        // TODO: Filter wallpapers based on selectedFilter before distribution
-        // If selectedFilter is 'desktop', only show desktop wallpapers
-        // If selectedFilter is 'phone', only show phone wallpapers
-        // If selectedFilter is 'all', show both (current behavior)
+        // Filter wallpapers based on selectedFilter
+        let filteredWallpapers = wallpapers;
+        if (selectedFilter === 'desktop') {
+            filteredWallpapers = wallpapers.filter(wp => wp.originalName.includes('_desktop'));
+        } else if (selectedFilter === 'phone') {
+            filteredWallpapers = wallpapers.filter(wp => wp.originalName.includes('_mobile'));
+        }
 
-        // Separate desktop and phone wallpapers
-        const desktopWallpapers = wallpapers.filter(wp => wp.type === 'desktop' || !wp.type);
-        const phoneWallpapers = wallpapers.filter(wp => wp.type === 'phone');
+        // Use the filtered wallpapers for distribution
+        const desktopWallpapers = filteredWallpapers.filter(wp => wp.originalName.includes('_desktop'));
+        const phoneWallpapers = filteredWallpapers.filter(wp => wp.originalName.includes('_mobile'));
 
         // Calculate desktop wallpapers per column
         const desktopPerColumn = Math.ceil(desktopWallpapers.length / columnCount);
