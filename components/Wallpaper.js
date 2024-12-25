@@ -15,6 +15,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
   const [columnCount, setColumnCount] = useState(2);
   const [batchSize, setBatchSize] = useState(20);
   const [usedImageIndices, setUsedImageIndices] = useState(new Set());
+  const [initialBatchesLoaded, setInitialBatchesLoaded] = useState(false);
   const observerTarget = useRef(null);
 
   // Clear cache when component mounts and set up cleanup
@@ -59,7 +60,10 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
         
         setAllImageRefs(result.items);
         if (result.items.length > 0) {
-          loadMoreImages(result.items, 0);
+          // Load initial two batches
+          await loadMoreImages(result.items, 0);
+          await loadMoreImages(result.items, 0);
+          setInitialBatchesLoaded(true);
         } else {
           setError('No images found in storage');
         }
@@ -212,7 +216,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
   // Set up scroll listener for scroll-based loading
   useEffect(() => {
     const handleScroll = () => {
-      if (loading) return;
+      if (loading || !initialBatchesLoaded) return;
       
       const scrollPosition = window.scrollY + window.innerHeight;
       const totalHeight = document.documentElement.scrollHeight;
@@ -225,7 +229,7 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [allImageRefs, loading]);
+  }, [allImageRefs, loading, initialBatchesLoaded]);
 
   return (
     <div className="">
@@ -241,37 +245,9 @@ const Wallpaper = ({ selectedFilter = 'all' }) => {
             ? images 
             : images.filter(img => img.type === selectedFilter);
 
-          // Separate desktop and phone images from filtered images
-          const desktopImages = filteredImages.filter(img => img.type === 'desktop');
-          const phoneImages = filteredImages.filter(img => img.type === 'phone');
-          
-          // Calculate approx desktop images per column
-          const desktopPerColumn = Math.ceil(desktopImages.length / columnCount);
-          
           return Array.from({ length: columnCount }, (_, colIndex) => {
-            // Calculate which desktop images go in this column
-            const startDesktopIdx = colIndex * desktopPerColumn;
-            const endDesktopIdx = Math.min((colIndex + 1) * desktopPerColumn, desktopImages.length);
-            const columnDesktopImages = desktopImages.slice(startDesktopIdx, endDesktopIdx);
-            
-            // Get phone images for this column
-            const columnPhoneImages = phoneImages.filter((_, i) => i % columnCount === colIndex);
-            
-            // Merge desktop and phone images with spacing
-            const columnImages = [];
-            const phoneImagesPerSegment = Math.ceil(columnPhoneImages.length / (columnDesktopImages.length + 1));
-            
-            // Add initial phone images
-            columnImages.push(...columnPhoneImages.slice(0, phoneImagesPerSegment));
-            
-            // Intersperse desktop images with remaining phone images
-            columnDesktopImages.forEach((desktop, idx) => {
-              columnImages.push(desktop);
-              const startIdx = (idx + 1) * phoneImagesPerSegment;
-              const endIdx = startIdx + phoneImagesPerSegment;
-              const phoneSegment = columnPhoneImages.slice(startIdx, endIdx);
-              columnImages.push(...phoneSegment);
-            });
+            // Get images for this column by taking every nth image
+            const columnImages = filteredImages.filter((_, index) => index % columnCount === colIndex);
             
             return (
               <div key={colIndex} className="wallpaper-column">
