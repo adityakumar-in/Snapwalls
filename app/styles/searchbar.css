@@ -2,7 +2,7 @@
     width: 85%;
     margin: 0 auto;
     position: relative;
-    z-index: 1;
+    z-index: 0;
 }
 
 .search-input-container {
@@ -370,9 +370,9 @@
 
 .search-container {
     position: relative;
-    z-index: 1000000;
+    z-index: 0;
 }
 
 .search-container:has(.suggestion-container) {
-    z-index: 1000000;
+    z-index: 0;
 }
