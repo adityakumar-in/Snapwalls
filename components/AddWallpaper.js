@@ -21,6 +21,14 @@ const AddWallpaper = ({ isOpen, onClose }) => {
   const currentYRef = useRef(null);
   const initialHeightRef = useRef(null);
 
+  const handleDrawerClick = (e) => {
+    // Only handle click events, not touch events
+    if (e.type === 'touchstart' || e.type === 'touchend') return;
+    
+    e.stopPropagation();
+    onClose();
+  };
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -48,6 +56,8 @@ const AddWallpaper = ({ isOpen, onClose }) => {
     if (!dialog) return;
 
     const touchStartHandler = (e) => {
+      // Only handle touch events
+      if (!e.touches) return;
       if (!e.target.closest('.dialog-header, .drawer-handle')) return;
 
       const touch = e.touches[0];
@@ -274,7 +284,11 @@ const AddWallpaper = ({ isOpen, onClose }) => {
       >
         <div className="dialog-header">
           {isMobile && (
-            <div className="drawer-handle" />
+            <div 
+              className="drawer-handle" 
+              onClick={handleDrawerClick}
+              onTouchStart={(e) => e.stopPropagation()} // Prevent touch events from triggering click
+            />
           )}
           <h2 className="add-wallpaper-title">Add New Wallpaper</h2>
           {!isMobile && (
