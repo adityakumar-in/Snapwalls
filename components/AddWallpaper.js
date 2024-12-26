@@ -247,99 +247,134 @@ const AddWallpaper = ({ isOpen, onClose }) => {
         onTouchEnd={handleTouchEnd}
         style={dialogStyle}
       >
-        {!isMobile && (
-          <button className="close-button" onClick={onClose}>×</button>
-        )}
-        {isMobile && (
-          <div className="drawer-handle" />
-        )}
-        <h2 className="add-wallpaper-title">Add New Wallpaper</h2>
-        
-        <form onSubmit={handleUpload} className="add-wallpaper-form">
-          <div className="form-group">
-            <label>Category *</label>
-            <input
-              type="text"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g., Anime, Nature, Abstract"
-              required
-            />
-          </div>
+        <div className="dialog-header">
+          {isMobile && <div className="drawer-handle" />}
+          <h2 className="add-wallpaper-title">Add New Wallpaper</h2>
+          {!isMobile && (
+            <button className="close-button" onClick={onClose}>×</button>
+          )}
+        </div>
 
-          <div className="form-group">
-            <label>Series (Optional)</label>
-            <input
-              type="text"
-              value={series}
-              onChange={(e) => setSeries(e.target.value)}
-              placeholder="e.g., Naruto, One Piece"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Character Name (Optional)</label>
-            <input
-              type="text"
-              value={characterName}
-              onChange={(e) => setCharacterName(e.target.value)}
-              placeholder="e.g., Luffy, Naruto"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Type *</label>
-            <select value={type} onChange={(e) => setType(e.target.value)}>
-              <option value="Desktop">Desktop</option>
-              <option value="Mobile">Mobile</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Wallpaper File *</label>
-            <div className="file-input-container">
+        <div className="dialog-content">
+          <form onSubmit={handleUpload} className="add-wallpaper-form">
+            <div className="form-group">
+              <label>Category *</label>
               <input
-                type="file"
-                onChange={handleFileChange}
-                accept="image/*"
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="e.g., Anime, Nature, Abstract"
                 required
-                id="wallpaper-file"
               />
-              <label htmlFor="wallpaper-file" className="file-input-label">
-                Choose File
-              </label>
-              {file && <span className="file-name">{file.name}</span>}
             </div>
-          </div>
 
-          {preview && (
-            <div className="preview-container">
-              <img 
-                src={preview} 
-                alt="Wallpaper preview" 
-                className="wallpaper-preview"
-                onError={() => {
-                  console.error('Failed to load preview');
-                  setPreview(null);
-                }}
+            <div className="form-group">
+              <label>Series (Optional)</label>
+              <input
+                type="text"
+                value={series}
+                onChange={(e) => setSeries(e.target.value)}
+                placeholder="e.g., Naruto, One Piece"
               />
+            </div>
+
+            <div className="form-group">
+              <label>Character Name (Optional)</label>
+              <input
+                type="text"
+                value={characterName}
+                onChange={(e) => setCharacterName(e.target.value)}
+                placeholder="e.g., Luffy, Naruto"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Type *</label>
+              <div className="type-selector-container">
+                <div className="type-option">
+                  <input
+                    type="radio"
+                    id="desktop-type"
+                    name="wallpaper-type"
+                    value="Desktop"
+                    checked={type === 'Desktop'}
+                    onChange={(e) => setType(e.target.value)}
+                  />
+                  <label htmlFor="desktop-type">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                      <rect x="2" y="4" width="20" height="12" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M8 20h8" strokeLinecap="round"/>
+                      <path d="M12 16v4" strokeLinecap="round"/>
+                    </svg>
+                    Desktop
+                  </label>
+                </div>
+                <div className="type-option">
+                  <input
+                    type="radio"
+                    id="mobile-type"
+                    name="wallpaper-type"
+                    value="Mobile"
+                    checked={type === 'Mobile'}
+                    onChange={(e) => setType(e.target.value)}
+                  />
+                  <label htmlFor="mobile-type">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                      <rect x="6" y="3" width="12" height="18" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M10 18h4" strokeLinecap="round"/>
+                    </svg>
+                    Mobile
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Wallpaper File *</label>
+              <div className="file-input-container">
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  required
+                  id="wallpaper-file"
+                />
+                <label htmlFor="wallpaper-file" className="file-input-label">
+                  Choose File
+                </label>
+                {file && <span className="file-name">{file.name}</span>}
+              </div>
+            </div>
+
+            {preview && (
+              <div className="preview-container">
+                <img 
+                  src={preview} 
+                  alt="Wallpaper preview" 
+                  className="wallpaper-preview"
+                  onError={() => {
+                    console.error('Failed to load preview');
+                    setPreview(null);
+                  }}
+                />
+              </div>
+            )}
+
+            <button type="submit" className="upload-button" disabled={uploading}>
+              {uploading ? 'Uploading...' : 'Upload Wallpaper'}
+            </button>
+          </form>
+
+          {showSuccess && (
+            <div className="success-message">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
+              </svg>
+              Wallpaper uploaded successfully!
             </div>
           )}
-
-          <button type="submit" className="upload-button" disabled={uploading}>
-            {uploading ? 'Uploading...' : 'Upload Wallpaper'}
-          </button>
-        </form>
-
-        {showSuccess && (
-          <div className="success-message">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2"/>
-            </svg>
-            Wallpaper uploaded successfully!
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
