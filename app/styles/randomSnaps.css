@@ -542,6 +542,11 @@
     color: white;
     background: transparent;
   }
+  .dock-icon.share,
+  .dock-icon.favorite.active{
+    color: white;
+    background: transparent;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -572,6 +577,11 @@
   }
   .dock-icon.share,
   .dock-icon.favorite{
+    color: white;
+    background: transparent;
+  }
+  .dock-icon.share,
+  .dock-icon.favorite.active{
     color: white;
     background: transparent;
   }
@@ -919,7 +929,7 @@
   height: 100%;
   aspect-ratio: 19/10;
   background: #2c2c2c;
-  /* border-radius: 45px; */
+  border-radius: 45px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -929,7 +939,7 @@
 }
 
 .skeleton-container.empty {
-  background: #2c2c2c
+  background: #2c2c2c;
 }
 
 .placeholder-text {
@@ -1944,6 +1954,7 @@
   position: sticky;
   top: 0;
   z-index: 2;
+  border-radius: 32px;
 }
 
 .gallery-drawer-content {
@@ -3172,4 +3183,55 @@
 
 .gallery-bottom-sheet.fully-expanded {
   transform: translateY(0);
+}
+
+.desktop-skeleton-container {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/9;
+  background: #2c2c2c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.desktop-skeleton-container.empty {
+  background: #2c2c2c;
+}
+
+.gallery-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.gallery-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile-specific backdrop styles */
+@media screen and (max-width: 768px) {
+  .gallery-backdrop {
+    display: block !important;
+    z-index: 99999;
+  }
+  
+  .gallery-bottom-sheet {
+    z-index: 100000;
+  }
+}
+
+/* Desktop-specific backdrop styles */
+@media screen and (min-width: 769px) {
+  .gallery-backdrop {
+    display: none !important;
+  }
 }

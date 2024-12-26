@@ -984,7 +984,7 @@ const Page = () => {
         
         <div className={`image-container ${wallpaperType}`}>
           {loading && (
-            <div className='skeleton-container'>
+            <div className={wallpaperType === 'desktop' ? 'desktop-skeleton-container' : 'skeleton-container'}>
               {wallpaperType === 'phone' && (
                 <>
                   <div className="notch"></div>
@@ -1077,7 +1077,7 @@ const Page = () => {
             </div>
           )}
           {!loading && !imageUrl && (
-            <div className='skeleton-container empty'>
+            <div className={wallpaperType === 'desktop' ? 'desktop-skeleton-container empty' : 'skeleton-container empty'}>
               {wallpaperType === 'phone' && (
                 <>
                   <div className="notch"></div>
@@ -1181,20 +1181,30 @@ const Page = () => {
           </div>
         </div>
 
-        {/* Gallery Backdrop */}
+        {/* Mobile Gallery Backdrop */}
         <div 
           className={`gallery-backdrop ${isGalleryOpen ? 'open' : ''}`}
           onClick={handleCloseDrawer}
+          style={{ display: 'none' }}  // Will be shown via CSS media query
         />
 
         {/* Mobile Gallery Bottom Sheet */}
         <div 
           ref={drawerRef}
           className={`gallery-bottom-sheet ${isGalleryOpen ? 'open' : ''}`}
-          onTouchStart={handleTouchStart}
+          onTouchStart={(e) => {
+            // Only start dragging if clicking the header or handle
+            if (e.target.closest('.bottom-sheet-header, .bottom-sheet-handle')) {
+              handleTouchStart(e);
+            }
+          }}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onClick={handleHandleClick}
+          onClick={(e) => {
+            // Prevent clicks from propagating to the backdrop
+            e.stopPropagation();
+            handleHandleClick(e);
+          }}
         >
           <div className="bottom-sheet-header">
             <div className="swipe-indicator">
