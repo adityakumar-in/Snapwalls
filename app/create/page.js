@@ -10,6 +10,7 @@ import CreateSnapProgress from '@/components/CreateSnapProgress';
 import CreatedSnap from '@/components/CreatedSnap';
 import AddWallpaper from '@/components/AddWallpaper';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import Login from '@/components/Login';
 
 const page = () => {
   const router = useRouter();
@@ -26,6 +27,7 @@ const page = () => {
   const [generatedImages, setGeneratedImages] = useState(null);
   const numberOfVariations = 4; // Number of wallpapers to generate
   const [isAddWallpaperOpen, setIsAddWallpaperOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
@@ -127,6 +129,7 @@ const page = () => {
 
   const handleCreate = async () => {
     if (!user) {
+      setShowLogin(true);
       return;
     }
     if (!searchInput.trim()) {
@@ -236,6 +239,10 @@ const page = () => {
       }
     };
   }, []); // Empty dependency array since we want this to run once
+
+  if (showLogin) {
+    return <Login onClose={() => setShowLogin(false)} />;
+  }
 
   if (generatedImages) {
     return <CreatedSnap 
