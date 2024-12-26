@@ -3290,3 +3290,32 @@
     height: 16px;
   }
 }
+
+/* Update backdrop styles to ensure it's clickable */
+.gallery-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* Add semi-transparent background */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+  cursor: pointer; /* Add cursor pointer */
+}
+
+.gallery-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile-specific backdrop styles */
+@media screen and (max-width: 768px) {
+  .gallery-backdrop {
+    display: block !important;
+    z-index: 99999;
+  }
+  
+  .gallery-bottom-sheet {
+    z-index: 100000;
+  }
+}

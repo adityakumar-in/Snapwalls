@@ -156,9 +156,39 @@ const AddWallpaper = ({ isOpen, onClose }) => {
     };
   }, [currentHeight, onClose]);
 
+  const handleClose = () => {
+    if (window.innerWidth <= 768 && dialogRef.current) {
+      // Mobile sliding animation
+      dialogRef.current.style.transform = 'translateY(100%)';
+      dialogRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+      setTimeout(onClose, 300);
+    } else {
+      // Desktop fade-out animation
+      if (dialogRef.current) {
+        dialogRef.current.style.opacity = '0';
+        dialogRef.current.style.transform = 'scale(0.95)';
+        dialogRef.current.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+      }
+      setTimeout(onClose, 200);
+    }
+  };
+
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains('add-wallpaper-overlay')) {
-      onClose();
+      if (window.innerWidth <= 768 && dialogRef.current) {
+        // Mobile sliding animation
+        dialogRef.current.style.transform = 'translateY(100%)';
+        dialogRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        setTimeout(onClose, 300);
+      } else {
+        // Desktop fade-out animation
+        if (dialogRef.current) {
+          dialogRef.current.style.opacity = '0';
+          dialogRef.current.style.transform = 'scale(0.95)';
+          dialogRef.current.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
+        }
+        setTimeout(onClose, 200);
+      }
     }
   };
 
@@ -287,19 +317,24 @@ const AddWallpaper = ({ isOpen, onClose }) => {
         ref={dialogRef}
         className={`add-wallpaper-dialog ${isExpanded ? 'expanded' : ''}`}
         onClick={e => e.stopPropagation()}
-        style={dialogStyle}
+        style={{
+          ...dialogStyle,
+          opacity: 1,
+          transform: 'scale(1)',
+          transition: 'opacity 0.2s ease, transform 0.2s ease'
+        }}
       >
         <div className="dialog-header">
           {isMobile && (
             <div 
               className="drawer-handle" 
-              onClick={handleDrawerClick}
-              onTouchStart={(e) => e.stopPropagation()} // Prevent touch events from triggering click
+              onClick={handleClose}
+              onTouchStart={(e) => e.stopPropagation()}
             />
           )}
           <h2 className="add-wallpaper-title">Add New Wallpaper</h2>
           {!isMobile && (
-            <button className="close-button" onClick={onClose}>×</button>
+            <button className="close-button" onClick={handleClose}>×</button>
           )}
         </div>
 

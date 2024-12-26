@@ -1277,7 +1277,7 @@ const Page = () => {
         <div 
           className={`gallery-backdrop ${isGalleryOpen ? 'open' : ''}`}
           onClick={handleCloseDrawer}
-          style={{ display: 'none' }}  // Will be shown via CSS media query
+          style={{ display: isGalleryOpen ? 'block' : 'none' }}
         />
 
         {/* Mobile Gallery Bottom Sheet */}
