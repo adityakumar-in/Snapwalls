@@ -209,7 +209,6 @@
 .close-button:hover {
   transform: scale(1.05) translateZ(0);
   border-color: var(--theme-color);
-  background: rgba(255, 178, 0, 0.1);
 }
 
 .close-button:active {
