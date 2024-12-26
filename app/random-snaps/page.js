@@ -984,7 +984,7 @@ const Page = () => {
         
         <div className={`image-container ${wallpaperType}`}>
           {loading && (
-            <div className='skeleton-container'>
+            <div className={wallpaperType === 'desktop' ? 'desktop-skeleton-container' : 'skeleton-container'}>
               {wallpaperType === 'phone' && (
                 <>
                   <div className="notch"></div>
@@ -1077,7 +1077,7 @@ const Page = () => {
             </div>
           )}
           {!loading && !imageUrl && (
-            <div className='skeleton-container empty'>
+            <div className={wallpaperType === 'desktop' ? 'desktop-skeleton-container empty' : 'skeleton-container empty'}>
               {wallpaperType === 'phone' && (
                 <>
                   <div className="notch"></div>
