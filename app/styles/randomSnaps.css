@@ -2231,12 +2231,16 @@
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.gallery-bottom-sheet.open {
-  transform: translateY(80%); /* Show 30% initially */
-}
-
 .gallery-bottom-sheet.dragging {
   transition: none !important;
+}
+
+.gallery-bottom-sheet.open {
+  transform: translateY(70%); /* Show 30% initially */
+}
+
+.gallery-bottom-sheet.fully-expanded {
+  transform: translateY(0);
 }
 
 .bottom-sheet-header {
@@ -3175,10 +3179,16 @@
 .gallery-bottom-sheet {
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  touch-action: none;
+}
+
+.gallery-bottom-sheet.dragging {
+  transition: none !important;
 }
 
 .gallery-bottom-sheet.open {
-  transform: translateY(70%);
+  transform: translateY(70%); /* Show 30% initially */
 }
 
 .gallery-bottom-sheet.fully-expanded {

@@ -833,19 +833,26 @@ const Page = () => {
     const touch = e.touches[0];
     const deltaY = touch.clientY - startYRef.current;
     
-    // Get current position
+    // Calculate the drawer position from bottom of screen
+    const windowHeight = window.innerHeight;
+    const drawerFullHeight = drawerRef.current.offsetHeight;
+    
+    // Convert deltaY to percentage of drawer height (0 to 100)
     const currentTransform = getComputedStyle(drawerRef.current).transform;
-    const currentY = currentTransform === 'none' ? 0 : parseInt(currentTransform.split(',')[5]);
+    const currentY = currentTransform === 'none' ? drawerFullHeight : parseInt(currentTransform.split(',')[5]);
     
-    // Calculate new position
-    let newY = Math.max(0, Math.min(drawerHeight * 0.7, deltaY));
+    // Calculate new position with boundaries
+    let newY = Math.max(0, Math.min(drawerFullHeight, currentY + deltaY));
     
-    // Apply the transform
+    // Update start position for next move event
+    startYRef.current = touch.clientY;
+    
+    // Apply the transform immediately
     if (drawerRef.current) {
       drawerRef.current.style.transform = `translateY(${newY}px)`;
       
-      // Add or remove fully-expanded class based on position
-      if (newY < drawerHeight * 0.3) {
+      // Update classes based on position
+      if (newY < drawerFullHeight * 0.3) {
         drawerRef.current.classList.add('fully-expanded');
       } else {
         drawerRef.current.classList.remove('fully-expanded');
@@ -854,28 +861,37 @@ const Page = () => {
   };
 
   const handleTouchEnd = () => {
-    if (!isDraggingRef.current) return;
+    if (!isDraggingRef.current || !drawerRef.current) return;
 
     // Re-enable transitions
-    if (drawerRef.current) {
-      drawerRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      drawerRef.current.classList.remove('dragging');
-      
-      const currentTransform = getComputedStyle(drawerRef.current).transform;
-      const currentY = currentTransform === 'none' ? 0 : parseInt(currentTransform.split(',')[5]);
+    drawerRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    drawerRef.current.classList.remove('dragging');
+    
+    const currentTransform = getComputedStyle(drawerRef.current).transform;
+    const currentY = currentTransform === 'none' ? 0 : parseInt(currentTransform.split(',')[5]);
+    const drawerHeight = drawerRef.current.offsetHeight;
 
-      // Only close if dragged down significantly
-      if (currentY > drawerHeight * 0.5) {
-        setIsGalleryOpen(false);
-        drawerRef.current.style.transform = 'translateY(100%)';
-      } else {
-        // Stay at current position or snap to nearest point
-        const snapPoints = [0, drawerHeight * 0.3, drawerHeight * 0.7];
-        const closest = snapPoints.reduce((prev, curr) => {
-          return (Math.abs(curr - currentY) < Math.abs(prev - currentY) ? curr : prev);
-        });
-        drawerRef.current.style.transform = `translateY(${closest}px)`;
-      }
+    // Define snap points as percentages of drawer height
+    const snapPoints = [
+      0, // Fully expanded
+      drawerHeight * 0.3, // Partially expanded
+      drawerHeight * 0.7, // Minimized
+      drawerHeight // Fully closed
+    ];
+
+    // Find nearest snap point
+    const closest = snapPoints.reduce((prev, curr) => {
+      return (Math.abs(curr - currentY) < Math.abs(prev - currentY) ? curr : prev);
+    });
+
+    // Snap to position
+    drawerRef.current.style.transform = `translateY(${closest}px)`;
+    
+    // Update gallery open state
+    if (closest >= drawerHeight * 0.7) {
+      setIsGalleryOpen(false);
+    } else {
+      setIsGalleryOpen(true);
     }
 
     isDraggingRef.current = false;
