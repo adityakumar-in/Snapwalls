@@ -3235,3 +3235,48 @@
     display: none !important;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .desktop-dock {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .image-container.desktop .image-wrapper.touched .desktop-dock {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .desktop-dock {
+    height: 45px;
+    padding: 0 8px;
+  }
+
+  .dock-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .dock-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .desktop-dock {
+    height: 40px;
+    padding: 0 6px;
+  }
+
+  .dock-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dock-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}

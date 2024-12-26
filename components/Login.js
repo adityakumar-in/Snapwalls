@@ -54,7 +54,6 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         await auth.signOut();
         setVerificationSent(true);
         await sendEmailVerification(userCredential.user);
-        setError("Please verify your email before logging in. A new verification email has been sent.");
       } else {
         setNotificationMessage('Successfully logged in!');
         setShowNotification(true);
@@ -62,10 +61,10 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
           setShowNotification(false);
           onClose();
           router.push(currentPath);
-        }, 3000);
+        }, 5000);
       }
     } catch (error) {
-      setError(error.message);
+      setError("Unable to log in. Please check your credentials and try again.");
     }
   };
   const handleSocialLogin = async (provider) => {
@@ -78,15 +77,14 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
           setShowNotification(false);
           onClose();
           router.push(currentPath);
-        }, 3000);
+        }, 5000);
       } else {
         await auth.signOut();
         setVerificationSent(true);
         await sendEmailVerification(result.user);
-        setError("Please verify your email before logging in. A verification email has been sent.");
       }
     } catch (error) {
-      setError(error.message);
+      setError("Unable to complete social login. Please try again.");
     }
   };
 

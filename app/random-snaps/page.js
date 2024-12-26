@@ -886,6 +886,20 @@ const Page = () => {
     handleCloseDrawer(); // Use handleCloseDrawer instead of just setting isGalleryOpen
   };
 
+  const handleDesktopImageTouch = (e) => {
+    const wrapper = e.currentTarget;
+    wrapper.classList.add('touched');
+    
+    const handleTouchEnd = () => {
+      setTimeout(() => {
+        wrapper.classList.remove('touched');
+      }, 3000); // Hide dock after 3 seconds
+      wrapper.removeEventListener('touchend', handleTouchEnd);
+    };
+    
+    wrapper.addEventListener('touchend', handleTouchEnd);
+  };
+
   return (
     <div className='default-padding'>
       <div 
@@ -1009,7 +1023,10 @@ const Page = () => {
             </div>
           )}
           {imageUrl && !loading && (
-            <div className={`image-wrapper ${imageLoaded ? 'loaded' : ''}`}>
+            <div 
+              className={`image-wrapper ${imageLoaded ? 'loaded' : ''}`}
+              onTouchStart={wallpaperType === 'desktop' ? handleDesktopImageTouch : undefined}
+            >
               {wallpaperType === 'phone' && (
                 <>
                   <div className="notch"></div>

@@ -52,11 +52,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
 
   const validatePassword = (password) => {
     if (!password) return "Password is required";
-    if (password.length < 8) return "Password must be at least 8 characters long";
-    if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
-    if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
-    if (!/[0-9]/.test(password)) return "Password must contain at least one number";
-    if (!/[!@#$%^&*]/.test(password)) return "Password must contain at least one special character (!@#$%^&*)";
+    if (password.length < 6) return "Password must be at least 6 characters";
     return "";
   };
 
@@ -141,7 +137,7 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
   const handleEmailSignup = async (e) => {
     e.preventDefault();
     
-    // Validate email and password
+    // Only validate email and basic password requirement
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
     
@@ -241,12 +237,12 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
       setHasStartedTyping(true);
     }
     
-    // Only show password error if user has started typing
+    // Only show basic password error if user has started typing
     if (hasStartedTyping) {
       setPasswordError(validatePassword(value));
     }
     
-    // Calculate password strength
+    // Calculate password strength (keeping this for visual feedback)
     let strength = 0;
     if (value.length >= 8) strength++;
     if (/[A-Z]/.test(value)) strength++;
