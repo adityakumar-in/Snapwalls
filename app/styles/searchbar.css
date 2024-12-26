@@ -337,22 +337,36 @@
     }
 }
 
-.suggestion-container {
-    position: absolute;
-    top: calc(100% + 8px);
+.suggestion-backdrop {
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
-    max-height: 400px;
-    width: 100%;
-    overflow-y: auto;
+    bottom: 0;
+    z-index: 9998;
+    background: transparent;
+}
+
+.suggestion-container {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    background: rgba(35, 35, 35, 0.95);
     backdrop-filter: blur(35px) saturate(140%);
     -webkit-backdrop-filter: blur(35px) saturate(140%);
-    padding: 6px;
-    box-sizing: border-box;
-    z-index: 1000;
-    background: rgba(23, 23, 23, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 20px 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000000;
+}
+
+.search-container {
+    position: relative;
+    z-index: 1000000;
+}
+
+.search-container:has(.suggestion-container) {
+    z-index: 1000000;
 }

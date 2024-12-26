@@ -132,11 +132,26 @@ const WallpaperCard = ({ imageURL, type }) => {
     }
   };
 
+  // Check if any suggestion container is active
+  const isSuggestionActive = () => {
+    return document.querySelector('.suggestion-container') !== null;
+  };
+
+  const handleMouseEnter = () => {
+    if (!isSuggestionActive()) {
+      setIsHovered(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
   return (
     <div 
       className={`firebase-wallpaper-card firebase-wallpaper-card-${type}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Image
         src={imageURL}
