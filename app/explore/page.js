@@ -117,12 +117,16 @@ const ExplorePage = () => {
                                 <span className="search-tag-inner">Category: </span> {searchInfo.category}
                             </span>
                         )}
-                        {searchInfo.series && (
+                        {searchInfo.series && searchInfo.searchTerm && 
+                         !searchInfo.category?.toLowerCase().includes(searchInfo.searchTerm.toLowerCase()) && (
                             <span className="search-tag">
                                 <span className="search-tag-inner">Series: </span> {searchInfo.series}
                             </span>
                         )}
-                        {searchInfo.character && (
+                        {searchInfo.character && searchInfo.searchTerm && 
+                         !searchInfo.category?.toLowerCase().includes(searchInfo.searchTerm.toLowerCase()) && 
+                         !searchInfo.series?.toLowerCase().includes(searchInfo.searchTerm.toLowerCase()) &&
+                         searchInfo.searchTerm.toLowerCase() !== searchInfo.series?.toLowerCase().replace(/\s+/g, '') && (
                             <span className="search-tag">
                                 <span className="search-tag-inner">Character: </span> {searchInfo.character}
                             </span>
