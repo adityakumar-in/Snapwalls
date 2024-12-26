@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { generatePollinationImage } from '/utils/pollinations';
 import CreateSnapProgress from '@/components/CreateSnapProgress';
 import CreatedSnap from '@/components/CreatedSnap';
+import AddWallpaper from '@/components/AddWallpaper';
 
 const page = () => {
   const router = useRouter();
@@ -23,6 +24,7 @@ const page = () => {
   const inputRef = useRef(null);
   const [generatedImages, setGeneratedImages] = useState(null);
   const numberOfVariations = 4; // Number of wallpapers to generate
+  const [isAddWallpaperOpen, setIsAddWallpaperOpen] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -282,11 +284,48 @@ const page = () => {
             ))}
           </div>
 
-          <button className="create-button" onClick={handleCreate}>
-            Create
-          </button>
+          <div className="create-buttons-container">
+            <button className="create-button" onClick={handleCreate}>
+              <svg 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path 
+                  d="M12 5L12 19M5 12L19 12" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round"
+                />
+              </svg>
+              Create
+            </button>
+            <button 
+              className="upload-trigger-button" 
+              onClick={() => {
+                if (!user) {
+                  alert('Please login to upload wallpapers');
+                  return;
+                }
+                setIsAddWallpaperOpen(true);
+              }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 16L12 8M12 8L15 11M12 8L9 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15M3 15V8C3 5.79086 4.79086 4 7 4H17C19.2091 4 21 5.79086 21 8V15M3 15H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              Upload
+            </button>
+          </div>
         </div>
       </div>
+
+      <AddWallpaper 
+        isOpen={isAddWallpaperOpen} 
+        onClose={() => setIsAddWallpaperOpen(false)} 
+      />
     </div>
   )
 }

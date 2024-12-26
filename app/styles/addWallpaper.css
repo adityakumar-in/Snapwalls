@@ -1,0 +1,491 @@
+.add-wallpaper-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  padding: 1rem;
+}
+
+.add-wallpaper-dialog {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: min(90%, 500px);
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  animation: dialogFadeIn 0.3s ease-out;
+  will-change: transform;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.add-wallpaper-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--theme-color);
+  margin: 0 0 1.5rem;
+  text-align: center;
+  letter-spacing: -0.5px;
+  position: sticky;
+  top: 0;
+  padding: 0.5rem 0;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.close-button {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 20;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.add-wallpaper-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.form-group:hover {
+  transform: translateX(4px);
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color);
+  opacity: 0.9;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color);
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.form-group input:hover,
+.form-group select:hover {
+  border-color: rgba(255, 178, 0, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--theme-color);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 4px rgba(255, 178, 0, 0.15);
+}
+
+.form-group input::placeholder {
+  color: var(--color);
+  opacity: 0.4;
+  font-style: italic;
+}
+
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border: 2px dashed rgba(255, 178, 0, 0.3);
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-input-container:hover {
+  border-color: var(--theme-color);
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+}
+
+.file-input-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(255, 178, 0, 0.05) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.file-input-container:hover::before {
+  opacity: 1;
+}
+
+.file-input-container input[type="file"] {
+  display: none;
+}
+
+.file-input-label {
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, var(--theme-color) 0%, #FFA500 100%);
+  color: var(--background);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(255, 178, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.file-input-label:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 178, 0, 0.25);
+}
+
+.file-name {
+  font-size: 0.875rem;
+  color: var(--color);
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.preview-container {
+  margin-top: 1rem;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+  min-height: 200px;
+  max-height: 400px;
+  aspect-ratio: 16/9;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-container:hover {
+  transform: scale(1.02);
+  border-color: var(--theme-color);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.wallpaper-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.upload-button {
+  margin-top: 1.5rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--theme-color) 0%, #FFA500 100%);
+  color: var(--background);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 178, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.upload-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
+}
+
+.upload-button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 178, 0, 0.3);
+}
+
+.upload-button:not(:disabled):hover::before {
+  left: 100%;
+}
+
+.upload-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #666 0%, #444 100%);
+  transform: none;
+}
+
+.success-message {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 200, 83, 0.15);
+  color: #00c853;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px solid rgba(0, 200, 83, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 200, 83, 0.2);
+  animation: slideDown 0.4s ease-out;
+}
+
+.success-message svg {
+  width: 16px;
+  height: 16px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Custom scrollbar */
+.add-wallpaper-dialog::-webkit-scrollbar {
+  width: 6px;
+}
+
+.add-wallpaper-dialog::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.add-wallpaper-dialog::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.add-wallpaper-dialog::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .add-wallpaper-overlay {
+    padding: 0;
+    background: rgba(0, 0, 0, 0.75);
+    align-items: flex-end;
+    transition: opacity 0.3s ease;
+  }
+
+  .add-wallpaper-dialog {
+    background: #1a1a1a;
+    width: 100%;
+    height: 20vh;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    padding: 1rem;
+    position: relative;
+    will-change: height, transform;
+    overflow-y: auto;
+    transform-origin: bottom;
+    transition: height 0.3s ease, transform 0.3s ease;
+  }
+
+  .add-wallpaper-dialog[style*="height: 0"] {
+    transform: translateY(100%);
+  }
+
+  .drawer-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin: 0 auto 1rem;
+    flex-shrink: 0;
+  }
+
+  .add-wallpaper-form {
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    padding-bottom: 1rem;
+  }
+
+  .add-wallpaper-dialog::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  .add-wallpaper-dialog::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  .add-wallpaper-dialog::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  .add-wallpaper-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    background: #1a1a1a;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .preview-container {
+    min-height: 150px;
+    aspect-ratio: auto;
+    height: auto;
+  }
+  
+  .wallpaper-preview {
+    max-height: 300px;
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .add-wallpaper-dialog {
+    padding: 0.75rem;
+  }
+
+  .preview-container {
+    min-height: 120px;
+  }
+  
+  .wallpaper-preview {
+    max-height: 200px;
+  }
+}
+
+@keyframes drawerSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Hide scrollbar for all views */
+.add-wallpaper-dialog {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.add-wallpaper-dialog::-webkit-scrollbar {
+  width: 0;
+  display: none;  /* Safari and Chrome */
+}
+
+.add-wallpaper-form {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.add-wallpaper-form::-webkit-scrollbar {
+  width: 0;
+  display: none;  /* Safari and Chrome */
+}
+
+/* Remove any existing scrollbar styles */
+.add-wallpaper-dialog::-webkit-scrollbar-track,
+.add-wallpaper-dialog::-webkit-scrollbar-thumb,
+.add-wallpaper-form::-webkit-scrollbar-track,
+.add-wallpaper-form::-webkit-scrollbar-thumb {
+  display: none;
+} 
