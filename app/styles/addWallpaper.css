@@ -107,6 +107,38 @@
     box-sizing: border-box;
   }
 
+  .add-wallpaper-form {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .form-group {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .form-group input,
+  .form-group select,
+  .type-selector-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .file-input-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.875rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
   .add-wallpaper-dialog.dragging {
     transition: none !important;
   }
@@ -125,10 +157,6 @@
     will-change: transform;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     margin-bottom: 1rem;
-  }
-
-  .add-wallpaper-form {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 
   .file-input-container {
