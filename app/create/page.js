@@ -9,6 +9,7 @@ import { generatePollinationImage } from '/utils/pollinations';
 import CreateSnapProgress from '@/components/CreateSnapProgress';
 import CreatedSnap from '@/components/CreatedSnap';
 import AddWallpaper from '@/components/AddWallpaper';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const page = () => {
   const router = useRouter();
@@ -26,6 +27,9 @@ const page = () => {
   const numberOfVariations = 4; // Number of wallpapers to generate
   const [isAddWallpaperOpen, setIsAddWallpaperOpen] = useState(false);
 
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
@@ -78,6 +82,22 @@ const page = () => {
     );
     if (matchingTag) {
       setSelectedTag(matchingTag);
+    }
+  };
+
+  const enhancePromptWithGemini = async (userPrompt) => {
+    try {
+      const prompt = `As an expert in creating prompts for image generation, enhance the following prompt to create a visually stunning image generation. Focus on adding details in according to the prompt, and add artistic style. Keep the image high quality. Keep the enhanced prompt concise but descriptive, just give me prompt only. Original prompt: "${userPrompt}"`;
+
+      const result = await model.generateContent(prompt);
+      const enhancedPrompt = await result.response.text();
+      
+      // Clean up the enhanced prompt by removing any quotes or prefixes
+      return enhancedPrompt.replace(/^["']|["']$/g, '').replace(/^Enhanced prompt: /i, '').trim();
+    } catch (error) {
+      console.error('Error enhancing prompt with Gemini:', error);
+      // If Gemini fails, return the original prompt
+      return userPrompt;
     }
   };
 
@@ -141,11 +161,12 @@ const page = () => {
 
     try {
       const prompt = `Create a ${searchInput} Wallpaper${selectedTag ? ` for ${selectedTag}` : 'Create a Animated Wallpaper'}`;
+      const enhancedPrompt = await enhancePromptWithGemini(prompt);
       const generationPromises = [];
 
       // Generate multiple variations
       for (let i = 0; i < numberOfVariations; i++) {
-        generationPromises.push(generateSingleWallpaper(prompt, selectedTag, i));
+        generationPromises.push(generateSingleWallpaper(enhancedPrompt, selectedTag, i));
       }
 
       const imageUrls = await Promise.all(generationPromises);

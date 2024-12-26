@@ -509,7 +509,7 @@ const Page = () => {
 
   // Replace the useState and useEffect for favorites with Firebase and keep history in localStorage
   const [favorites, setFavorites] = useState([]);
-  const [history, setHistory] = useLocalStorage('wallpaperHistory', []);
+  const [history, setHistory] = useState([]);
   const auth = getAuth();
 
   // Load favorites from Firebase when user auth state changes
@@ -517,17 +517,75 @@ const Page = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         const favRef = ref(db, `users/${user.uid}/favourites`);
+        const historyRef = ref(db, `users/${user.uid}/history`);
+        
+        // Listen for favorites changes
         onValue(favRef, (snapshot) => {
           const data = snapshot.val();
           setFavorites(data ? Object.values(data) : []);
         });
+        
+        // Listen for history changes
+        onValue(historyRef, (snapshot) => {
+          const data = snapshot.val();
+          setHistory(data ? Object.values(data) : []);
+        });
       } else {
         setFavorites([]);
+        setHistory([]);
       }
     });
 
     return () => unsubscribe();
   }, []);
+
+  const addToHistory = async (wallpaper) => {
+    if (!auth.currentUser) return;
+
+    try {
+      const historyRef = ref(db, `users/${auth.currentUser.uid}/history`);
+      
+      // Get current history items
+      const snapshot = await get(historyRef);
+      const historyData = snapshot.val() || {};
+      const historyItems = Object.entries(historyData)
+        .map(([key, value]) => ({ key, ...value }))
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      // If we have 5 or more items, remove the oldest one
+      if (historyItems.length >= 5) {
+        const oldestItem = historyItems[historyItems.length - 1];
+        await remove(ref(db, `users/${auth.currentUser.uid}/history/${oldestItem.key}`));
+      }
+
+      // Add new item
+      const newHistoryItem = {
+        ...wallpaper,
+        timestamp: new Date().toISOString()
+      };
+      const newItemRef = push(historyRef);
+      await set(newItemRef, newHistoryItem);
+    } catch (error) {
+      console.error('Error adding to history:', error);
+    }
+  };
+
+  const removeFromHistory = async (wallpaper) => {
+    if (!auth.currentUser) return;
+
+    try {
+      const historyRef = ref(db, `users/${auth.currentUser.uid}/history`);
+      const snapshot = await get(historyRef);
+      const data = snapshot.val() || {};
+      const keyToRemove = Object.keys(data).find(key => data[key].url === wallpaper.url);
+      
+      if (keyToRemove) {
+        await remove(ref(db, `users/${auth.currentUser.uid}/history/${keyToRemove}`));
+      }
+    } catch (error) {
+      console.error('Error removing from history:', error);
+    }
+  };
 
   const toggleFavorite = async (wallpaper) => {
     if (!auth.currentUser) {
@@ -687,7 +745,7 @@ const Page = () => {
       const url = await generatePollinationImage(prompt, dimensions);
       setImageUrl(url);
 
-      // Add to history using the setter function from useLocalStorage
+      // Add to history
       const newHistoryItem = {
         url,
         category: chosenCategory,
@@ -696,11 +754,7 @@ const Page = () => {
         style: selectedStyle,
         timestamp: new Date().toISOString()
       };
-      
-      setHistory(prevHistory => {
-        const newHistory = [newHistoryItem, ...prevHistory].slice(0, 12);
-        return newHistory;
-      });
+      addToHistory(newHistoryItem);
 
     } catch (error) {
       console.error('Error generating image:', error);
@@ -842,17 +896,22 @@ const Page = () => {
     }
   };
 
-  const handleDeleteItem = (item, isHistoryItem) => {
+  const handleDeleteItem = async (item, isHistoryItem) => {
     if (isHistoryItem) {
-      setHistory(prevHistory => prevHistory.filter(h => h.timestamp !== item.timestamp));
+      removeFromHistory(item);
     } else {
-      // Remove from Firebase
-      const favRef = ref(db, `users/${auth.currentUser.uid}/favourites`);
-      const snapshot = get(favRef);
-      const data = snapshot.val() || {};
-      const keyToRemove = Object.keys(data).find(key => data[key].url === item.url);
-      if (keyToRemove) {
-        remove(ref(db, `users/${auth.currentUser.uid}/favourites/${keyToRemove}`));
+      try {
+        // Remove from Firebase
+        const favRef = ref(db, `users/${auth.currentUser.uid}/favourites`);
+        const snapshot = await get(favRef);
+        const data = snapshot.val() || {};
+        const keyToRemove = Object.keys(data).find(key => data[key].url === item.url);
+        if (keyToRemove) {
+          await remove(ref(db, `users/${auth.currentUser.uid}/favourites/${keyToRemove}`));
+        }
+      } catch (error) {
+        console.error('Error removing favorite:', error);
+        // You might want to show this error to the user through a toast notification
       }
     }
   };
