@@ -7,6 +7,7 @@ import { db } from '/components/firebase.config';
 import WallpaperCard from '/components/WallpaperCard';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Login from '@/components/Login';
 import '@/app/styles/wallpaper.css';
 
 const SnappedPage = () => {
@@ -14,6 +15,7 @@ const SnappedPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [columnCount, setColumnCount] = useState(2);
+  const [showLogin, setShowLogin] = useState(false);
   const auth = getAuth();
   const router = useRouter();
 
@@ -55,7 +57,8 @@ const SnappedPage = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push('/auth/login');
+        setShowLogin(true);
+        setLoading(false);
         return;
       }
 
@@ -119,10 +122,14 @@ const SnappedPage = () => {
 
   return (
     <div className="default-padding">
-      <div className="wallpaper-snapped-page-header-container">
-        <h1 className="wallpaper-snapped-page-title">Snapped Wallpapers</h1>
-      </div>
-      {snappedWallpapers.length === 0 ? (
+      {showLogin ? (
+        <Login onClose={() => setShowLogin(false)} />
+      ) : (
+        <div className="wallpaper-snapped-page-header-container">
+          <h1 className="wallpaper-snapped-page-title">Snapped Wallpapers</h1>
+        </div>
+      )}
+      {showLogin ? null : snappedWallpapers.length === 0 ? (
         <div className='empty-snap-container'>
           <div className='empty-snap-icon'>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
