@@ -6,11 +6,9 @@ import { DownloadIcon, LoadingIcon, CheckIcon } from './icons/DownloadIcon';
 import { db } from '/components/firebase.config';
 import { getAuth } from 'firebase/auth';
 import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
-import { useUI } from '@/context/UIContext';
 import '../app/styles/wallpaperCard.css';
 
 const WallpaperCard = ({ imageURL, type }) => {
-  const { isSuggestionsActive } = useUI();
   const [isHovered, setIsHovered] = useState(false);
   const [isSnapped, setIsSnapped] = useState(false);
   const [downloadState, setDownloadState] = useState('idle'); // idle, downloading, success
@@ -136,9 +134,9 @@ const WallpaperCard = ({ imageURL, type }) => {
 
   return (
     <div 
-      className={`firebase-wallpaper-card firebase-wallpaper-card-${type} ${isSuggestionsActive ? 'suggestions-active' : ''}`}
-      onMouseEnter={() => !isSuggestionsActive && setIsHovered(true)}
-      onMouseLeave={() => !isSuggestionsActive && setIsHovered(false)}
+      className={`firebase-wallpaper-card firebase-wallpaper-card-${type}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Image
         src={imageURL}
@@ -151,9 +149,7 @@ const WallpaperCard = ({ imageURL, type }) => {
       
       <button 
         onClick={handleSnap}
-        disabled={isSuggestionsActive}
-        style={{ pointerEvents: isSuggestionsActive ? 'none' : 'auto' }}
-        className={`firebase-card-button firebase-snap-button ${isHovered && !isSuggestionsActive ? 'opacity-100' : 'opacity-0'} ${isSnapped ? 'firebase-snapped' : ''}`}
+        className={`firebase-card-button firebase-snap-button ${isHovered ? 'opacity-100' : 'opacity-0'} ${isSnapped ? 'firebase-snapped' : ''}`}
       >
         {isSnapped ? (
           <>
@@ -170,9 +166,8 @@ const WallpaperCard = ({ imageURL, type }) => {
 
       <button 
         onClick={handleDownload}
-        disabled={downloadState === 'downloading' || isSuggestionsActive}
-        style={{ pointerEvents: isSuggestionsActive ? 'none' : 'auto' }}
-        className={`firebase-card-button firebase-download-button ${isHovered && !isSuggestionsActive ? 'opacity-100' : 'opacity-0'}`}
+        disabled={downloadState === 'downloading'}
+        className={`firebase-card-button firebase-download-button ${isHovered ? 'opacity-100' : 'opacity-0'}`}
       >
         {downloadState === 'downloading' && <LoadingIcon />}
         {downloadState === 'success' && <CheckIcon />}
