@@ -13,13 +13,13 @@ const AddWallpaper = ({ isOpen, onClose }) => {
   const [preview, setPreview] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [touchStartY, setTouchStartY] = useState(null);
-  const [currentHeight, setCurrentHeight] = useState(20); // Initial height in vh
+  const [currentHeight, setCurrentHeight] = useState(20);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchMove, setTouchMove] = useState(null);
   const dialogRef = useRef(null);
   const isDraggingRef = useRef(false);
+  const startYRef = useRef(null);
+  const currentYRef = useRef(null);
+  const initialHeightRef = useRef(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -30,46 +30,114 @@ const AddWallpaper = ({ isOpen, onClose }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleTouchStart = (e) => {
-    setTouchStartY(e.touches[0].clientY);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!touchStartY) return;
-    
-    const touchY = e.touches[0].clientY;
-    const deltaY = touchStartY - touchY;
-    const windowHeight = window.innerHeight;
-    
-    // Convert the delta to vh units
-    const deltaVh = (deltaY / windowHeight) * 100;
-    
-    // Calculate new height keeping it between 0vh and 85vh
-    let newHeight = currentHeight + deltaVh;
-    newHeight = Math.max(0, Math.min(85, newHeight));
-    
-    setCurrentHeight(newHeight);
-    setTouchStartY(touchY);
-  };
-
-  const handleTouchEnd = () => {
-    setTouchStartY(null);
-    
-    // Close if dragged down below 30vh
-    if (currentHeight < 30) {
-      onClose();
-      // Reset height for next time
-      setTimeout(() => setCurrentHeight(50), 300);
-    } else if (currentHeight > 65) {
-      // Expand if dragged up past threshold
-      setCurrentHeight(85);
-      setIsExpanded(true);
-    } else {
-      // Collapse to initial position
-      setCurrentHeight(45);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      setCurrentHeight(20);
       setIsExpanded(false);
+    } else {
+      document.body.style.overflow = 'unset';
     }
-  };
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const touchStartHandler = (e) => {
+      if (!e.target.closest('.dialog-header, .drawer-handle')) return;
+
+      const touch = e.touches[0];
+      isDraggingRef.current = true;
+      startYRef.current = touch.clientY;
+      currentYRef.current = touch.clientY;
+      initialHeightRef.current = currentHeight;
+
+      if (dialog) {
+        dialog.style.transition = 'none';
+        dialog.classList.add('dragging');
+      }
+    };
+
+    const touchMoveHandler = (e) => {
+      if (!isDraggingRef.current) return;
+      e.preventDefault();
+
+      const touch = e.touches[0];
+      currentYRef.current = touch.clientY;
+      
+      const deltaY = startYRef.current - currentYRef.current;
+      const windowHeight = window.innerHeight;
+      const deltaVh = (deltaY / windowHeight) * 100;
+      
+      let newHeight = Math.max(20, Math.min(85, initialHeightRef.current + deltaVh));
+      
+      requestAnimationFrame(() => {
+        setCurrentHeight(newHeight);
+        setIsExpanded(newHeight > 65);
+      });
+    };
+
+    const touchEndHandler = () => {
+      if (!isDraggingRef.current) return;
+
+      const deltaY = startYRef.current - currentYRef.current;
+      const velocity = Math.abs(deltaY) / 100;
+      const isQuickSwipe = velocity > 0.5;
+      const isUpwardSwipe = deltaY > 0;
+
+      if (dialog) {
+        dialog.style.transition = 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        dialog.classList.remove('dragging');
+
+        requestAnimationFrame(() => {
+          if (isQuickSwipe) {
+            if (isUpwardSwipe) {
+              setCurrentHeight(85);
+              setIsExpanded(true);
+            } else {
+              if (currentHeight > 65) {
+                setCurrentHeight(45);
+                setIsExpanded(false);
+              } else {
+                onClose();
+                setTimeout(() => setCurrentHeight(20), 300);
+              }
+            }
+          } else {
+            if (currentHeight < 30) {
+              onClose();
+              setTimeout(() => setCurrentHeight(20), 300);
+            } else if (currentHeight > 65) {
+              setCurrentHeight(85);
+              setIsExpanded(true);
+            } else {
+              setCurrentHeight(45);
+              setIsExpanded(false);
+            }
+          }
+        });
+      }
+
+      isDraggingRef.current = false;
+      startYRef.current = null;
+      currentYRef.current = null;
+      initialHeightRef.current = null;
+    };
+
+    dialog.addEventListener('touchstart', touchStartHandler, { passive: true });
+    dialog.addEventListener('touchmove', touchMoveHandler, { passive: false });
+    dialog.addEventListener('touchend', touchEndHandler, { passive: true });
+
+    return () => {
+      dialog.removeEventListener('touchstart', touchStartHandler);
+      dialog.removeEventListener('touchmove', touchMoveHandler);
+      dialog.removeEventListener('touchend', touchEndHandler);
+    };
+  }, [currentHeight, onClose]);
 
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains('add-wallpaper-overlay')) {
@@ -193,7 +261,7 @@ const AddWallpaper = ({ isOpen, onClose }) => {
 
   const dialogStyle = isMobile ? {
     height: `${currentHeight}vh`,
-    transition: touchStartY ? 'none' : 'height 0.3s ease'
+    transition: isDraggingRef.current ? 'none' : 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
   } : {};
 
   return (
@@ -202,13 +270,12 @@ const AddWallpaper = ({ isOpen, onClose }) => {
         ref={dialogRef}
         className={`add-wallpaper-dialog ${isExpanded ? 'expanded' : ''}`}
         onClick={e => e.stopPropagation()}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         style={dialogStyle}
       >
         <div className="dialog-header">
-          {isMobile && <div className="drawer-handle" />}
+          {isMobile && (
+            <div className="drawer-handle" />
+          )}
           <h2 className="add-wallpaper-title">Add New Wallpaper</h2>
           {!isMobile && (
             <button className="close-button" onClick={onClose}>×</button>
