@@ -123,7 +123,11 @@ const SearchBar = ({ onSearch }) => {
         const categories = [...new Set(matches.map(m => m.category))];
 
         // Get unique series names
-        const series = [...new Set(matches.map(m => m.series))];
+        const series = [...new Set(
+            matches
+                .map(m => formatDisplayName(m.series))
+                .filter(Boolean)
+        )];
 
         // Get unique character names, excluding series names and numbers
         const characters = [...new Set(
@@ -150,13 +154,13 @@ const SearchBar = ({ onSearch }) => {
         // If searching for a series, show its category and characters
         if (isSeriesSearch) {
             const seriesMatches = matches.filter(m => 
-                series.some(s => m.series === s)
+                series.some(s => formatDisplayName(m.series) === s)
             );
             const relatedCategories = [...new Set(seriesMatches.map(m => m.category))];
             
             return {
                 categories: relatedCategories.map(formatDisplayName),
-                series: series.map(formatDisplayName),
+                series: series,
                 characters: characters.map(formatDisplayName)
             };
         }
