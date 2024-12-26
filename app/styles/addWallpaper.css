@@ -424,13 +424,10 @@
   transition: left 0.5s ease;
 }
 
-.upload-button:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 178, 0, 0.3);
-}
-
-.upload-button:not(:disabled):hover::before {
-  left: 100%;
+.upload-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(255, 178, 0, 0.3);
+  background: linear-gradient(135deg, #FFB200 0%, #FFC107 100%);
 }
 
 .upload-button:disabled {
@@ -730,5 +727,19 @@
   .type-option label svg {
     width: 1rem;
     height: 1rem;
+  }
+} 
+
+@media screen and (max-width: 768px) {
+  .upload-button {
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .upload-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
   }
 } 

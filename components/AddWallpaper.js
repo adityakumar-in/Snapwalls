@@ -296,12 +296,13 @@ const AddWallpaper = ({ isOpen, onClose }) => {
             </div>
 
             <div className="form-group">
-              <label>Series (Optional)</label>
+              <label>Series</label>
               <input
                 type="text"
                 value={series}
                 onChange={(e) => setSeries(e.target.value)}
                 placeholder="e.g., Naruto, One Piece"
+                required
               />
             </div>
 
