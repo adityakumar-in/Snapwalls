@@ -66,22 +66,7 @@
       border-radius: 20px;
     }
   }
-  @keyframes slidedown {
-    from {
-      bottom: -1px;
-    }
-    to {
-      bottom: -100px;
-    }
-  }
-  @keyframes slideup {
-    from {
-      bottom: -100px;
-    }
-    to {
-      bottom: -1px;
-    }
-  }
+  
   .navbar-container {
     background-color: var(--background);
     border: 1px solid #535353be;
@@ -712,13 +697,4 @@
   
   a {
     text-decoration: none;
-  }
-
-  .up {
-    animation: slideup 0.5s ease-in-out;
-    bottom: -1px;
-  }
-  .down {
-    animation: slidedown 0.5s ease-in-out;
-    bottom: -100px;
   }
