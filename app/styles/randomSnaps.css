@@ -1968,6 +1968,7 @@
   display: none;  /* Chrome, Safari and Opera */
 }
 
+/* Update bottom-sheet-content styles */
 .bottom-sheet-content {
   flex: 1;
   overflow-y: auto;
@@ -1977,10 +1978,17 @@
   touch-action: pan-y;
   min-height: 100px;
   margin-bottom: env(safe-area-inset-bottom, 20px);
+  
+  /* Add these lines to hide scrollbar */
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
 }
 
+/* Ensure WebKit scrollbar is hidden */
 .bottom-sheet-content::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none;
+  width: 0;
+  background: transparent;
 }
 
 .gallery-tabs {
@@ -2225,10 +2233,7 @@
   touch-action: none;
   will-change: transform;
   backdrop-filter: blur(20px);
-  -webkit-user-select: none;
-  
-  user-select: none;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden; /* Add this line */
 }
 
 .gallery-bottom-sheet.dragging {

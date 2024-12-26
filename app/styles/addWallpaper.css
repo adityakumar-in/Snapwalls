@@ -97,6 +97,7 @@
     transform: translateZ(0);
     will-change: transform, height;
     transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
   }
 
   .add-wallpaper-dialog.expanded {
@@ -117,12 +118,11 @@
   }
 
   .dialog-content {
-    padding: 0 0.875rem 0.875rem;
-    overscroll-behavior: contain;
+    padding: 0;
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
+    height: calc(100% - 60px);
     width: 100%;
-    box-sizing: border-box;
   }
 
   .add-wallpaper-form {
@@ -130,8 +130,6 @@
     margin-bottom: env(safe-area-inset-bottom, 20px);
     width: 100%;
     box-sizing: border-box;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   .form-group {
@@ -770,4 +768,19 @@
     padding: 0.75rem 1.5rem;
     font-size: 0.875rem;
   }
+} 
+
+/* Consolidate scrollbar hiding styles */
+.add-wallpaper-dialog,
+.dialog-content,
+.add-wallpaper-form {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.add-wallpaper-dialog::-webkit-scrollbar,
+.dialog-content::-webkit-scrollbar,
+.add-wallpaper-form::-webkit-scrollbar {
+  display: none;
+  width: 0;
 } 
