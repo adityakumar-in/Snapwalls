@@ -10,6 +10,7 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     padding-bottom: 1rem;
+    box-sizing: border-box;
 }
 
 .explore-title::after {
@@ -33,6 +34,11 @@
     max-width: 1800px;
     margin: 0 auto;
     overflow-x: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0 10px;
 }
 
 .search-section {
