@@ -842,17 +842,22 @@ const Page = () => {
     }
   };
 
-  const handleDeleteItem = (item, isHistoryItem) => {
+  const handleDeleteItem = async (item, isHistoryItem) => {
     if (isHistoryItem) {
       setHistory(prevHistory => prevHistory.filter(h => h.timestamp !== item.timestamp));
     } else {
-      // Remove from Firebase
-      const favRef = ref(db, `users/${auth.currentUser.uid}/favourites`);
-      const snapshot = get(favRef);
-      const data = snapshot.val() || {};
-      const keyToRemove = Object.keys(data).find(key => data[key].url === item.url);
-      if (keyToRemove) {
-        remove(ref(db, `users/${auth.currentUser.uid}/favourites/${keyToRemove}`));
+      try {
+        // Remove from Firebase
+        const favRef = ref(db, `users/${auth.currentUser.uid}/favourites`);
+        const snapshot = await get(favRef);
+        const data = snapshot.val() || {};
+        const keyToRemove = Object.keys(data).find(key => data[key].url === item.url);
+        if (keyToRemove) {
+          await remove(ref(db, `users/${auth.currentUser.uid}/favourites/${keyToRemove}`));
+        }
+      } catch (error) {
+        console.error('Error removing favorite:', error);
+        // You might want to show this error to the user through a toast notification
       }
     }
   };
