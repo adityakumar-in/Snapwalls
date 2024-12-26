@@ -51,101 +51,108 @@ const AddWallpaper = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
+  const handleTouchMove = (e) => {
+    if (!isDraggingRef.current) return;
+    e.preventDefault();
+
+    const touch = e.touches[0];
+    const deltaY = touch.clientY - startYRef.current;
+    const windowHeight = window.innerHeight;
+    
+    // Calculate new position as percentage of window height
+    let newHeight = Math.max(20, Math.min(85, initialHeightRef.current - (deltaY / windowHeight * 100)));
+    
+    if (dialogRef.current) {
+      // Apply transform immediately for smooth tracking
+      dialogRef.current.style.height = `${newHeight}vh`;
+      dialogRef.current.style.transform = `translateZ(0)`; // Force GPU acceleration
+      
+      // Update expanded state based on height
+      setIsExpanded(newHeight > 65);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDraggingRef.current || !dialogRef.current) return;
+
+    const currentHeight = parseFloat(dialogRef.current.style.height);
+    const velocity = Math.abs(startYRef.current - currentYRef.current) / 100;
+    const isQuickSwipe = velocity > 0.5;
+    const isUpwardSwipe = startYRef.current > currentYRef.current;
+
+    // Snap points
+    const snapPoints = {
+      close: 20,    // Closed state
+      mid: 45,      // Mid state
+      full: 85      // Fully expanded
+    };
+
+    let targetHeight;
+    
+    if (isQuickSwipe) {
+      // Quick swipe behavior
+      targetHeight = isUpwardSwipe ? snapPoints.full : snapPoints.close;
+    } else {
+      // Normal drag behavior
+      if (currentHeight < 30) {
+        targetHeight = snapPoints.close;
+      } else if (currentHeight > 65) {
+        targetHeight = snapPoints.full;
+      } else {
+        targetHeight = snapPoints.mid;
+      }
+    }
+
+    // Apply smooth transition
+    dialogRef.current.style.transition = 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+    dialogRef.current.style.height = `${targetHeight}vh`;
+    
+    // Update state and cleanup
+    setIsExpanded(targetHeight > 65);
+    setCurrentHeight(targetHeight);
+
+    if (targetHeight === snapPoints.close) {
+      setTimeout(onClose, 300);
+    }
+
+    // Reset refs
+    isDraggingRef.current = false;
+    startYRef.current = null;
+    currentYRef.current = null;
+    initialHeightRef.current = null;
+
+    // Remove dragging class
+    dialogRef.current.classList.remove('dragging');
+  };
+
+  const handleTouchStart = (e) => {
+    if (!e.touches || !e.target.closest('.dialog-header, .drawer-handle')) return;
+
+    const touch = e.touches[0];
+    isDraggingRef.current = true;
+    startYRef.current = touch.clientY;
+    currentYRef.current = touch.clientY;
+    initialHeightRef.current = currentHeight;
+
+    if (dialogRef.current) {
+      dialogRef.current.style.transition = 'none';
+      dialogRef.current.classList.add('dragging');
+    }
+  };
+
+  // Update useEffect for touch events
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    const touchStartHandler = (e) => {
-      // Only handle touch events
-      if (!e.touches) return;
-      if (!e.target.closest('.dialog-header, .drawer-handle')) return;
-
-      const touch = e.touches[0];
-      isDraggingRef.current = true;
-      startYRef.current = touch.clientY;
-      currentYRef.current = touch.clientY;
-      initialHeightRef.current = currentHeight;
-
-      if (dialog) {
-        dialog.style.transition = 'none';
-        dialog.classList.add('dragging');
-      }
-    };
-
-    const touchMoveHandler = (e) => {
-      if (!isDraggingRef.current) return;
-      e.preventDefault();
-
-      const touch = e.touches[0];
-      currentYRef.current = touch.clientY;
-      
-      const deltaY = startYRef.current - currentYRef.current;
-      const windowHeight = window.innerHeight;
-      const deltaVh = (deltaY / windowHeight) * 100;
-      
-      let newHeight = Math.max(20, Math.min(85, initialHeightRef.current + deltaVh));
-      
-      requestAnimationFrame(() => {
-        setCurrentHeight(newHeight);
-        setIsExpanded(newHeight > 65);
-      });
-    };
-
-    const touchEndHandler = () => {
-      if (!isDraggingRef.current) return;
-
-      const deltaY = startYRef.current - currentYRef.current;
-      const velocity = Math.abs(deltaY) / 100;
-      const isQuickSwipe = velocity > 0.5;
-      const isUpwardSwipe = deltaY > 0;
-
-      if (dialog) {
-        dialog.style.transition = 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        dialog.classList.remove('dragging');
-
-        requestAnimationFrame(() => {
-          if (isQuickSwipe) {
-            if (isUpwardSwipe) {
-              setCurrentHeight(85);
-              setIsExpanded(true);
-            } else {
-              if (currentHeight > 65) {
-                setCurrentHeight(45);
-                setIsExpanded(false);
-              } else {
-                onClose();
-                setTimeout(() => setCurrentHeight(20), 300);
-              }
-            }
-          } else {
-            if (currentHeight < 30) {
-              onClose();
-              setTimeout(() => setCurrentHeight(20), 300);
-            } else if (currentHeight > 65) {
-              setCurrentHeight(85);
-              setIsExpanded(true);
-            } else {
-              setCurrentHeight(45);
-              setIsExpanded(false);
-            }
-          }
-        });
-      }
-
-      isDraggingRef.current = false;
-      startYRef.current = null;
-      currentYRef.current = null;
-      initialHeightRef.current = null;
-    };
-
-    dialog.addEventListener('touchstart', touchStartHandler, { passive: true });
-    dialog.addEventListener('touchmove', touchMoveHandler, { passive: false });
-    dialog.addEventListener('touchend', touchEndHandler, { passive: true });
+    dialog.addEventListener('touchstart', handleTouchStart, { passive: true });
+    dialog.addEventListener('touchmove', handleTouchMove, { passive: false });
+    dialog.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
-      dialog.removeEventListener('touchstart', touchStartHandler);
-      dialog.removeEventListener('touchmove', touchMoveHandler);
-      dialog.removeEventListener('touchend', touchEndHandler);
+      dialog.removeEventListener('touchstart', handleTouchStart);
+      dialog.removeEventListener('touchmove', handleTouchMove);
+      dialog.removeEventListener('touchend', handleTouchEnd);
     };
   }, [currentHeight, onClose]);
 
