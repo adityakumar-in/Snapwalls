@@ -104,16 +104,19 @@ const page = () => {
   };
 
   const generateSingleWallpaper = async (prompt, tag, index) => {
-    // Default to 4K resolution for best quality while maintaining performance
+    // Increased resolution for ultra HD quality
     const dimensions = tag === 'Mobile' 
-      ? { width: 1440, height: 2560 }  // 2.5K for mobile
-      : { width: 3840, height: 2160 }; // 4K for desktop/default
+      ? { width: 2880, height: 5120 }  // 5K for mobile (2x previous)
+      : { width: 7680, height: 4320 }; // 8K for desktop (2x previous)
 
     const imageUrl = await generatePollinationImage(prompt, {
       width: dimensions.width,
       height: dimensions.height,
       model: 'flux',
-      seed: Date.now() + index // Add different seed for variations
+      seed: Date.now() + index, // Add different seed for variations
+      num_inference_steps: 50,   // Increase inference steps for better quality (default is usually 30)
+      guidance_scale: 7.5,      // Adjust guidance scale for better adherence to prompt
+      scheduler: "dpm++_2m_karras" // Use a high-quality scheduler
     });
 
     // Create a new image object to ensure it's fully loaded
