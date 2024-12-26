@@ -82,18 +82,19 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(28, 28, 28, 0.4);
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(35, 35, 35, 0.75);
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.05),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        0 8px 20px rgba(0, 0, 0, 0.15),
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
     z-index: 1;
+    letter-spacing: 0.3px;
 }
 
 .create-tag::before {
@@ -127,15 +128,13 @@
 }
 
 .create-tag:hover {
-    background: rgba(35, 35, 35, 0.75);
     transform: translateY(-4px) scale(1.02);
+    background: rgba(35, 35, 35, 0.85);
     box-shadow: 
-        0 8px 20px rgba(0, 0, 0, 0.15),
-        0 4px 8px rgba(0, 0, 0, 0.1),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    letter-spacing: 0.3px;
-    color: rgba(255, 255, 255, 0.95);
-    border-color: rgba(255, 255, 255, 0.15);
+        0 12px 24px rgba(0, 0, 0, 0.2),
+        0 6px 12px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 .create-tag:hover::before {
@@ -229,152 +228,129 @@
     width: 100%;
 }
 
+.create-buttons-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
 .create-button {
-    width: auto;
-    min-width: 160px;
-    padding: 16px 40px;
-    background: rgba(28, 28, 28, 0.4);
-    color: var(--theme-color);
-    border: 1px solid rgba(255, 178, 0, 0.2);
-    border-radius: 26px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.05),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-    z-index: 1;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-}
-
-.create-button::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(var(--theme-color-rgb), 0.2) 0%,
-        rgba(var(--theme-color-rgb), 0.1) 50%,
-        transparent 100%
-    );
-    opacity: 0;
-    transition: all 0.5s ease;
-    transform: translateX(-100%) scale(1.2);
-    z-index: -1;
-}
-
-.create-button::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-        rgba(255, 178, 0, 0.15) 0%,
-        transparent 60%
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
+  padding: 12px 32px;
+  border-radius: 20px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(28, 28, 28, 0.4);
+  color: var(--theme-color);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  min-width: 140px;
+  border-radius: 16px;
 }
 
 .create-button:hover {
-    background: rgba(35, 35, 35, 0.75);
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 
-        0 8px 20px rgba(255, 178, 0, 0.2),
-        0 4px 8px rgba(255, 178, 0, 0.1),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    letter-spacing: 2px;
-    border-color: rgba(255, 178, 0, 0.4);
-    color: rgba(255, 178, 0, 0.95);
+  background: transparent;
+  transform: translateY(-6px) scale(1.03);
+  letter-spacing: 0.4px;
+  border: 1px solid var(--theme-color);
 }
 
-.create-button:hover::before {
-    opacity: 1;
-    transform: translateX(0) scale(1);
+.upload-trigger-button {
+  padding: 12px 28px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(28, 28, 28, 0.4);
+  color: #00c853;
+  border: 1px solid rgba(0, 200, 83, 0.2);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  justify-content: center;
 }
 
-.create-button:hover::after {
-    opacity: 1;
+.upload-trigger-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 200, 83, 0.2) 0%,
+    rgba(0, 200, 83, 0.1) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: all 0.5s ease;
+  transform: translateX(-100%) scale(1.2);
+  z-index: -1;
 }
 
-.create-button:active {
-    transform: translateY(-2px) scale(0.98);
-    transition: all 0.1s ease;
-    background: rgba(35, 35, 35, 0.85);
-    box-shadow: 
-        0 4px 12px rgba(255, 178, 0, 0.15),
-        0 2px 4px rgba(255, 178, 0, 0.1),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+.upload-trigger-button:hover {
+  background: rgba(35, 35, 35, 0.75);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 8px 20px rgba(0, 200, 83, 0.15),
+    0 4px 8px rgba(0, 200, 83, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.3px;
+  border-color: rgba(0, 200, 83, 0.3);
+}
+
+.upload-trigger-button:hover::before {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.upload-trigger-button svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+  stroke: #00c853;
+}
+
+.upload-trigger-button:hover svg {
+  transform: translateY(-1px);
 }
 
 @media screen and (max-width: 768px) {
-    .create-button {
-        padding: 14px 32px;
-        min-width: 140px;
-        font-size: 15px;
-        letter-spacing: 1.2px;
-    }
+  .create-button {
+    padding: 10px 28px;
+    min-width: 130px;
+  }
 }
 
 @media screen and (max-width: 480px) {
-    .create-button {
-        padding: 12px 28px;
-        min-width: 130px;
-        font-size: 14px;
-        letter-spacing: 1px;
-    }
-    
-    .create-button:hover {
-        transform: translateY(-2px) scale(1.01);
-        letter-spacing: 1.2px;
-    }
-    
-    .create-button:active {
-        transform: translateY(1px) scale(0.99);
-    }
-}
-
-@media screen and (max-width: 380px) {
-    .create-button {
-        padding: 11px 24px;
-        min-width: 120px;
-        font-size: 13px;
-        letter-spacing: 0.8px;
-    }
-    
-    .create-button:hover {
-        letter-spacing: 1px;
-    }
-}
-
-@media (hover: none) {
-    .create-button:hover {
-        transform: none;
-        letter-spacing: inherit;
-    }
-    
-    .create-button:active {
-        transform: translateY(1px) scale(0.98);
-        background: rgba(35, 35, 35, 0.85);
-        box-shadow: 
-            0 2px 8px rgba(255, 178, 0, 0.15),
-            0 1px 3px rgba(255, 178, 0, 0.1),
-            inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
+  .create-button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+  }
 }
 
 .create-search-heading {
@@ -488,7 +464,7 @@
     .create-button {
       padding: 9px 28px;
       font-size: 14px;
-      border-radius: 7px;
+      border-radius: 16px;
     }
 }
 @media screen and (max-width: 490px) {
@@ -904,4 +880,28 @@
         height: 28px;
         right: 14px;
     }
+}
+
+/* Add styles for very small screens */
+@media screen and (max-width: 480px) {
+  .create-buttons-container {
+    gap: 0.5rem;
+  }
+
+  .create-button,
+  .upload-trigger-button {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+  }
+}
+
+.create-button svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+  stroke: var(--theme-color);
+}
+
+.create-button:hover svg {
+  transform: translateY(-1px);
 }
