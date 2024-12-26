@@ -10,6 +10,7 @@ const SearchBar = ({ onSearch }) => {
     const [suggestions, setSuggestions] = useState({ categories: [], series: [], characters: [] });
     const [allImageNames, setAllImageNames] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
+    const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
     const inputRef = useRef(null);
 
     // Helper function to format display names
@@ -210,6 +211,7 @@ const SearchBar = ({ onSearch }) => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
+        setSelectedSuggestionIndex(-1); // Reset selection when input changes
         if (value.trim()) {
             const newSuggestions = generateSuggestions(value);
             setSuggestions(newSuggestions);
@@ -228,6 +230,48 @@ const SearchBar = ({ onSearch }) => {
         handleSearch(searchTerm);
     };
 
+    const getAllSuggestions = () => {
+        return [
+            ...suggestions.categories,
+            ...suggestions.series,
+            ...suggestions.characters
+        ];
+    };
+
+    const handleKeyDown = (e) => {
+        if (!showSuggestions) return;
+
+        const allSuggestions = getAllSuggestions();
+        const maxIndex = allSuggestions.length - 1;
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault();
+                setSelectedSuggestionIndex(prev => 
+                    prev < maxIndex ? prev + 1 : 0
+                );
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                setSelectedSuggestionIndex(prev => 
+                    prev > 0 ? prev - 1 : maxIndex
+                );
+                break;
+            case 'Enter':
+                e.preventDefault();
+                if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex <= maxIndex) {
+                    handleSuggestionClick(allSuggestions[selectedSuggestionIndex]);
+                } else {
+                    handleSearch(searchTerm);
+                }
+                break;
+            case 'Escape':
+                setShowSuggestions(false);
+                setSelectedSuggestionIndex(-1);
+                break;
+        }
+    };
+
     return (
         <div className="search-container">
             <div className="search-input-container">
@@ -241,6 +285,7 @@ const SearchBar = ({ onSearch }) => {
                     placeholder="Search wallpapers..."
                     value={searchTerm}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter') {
                             setShowSuggestions(false);
@@ -271,7 +316,7 @@ const SearchBar = ({ onSearch }) => {
                                 {suggestions.categories.map((category, index) => (
                                     <div
                                         key={`category-${index}`}
-                                        className="suggestion-item"
+                                        className={`suggestion-item ${selectedSuggestionIndex === index ? 'selected' : ''}`}
                                         onClick={() => handleSuggestionClick(category)}
                                     >
                                         {category}
@@ -285,7 +330,7 @@ const SearchBar = ({ onSearch }) => {
                                 {suggestions.series.map((series, index) => (
                                     <div
                                         key={`series-${index}`}
-                                        className="suggestion-item"
+                                        className={`suggestion-item ${selectedSuggestionIndex === suggestions.categories.length + index ? 'selected' : ''}`}
                                         onClick={() => handleSuggestionClick(series)}
                                     >
                                         {series}
@@ -299,7 +344,7 @@ const SearchBar = ({ onSearch }) => {
                                 {suggestions.characters.map((character, index) => (
                                     <div
                                         key={`character-${index}`}
-                                        className="suggestion-item"
+                                        className={`suggestion-item ${selectedSuggestionIndex === suggestions.categories.length + suggestions.series.length + index ? 'selected' : ''}`}
                                         onClick={() => handleSuggestionClick(character)}
                                     >
                                         {character}
