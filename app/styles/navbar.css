@@ -83,7 +83,7 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    z-index: 2000;
+    z-index: 999;
   }
   .nav-cr,
   .nav-act {

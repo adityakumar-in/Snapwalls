@@ -53,9 +53,9 @@ const SnappedPage = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push('/login');
+        router.push('/auth/login');
         return;
       }
 
@@ -83,7 +83,7 @@ const SnappedPage = () => {
       return () => unsubscribeSnaps();
     });
 
-    return () => unsubscribeAuth();
+    return () => unsubscribe();
   }, [router]);
 
   if (loading) {
