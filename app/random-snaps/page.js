@@ -286,7 +286,7 @@ const PhoneTimeDisplay = () => {
   const formatTime = (date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return `${hours<10 ? '0' : ''}${hours}:${minutes}`;
   };
 
   const formatDate = (date) => {
@@ -323,7 +323,7 @@ const DesktopFrame = ({ imageUrl, onDownload, onShare, onFavorite, isFavorite, i
 
   const formatTime = (date) => {
     return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
+      hour: '2-digit',
       minute: '2-digit',
       hour12: true
     });
