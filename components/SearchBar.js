@@ -4,8 +4,10 @@ import { storage } from '@/components/firebase.config';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 import { FaSearch } from 'react-icons/fa';
 import '@/app/styles/searchbar.css';
+import { useUI } from '@/context/UIContext';
 
 const SearchBar = ({ onSearch }) => {
+    const { setIsSuggestionsActive } = useUI();
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState({ categories: [], series: [], characters: [] });
     const [allImageNames, setAllImageNames] = useState([]);
@@ -96,6 +98,18 @@ const SearchBar = ({ onSearch }) => {
         document.addEventListener('keydown', handleKeyPress);
         return () => document.removeEventListener('keydown', handleKeyPress);
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (inputRef.current && !inputRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+                setIsSuggestionsActive(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [setIsSuggestionsActive]);
 
     const generateSuggestions = useCallback((term) => {
         if (!term) return { categories: [], series: [], characters: [] };
@@ -204,6 +218,7 @@ const SearchBar = ({ onSearch }) => {
         // Clear search input after search
         setSearchTerm('');
         setShowSuggestions(false);
+        setIsSuggestionsActive(false);
     }, [allImageNames, onSearch, generateSuggestions]);
 
     const handleInputChange = (e) => {
@@ -213,18 +228,24 @@ const SearchBar = ({ onSearch }) => {
             const newSuggestions = generateSuggestions(value);
             setSuggestions(newSuggestions);
             setShowSuggestions(true);
+            setIsSuggestionsActive(true);
         } else {
             setSuggestions({ categories: [], series: [], characters: [] });
             setShowSuggestions(false);
+            setIsSuggestionsActive(false);
         }
     };
 
     const handleSuggestionClick = (value) => {
         handleSearch(value);
+        setShowSuggestions(false);
+        setIsSuggestionsActive(false);
     };
 
     const handleSearchClick = () => {
         handleSearch(searchTerm);
+        setShowSuggestions(false);
+        setIsSuggestionsActive(false);
     };
 
     return (
@@ -254,6 +275,7 @@ const SearchBar = ({ onSearch }) => {
                         setSearchTerm('');
                         setSuggestions({ categories: [], series: [], characters: [] });
                         setShowSuggestions(false);
+                        setIsSuggestionsActive(false);
                         inputRef.current?.focus();
                     }}
                     aria-label="Clear search"

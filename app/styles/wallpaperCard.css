@@ -23,6 +23,20 @@
   transform: scale(1.05);
 }
 
+.firebase-wallpaper-card.suggestions-active {
+  pointer-events: none;
+  cursor: default;
+}
+
+.firebase-wallpaper-card.suggestions-active:hover .firebase-wallpaper-image {
+  transform: none;
+}
+
+.firebase-wallpaper-card.suggestions-active .firebase-card-button {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
 .firebase-card-buttons {
   position: absolute;
   top: 12px;
