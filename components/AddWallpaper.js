@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage, db, auth } from '/components/firebase.config';
-import { ref as dbRef, set } from 'firebase/database';
+import { ref, uploadBytes, getDownloadURL, listAll } from 'firebase/storage';
+import { storage, auth } from '/components/firebase.config';
 import '../app/styles/addWallpaper.css';
 
 const AddWallpaper = ({ isOpen, onClose }) => {
@@ -104,127 +103,88 @@ const AddWallpaper = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (!file || !category) return;
 
-    // Check if user is authenticated
-    if (!auth.currentUser) {
-      alert('Please sign in to upload wallpapers');
-      return;
-    }
-
     try {
       setUploading(true);
       
-      // Format names: remove special characters and convert to kebab-case
-      const formatName = (str) => {
+      // Format function to handle spaces and convert to lowercase
+      const formatInput = (str) => {
         if (!str) return '';
         return str
           .toLowerCase()
-          // Replace special characters and spaces with hyphens
-          .replace(/[^a-z0-9]+/g, '-')
-          // Remove leading and trailing hyphens
-          .replace(/^-+|-+$/g, '');
+          .replace(/\s+/g, '-'); // Replace spaces with hyphens
       };
       
-      const formattedCategory = formatName(category);
-      const formattedSeries = formatName(series);
-      const formattedCharacter = formatName(characterName);
+      // Format all inputs
+      const formattedCategory = formatInput(category);
+      const formattedSeries = formatInput(series);
+      const formattedCharacter = formatInput(characterName);
+      const formattedType = type.toLowerCase();
       
-      // Validate the formatted category
-      if (!formattedCategory) {
-        throw new Error('Invalid category name. Please use only letters, numbers, and simple punctuation.');
-      }
-      
-      // Format: category_series_character_type_timestamp.extension
-      const timestamp = Date.now();
+      // Get file extension
       const extension = file.name.split('.').pop().toLowerCase();
-      
-      // Convert type to the exact format expected by explore page
-      const formattedType = type.toLowerCase() === 'desktop' ? 'desktop' : 'mobile';
-      
-      // Build filename parts, filtering out empty strings
-      const filenameParts = [
+
+      // Check if user is authenticated
+      if (!auth.currentUser) {
+        throw new Error('Please sign in to upload wallpapers');
+      }
+
+      // Create base filename without number
+      const baseFilename = [
         formattedCategory,
         formattedSeries,
-        formattedCharacter,
-        formattedType,
-        timestamp.toString()
-      ].filter(Boolean);
-      
-      // Join with underscores and add extension
-      const filename = `${filenameParts.join('_')}.${extension}`;
-      
-      // Include user ID in the storage path for better organization and security
-      const storageRef = ref(storage, `users/${auth.currentUser.uid}/wallpapers/${filename}`);
-      
-      try {
-        const snapshot = await uploadBytes(storageRef, file);
-        console.log('File uploaded successfully:', snapshot);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-        console.log('Download URL obtained:', downloadURL);
-        
-        // Save metadata to Realtime Database under the user's ID
-        const wallpaperRef = dbRef(db, `users/${auth.currentUser.uid}/uploads/${filename.replace('.' + extension, '')}`);
-        await set(wallpaperRef, {
-          url: downloadURL,
-          category: formattedCategory,
-          series: formattedSeries || null,
-          characterName: formattedCharacter || null,
-          type: formattedType,
-          timestamp,
-          originalName: filename,
-          displayName: `${category}${series ? ' - ' + series : ''}${characterName ? ' - ' + characterName : ''}`,
-          uploadedBy: auth.currentUser.uid
-        });
-        console.log('Metadata saved successfully');
+        formattedCharacter
+      ].filter(Boolean).join('_');
 
-        // Also save to the public wallpapers collection
-        const publicWallpaperRef = dbRef(db, `wallpapers/${filename.replace('.' + extension, '')}`);
-        await set(publicWallpaperRef, {
-          url: downloadURL,
-          category: formattedCategory,
-          series: formattedSeries || null,
-          characterName: formattedCharacter || null,
-          type: formattedType,
-          timestamp,
-          originalName: filename,
-          displayName: `${category}${series ? ' - ' + series : ''}${characterName ? ' - ' + characterName : ''}`,
-          uploadedBy: auth.currentUser.uid
-        });
-
-        // Show success message
-        setShowSuccess(true);
-        
-        // Reset form after 2 seconds
-        setTimeout(() => {
-          setFile(null);
-          setCategory('');
-          setSeries('');
-          setCharacterName('');
-          setType('Desktop');
-          setPreview(null);
-          setShowSuccess(false);
-          onClose();
-        }, 2000);
-      } catch (error) {
-        console.error('Detailed upload error:', error);
-        console.error('Error code:', error.code);
-        console.error('Error message:', error.message);
-        if (error.message.includes('Invalid category')) {
-          alert(error.message);
-        } else if (error.code === 'storage/unauthorized') {
-          alert('Error: You do not have permission to upload wallpapers. Please sign in with an authorized account.');
-        } else if (error.code === 'storage/canceled') {
-          alert('Error: Upload was canceled. Please try again.');
-        } else if (error.code === 'storage/unknown') {
-          alert('Error: An unknown error occurred. Please try again.');
-        } else {
-          alert('Failed to upload wallpaper. Please try again.');
+      // List all files in the storage to check for existing files
+      const storageRef = ref(storage, '/');
+      const filesList = await listAll(storageRef);
+      
+      // Find existing files with similar names and get the highest number
+      let highestNum = 0;
+      const regex = new RegExp(`^${baseFilename}-\\d+_${formattedType}\\.${extension}$`);
+      
+      filesList.items.forEach(item => {
+        const match = item.name.match(regex);
+        if (match) {
+          const num = parseInt(item.name.split('_')[item.name.split('_').length - 2].split('-')[1]);
+          highestNum = Math.max(highestNum, num);
         }
-      } finally {
+      });
+
+      // Create final filename with next number
+      const finalFilename = `${baseFilename}-${highestNum + 1}_${formattedType}.${extension}`;
+      
+      console.log('Generated filename:', finalFilename);
+      console.log('File type:', extension);
+
+      // Upload file directly to Firebase Storage root
+      const fileRef = ref(storage, finalFilename);
+      await uploadBytes(fileRef, file);
+      console.log('File uploaded successfully to Firebase Storage:', finalFilename);
+
+      // Show success message
+      setShowSuccess(true);
+      
+      // Reset form after 2 seconds
+      setTimeout(() => {
+        setFile(null);
+        setCategory('');
+        setSeries('');
+        setCharacterName('');
+        setPreview(null);
+        setShowSuccess(false);
         setUploading(false);
+        onClose();
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error during upload:', error);
+      if (error.code === 'storage/unauthorized') {
+        alert('Error: You do not have permission to upload wallpapers. Please sign in with an authorized account.');
+      } else {
+        alert('Failed to upload wallpaper. Please try again.');
       }
-    } catch (outerError) {
-      console.error('Outer error:', outerError);
-      alert('Failed to prepare wallpaper for upload. Please try again.');
+    } finally {
       setUploading(false);
     }
   };
@@ -380,4 +340,4 @@ const AddWallpaper = ({ isOpen, onClose }) => {
   );
 };
 
-export default AddWallpaper; 
+export default AddWallpaper;
