@@ -3201,3 +3201,37 @@
 .desktop-skeleton-container.empty {
   background: #2c2c2c;
 }
+
+.gallery-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 999;
+}
+
+.gallery-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile-specific backdrop styles */
+@media screen and (max-width: 768px) {
+  .gallery-backdrop {
+    display: block !important;
+    z-index: 99999;
+  }
+  
+  .gallery-bottom-sheet {
+    z-index: 100000;
+  }
+}
+
+/* Desktop-specific backdrop styles */
+@media screen and (min-width: 769px) {
+  .gallery-backdrop {
+    display: none !important;
+  }
+}
