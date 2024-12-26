@@ -30,6 +30,11 @@
   overflow: hidden;
   will-change: transform, height;
   transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .dialog-content {
@@ -86,16 +91,29 @@
 
   .add-wallpaper-dialog {
     width: 100%;
-    max-height: 85vh;
     margin: 0;
     border-radius: 20px 20px 0 0;
-    animation: none;
+    height: 20vh;
     transform: translateZ(0);
     will-change: transform, height;
-    touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
-    overflow-x: hidden;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .add-wallpaper-dialog.expanded {
+    height: 85vh;
+  }
+
+  .drawer-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    margin: 0.5rem auto;
+    transition: background-color 0.3s ease;
+  }
+
+  .add-wallpaper-dialog.dragging .drawer-handle {
+    background: var(--theme-color);
   }
 
   .dialog-content {
@@ -108,11 +126,12 @@
   }
 
   .add-wallpaper-form {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding: 0 1rem 2rem;
+    margin-bottom: env(safe-area-inset-bottom, 20px);
     width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
     box-sizing: border-box;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .form-group {
@@ -424,13 +443,10 @@
   transition: left 0.5s ease;
 }
 
-.upload-button:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 178, 0, 0.3);
-}
-
-.upload-button:not(:disabled):hover::before {
-  left: 100%;
+.upload-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(255, 178, 0, 0.3);
+  background: linear-gradient(135deg, #FFB200 0%, #FFC107 100%);
 }
 
 .upload-button:disabled {
@@ -539,21 +555,30 @@
   }
 
   .add-wallpaper-form {
-    /* height: calc(100% - 60px); */
+    padding: 0 1rem 2rem;
+    margin-bottom: env(safe-area-inset-bottom, 20px);
+    width: 100%;
+    box-sizing: border-box;
     overflow-y: auto;
-    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .add-wallpaper-dialog::-webkit-scrollbar {
-    width: 0px;
+  .dialog-content {
+    padding: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    height: calc(100% - 60px);
   }
 
-  .add-wallpaper-dialog::-webkit-scrollbar-track {
-    display: none;
+  .add-wallpaper-dialog {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
-  .add-wallpaper-dialog::-webkit-scrollbar-thumb {
-    display: none;
+  .preview-container {
+    margin: 1rem -1rem;
+    width: calc(100% + 2rem);
   }
 
   .add-wallpaper-title {
@@ -730,5 +755,19 @@
   .type-option label svg {
     width: 1rem;
     height: 1rem;
+  }
+} 
+
+@media screen and (max-width: 768px) {
+  .upload-button {
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .upload-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
   }
 } 

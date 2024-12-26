@@ -15,6 +15,12 @@ export default function RootLayout({ children }) {
           <div>
               {children}
           </div>
+          <script type="module" dangerouslySetInnerHTML={{
+            __html: `
+              import { initScrollbar } from '/app/scripts/scrollbar.js';
+              document.addEventListener('DOMContentLoaded', initScrollbar);
+            `
+          }} />
       </body>
     </html>
   );
