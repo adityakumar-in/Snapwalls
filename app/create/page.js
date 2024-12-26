@@ -323,7 +323,7 @@ const page = () => {
               </svg>
               Create
             </button>
-            {user?.uid === 'oM3UozDEVoTmJudvAXc1M4MOZbu1' && (
+            {(user?.uid === process.env.NEXT_PUBLIC_ADMIN_UID_1 || user?.uid === process.env.NEXT_PUBLIC_ADMIN_UID_2) && (
               <button 
                 className="upload-trigger-button" 
                 onClick={() => {
