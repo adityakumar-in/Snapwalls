@@ -45,7 +45,7 @@
 .prompt-text {
     color: var(--color);
     font-size: 1.25rem;
-    font-style: italic;
+    /* font-style: italic; */
     margin: 0 auto;
     padding: 1.25rem 2rem;
     background: var(--background);

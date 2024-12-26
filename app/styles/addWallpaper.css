@@ -295,7 +295,7 @@
 .form-group input::placeholder {
   color: var(--color);
   opacity: 0.4;
-  font-style: italic;
+  /* font-style: italic; */
   font-size: 0.9375rem;
 }
 
