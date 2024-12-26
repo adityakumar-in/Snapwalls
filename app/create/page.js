@@ -323,22 +323,24 @@ const page = () => {
               </svg>
               Create
             </button>
-            <button 
-              className="upload-trigger-button" 
-              onClick={() => {
-                if (!user) {
-                  alert('Please login to upload wallpapers');
-                  return;
-                }
-                setIsAddWallpaperOpen(true);
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 16L12 8M12 8L15 11M12 8L9 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15M3 15V8C3 5.79086 4.79086 4 7 4H17C19.2091 4 21 5.79086 21 8V15M3 15H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-              Upload
-            </button>
+            {user?.uid === 'oM3UozDEVoTmJudvAXc1M4MOZbu1' && (
+              <button 
+                className="upload-trigger-button" 
+                onClick={() => {
+                  if (!user) {
+                    alert('Please login to upload wallpapers');
+                    return;
+                  }
+                  setIsAddWallpaperOpen(true);
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 16L12 8M12 8L15 11M12 8L9 11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15M3 15V8C3 5.79086 4.79086 4 7 4H17C19.2091 4 21 5.79086 21 8V15M3 15H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                Upload
+              </button>
+            )}
           </div>
         </div>
       </div>
