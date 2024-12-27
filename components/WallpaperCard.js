@@ -230,12 +230,8 @@ const WallpaperCard = ({ imageURL, type }) => {
       }
     }
 
-    // If not snapped, then show delete confirmation on mobile
-    if (window.innerWidth <= 768) {
-      setShowDeleteConfirm(true);
-    } else {
-      handleDelete();
-    }
+    // Show delete confirmation for all screen sizes
+    setShowDeleteConfirm(true);
   };
 
   const handleConfirmDelete = (e) => {
@@ -280,7 +276,8 @@ const WallpaperCard = ({ imageURL, type }) => {
               </svg>
             </button>
             {showDeleteConfirm && (
-              <div className="delete-confirm">
+              <div className="delete-confirm show">
+                <p className="delete-confirm-message">Are you sure you want to delete this wallpaper?</p>
                 <div className="delete-confirm-buttons">
                   <button onClick={handleConfirmDelete} className="confirm-yes">
                     Delete
