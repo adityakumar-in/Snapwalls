@@ -81,7 +81,7 @@ const CreatedSnap = ({ wallpapers = [], prompt = '' }) => {
                             <span className="back-icon">←</span>
                             Back to Create
                         </button>
-                        {prompt && <p className="prompt-text">{prompt}</p>}
+                        {prompt && <p className="prompt-text"><span>{prompt}</span></p>}
                     </div>
                 </div>
                 
