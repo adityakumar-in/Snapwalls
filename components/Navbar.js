@@ -8,7 +8,6 @@ import Login from './Login'
 import { signOut } from 'firebase/auth'
 import { ref, set, remove, get, onValue } from 'firebase/database'
 import { db, auth } from '/components/firebase.config' // Make sure this path is correct
-import gsap from 'gsap'
 
 const Navbar = () => {
   const path = usePathname()
@@ -109,7 +108,8 @@ const Navbar = () => {
 
   useEffect(() => {
     if (path === '/profile') {
-      setProfileActive(true)
+      // setProfileActive(true) // uncomment when using profile
+      setProfileActive(false)
     } else {
       setProfileActive(false)
     }
@@ -269,7 +269,7 @@ const Navbar = () => {
             </div>
           )}
 
-          <Link href="/profile">
+          {/* <Link href="/profile"> */}
             <div className='navbar-profile nav-profiles'>
               {!profileActive ? <div className="navbar-icon">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="style=fill"> <g id="profile"> <path id="vector (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M6.75 6.5C6.75 3.6005 9.1005 1.25 12 1.25C14.8995 1.25 17.25 3.6005 17.25 6.5C17.25 9.3995 14.8995 11.75 12 11.75C9.1005 11.75 6.75 9.3995 6.75 6.5Z" fill="#606060"></path> <path id="rec (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M4.25 18.5714C4.25 15.6325 6.63249 13.25 9.57143 13.25H14.4286C17.3675 13.25 19.75 15.6325 19.75 18.5714C19.75 20.8792 17.8792 22.75 15.5714 22.75H8.42857C6.12081 22.75 4.25 20.8792 4.25 18.5714Z" fill="#606060"></path> </g> </g> </g></svg>
@@ -282,24 +282,20 @@ const Navbar = () => {
                 <div className="navbar-profile-email">{formatEmail(userEmail)}</div>
               </div>
             </div>
-          </Link>
+          {/* </Link> */}
 
 
-          <div className='navbar-profile nav-prof' onClick={handleProfileClick}>
+          {/* <div className='navbar-profile nav-prof' onClick={handleProfileClick}>
             {!showProf ? <div className="navbar-icon">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="style=fill"> <g id="profile"> <path id="vector (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M6.75 6.5C6.75 3.6005 9.1005 1.25 12 1.25C14.8995 1.25 17.25 3.6005 17.25 6.5C17.25 9.3995 14.8995 11.75 12 11.75C9.1005 11.75 6.75 9.3995 6.75 6.5Z" fill="#606060"></path> <path id="rec (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M4.25 18.5714C4.25 15.6325 6.63249 13.25 9.57143 13.25H14.4286C17.3675 13.25 19.75 15.6325 19.75 18.5714C19.75 20.8792 17.8792 22.75 15.5714 22.75H8.42857C6.12081 22.75 4.25 20.8792 4.25 18.5714Z" fill="#606060"></path> </g> </g> </g></svg>
             </div> :
               <div className="navbar-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="style=fill"> <g id="profile"> <path id="vector (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M6.75 6.5C6.75 3.6005 9.1005 1.25 12 1.25C14.8995 1.25 17.25 3.6005 17.25 6.5C17.25 9.3995 14.8995 11.75 12 11.75C9.1005 11.75 6.75 9.3995 6.75 6.5Z" fill="#df2e38"></path> <path id="rec (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M4.25 18.5714C4.25 15.6325 6.63249 13.25 9.57143 13.25H14.4286C17.3675 13.25 19.75 15.6325 19.75 18.5714C19.75 20.8792 17.8792 22.75 15.5714 22.75H8.42857C6.12081 22.75 4.25 20.8792 4.25 18.5714Z" fill="#df2e38"></path> </g> </g> </g></svg>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="style=fill"> <g id="profile"> <path id="vector (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M6.75 6.5C6.75 3.6005 9.1005 1.25 12 1.25C14.8995 1.25 17.25 3.6005 17.25 6.5C17.25 9.3995 14.8995 11.75 12 11.75C9.1005 11.75 6.75 9.3995 6.75 6.5Z" fill="#FFB200"></path> <path id="rec (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M4.25 18.5714C4.25 15.6325 6.63249 13.25 9.57143 13.25H14.4286C17.3675 13.25 19.75 15.6325 19.75 18.5714C19.75 20.8792 17.8792 22.75 15.5714 22.75H8.42857C6.12081 22.75 4.25 20.8792 4.25 18.5714Z" fill="#FFB200"></path> </g> </g> </g></svg>
               </div>}
-            <div className="navbar-profile-info">
-              <div className="navbar-profile-name">John Doe</div>
-              <div className="navbar-profile-email">{formatEmail(userEmail)}</div>
-            </div>
-          </div>
+          </div> */}
 
 
-          {showProfile && (
+          {/* {showProfile && (
             <div className="navbar-profile-dropdown">
               <Link href="/profile">
                 <div onClick={handleProfileClick} className={path === '/profile' ? "navbar-profile-dropdown-item nav-active" : "navbar-profile-dropdown-item"}>
@@ -312,7 +308,7 @@ const Navbar = () => {
                 <div onClick={handleLogout} className="navbar-profile-dropdown-item nav-active">Log Out</div>
               )}
             </div>
-          )}
+          )} */}
 
 
           {/* Login Modal */}
