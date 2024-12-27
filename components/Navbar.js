@@ -31,6 +31,7 @@ const Navbar = () => {
 
   const closeRef = useRef(null);
   const siteRef = useRef(null);
+  const navbarRef = useRef(null);
 
   // Add this check before using auth
   useEffect(() => {
@@ -69,6 +70,26 @@ const Navbar = () => {
     return () => unsubscribeAuth();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navbarRef.current && !navbarRef.current.contains(event.target) && window.innerWidth > 700 && siteActive) {
+        setIsClosing(true);
+        setTimeout(() => {
+          setNotificationActive(false);
+          setLogoutActive(false);
+          setSiteActive(false);
+          setProfileActive(false);
+          setIsClosing(false);
+        }, 500); // Match animation duration
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [siteActive]);
+
   const notificationHandler = () => {
     setNotificationActive(!notificationActive)
   }
@@ -78,15 +99,15 @@ const Navbar = () => {
   }
 
   const siteHandler = () => {
-    if (siteActive) {
+    if (!siteActive) {
+      setSiteActive(true);
+      setIsClosing(false);
+    } else {
       setIsClosing(true);
-      // Wait for animation to complete before updating siteActive
       setTimeout(() => {
         setSiteActive(false);
         setIsClosing(false);
-      }, 500); // Match animation duration
-    } else {
-      setSiteActive(true);
+      }, 500);
     }
   };
 
@@ -158,9 +179,7 @@ const Navbar = () => {
   };
   return (
     <div className="navbar-wrapper">
-      <div className={`navbar-container ${siteActive ? 'navbar-container-active' : ''} ${isClosing ? 'navbar-container-closing' : ''}`} ref={siteRef}>
-
-
+      <div ref={navbarRef} className={`navbar-container ${siteActive ? 'navbar-container-active' : ''} ${isClosing ? 'navbar-container-closing' : ''}`}>
         <div className="navbar-header">
           <div className="navbar-sitename" onClick={siteHandler}>
             <div className={`navbar-icon nav-sitename ${siteActive ? 'flip-icon' : ''}`}>
