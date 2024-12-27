@@ -19,6 +19,7 @@ const WallpaperCard = ({ imageURL, type }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const auth = getAuth();
   const router = useRouter();
 
@@ -208,6 +209,26 @@ const WallpaperCard = ({ imageURL, type }) => {
     setIsHovered(false);
   };
 
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    if (window.innerWidth <= 768) {
+      setShowDeleteConfirm(true);
+    } else {
+      handleDelete();
+    }
+  };
+
+  const handleConfirmDelete = async (e) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(false);
+    handleDelete();
+  };
+
+  const handleCancelDelete = (e) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(false);
+  };
+
   return (
     <>
       <div 
@@ -216,15 +237,41 @@ const WallpaperCard = ({ imageURL, type }) => {
         onMouseLeave={handleMouseLeave}
       >
         {isAdmin && (
-          <button 
-            onClick={handleDelete}
-            className="delete-button"
-            title="Delete Wallpaper"
-          >
-            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#ff3b3b" d="M436,40h-81.716c-5.304,0-10.391-2.107-14.142-5.858L311.858,5.858C308.107,2.107,303.02,0,297.716,0h-83.432 c-5.304,0-10.391,2.107-14.142,5.858l-28.284,28.284C168.107,37.893,163.02,40,157.716,40H76c-22.091,0-40,17.909-40,40 s17.909,40,40,40h0v332c0,33.137,26.863,60,60,60h240c33.137,0,60-26.863,60-60V120c22.091,0,40-17.909,40-40S458.091,40,436,40z M216,402c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z M356,402 c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z"/>
-            </svg>
-          </button>
+          <>
+            <button 
+              onClick={handleDeleteClick}
+              className="delete-button"
+              title="Delete Wallpaper"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            </button>
+            {showDeleteConfirm && (
+              <div className="delete-confirm">
+                <div className="delete-confirm-buttons">
+                  <button onClick={handleConfirmDelete} className="confirm-yes">
+                    Delete
+                  </button>
+                  <button onClick={handleCancelDelete} className="confirm-no">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
         <Image
           src={imageURL}
