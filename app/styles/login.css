@@ -150,7 +150,7 @@
 }
 
 .password-input-container .input {
-  padding-right: 3rem;
+  padding-right: 3.5rem;
 }
 
 .password-toggle-button {
@@ -158,19 +158,36 @@
   right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
+  background: var(--foreground);
+  border: 1px solid var(--seekbar);
   color: var(--theme-color);
-  padding: 0.5rem;
+  padding: 0.6rem;
   cursor: pointer;
-  opacity: 0.8;
   transition: all 0.2s ease;
   z-index: 2;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.password-toggle-button svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
 }
 
 .password-toggle-button:hover {
-  opacity: 1;
-  transform: translateY(-50%) scale(1.1);
+  background: var(--theme-color);
+  color: var(--background);
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 2px 8px rgba(var(--theme-color-rgb), 0.2);
+}
+
+.password-toggle-button:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 .button {
@@ -460,12 +477,18 @@
   }
 
   .password-input-container .input {
-    padding-right: 2.75rem;
+    padding-right: 3.2rem;
   }
 
   .password-toggle-button {
-    right: 0.5rem;
-    padding: 0.4rem;
+    width: 32px;
+    height: 32px;
+    padding: 0.5rem;
+  }
+
+  .password-toggle-button svg {
+    width: 18px;
+    height: 18px;
   }
 
   .button {
@@ -566,6 +589,17 @@
 
   .button svg,
   .social-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .password-toggle-button {
+    width: 30px;
+    height: 30px;
+    padding: 0.45rem;
+  }
+
+  .password-toggle-button svg {
     width: 16px;
     height: 16px;
   }
