@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import Login from './Login';
+import Notification from './Notification';
 import { useRouter } from 'next/navigation';
 import '../app/styles/wallpaperCard.css';
 
@@ -17,6 +18,8 @@ const WallpaperCard = ({ imageURL, type }) => {
   const [downloadState, setDownloadState] = useState('idle'); // idle, downloading, success
   const [showLogin, setShowLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [notification, setNotification] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const auth = getAuth();
   const router = useRouter();
 
@@ -153,7 +156,10 @@ const WallpaperCard = ({ imageURL, type }) => {
     const currentUser = auth.currentUser;
     
     if (!currentUser) {
-      alert('Please login first');
+      setNotification({
+        type: 'error',
+        message: 'Please login first'
+      });
       return;
     }
 
@@ -166,8 +172,10 @@ const WallpaperCard = ({ imageURL, type }) => {
         const users = snapshot.val();
         for (const uid in users) {
           if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
-            // TODO: Add Custom Notification
-            alert('Cannot delete: This wallpaper exists in users\' snapped collections');
+            setNotification({
+              type: 'error',
+              message: 'Cannot delete: This wallpaper exists in users\' snapped collections'
+            });
             return;
           }
         }
@@ -177,13 +185,17 @@ const WallpaperCard = ({ imageURL, type }) => {
       const imageRef = storageRef(storage, imageURL);
       await deleteObject(imageRef);
 
-      // TODO: Add Custom Notification
-      alert('Successfully deleted');
+      setNotification({
+        type: 'success',
+        message: 'Successfully deleted'
+      });
       router.refresh(); // Refresh the page to update the UI
     } catch (error) {
       console.error('Error deleting wallpaper:', error);
-      // TODO: Add Custom Notification
-      alert('Error deleting wallpaper. Please try again.');
+      setNotification({
+        type: 'error',
+        message: 'Error deleting wallpaper. Please try again.'
+      });
     }
   };
 
@@ -197,6 +209,42 @@ const WallpaperCard = ({ imageURL, type }) => {
     setIsHovered(false);
   };
 
+  const handleDeleteClick = async (e) => {
+    e.stopPropagation();
+    
+    // Check if wallpaper is snapped by any user first
+    const wallpaperKey = getWallpaperKey(imageURL);
+    const usersRef = ref(db, 'users');
+    const snapshot = await get(usersRef);
+    
+    if (snapshot.exists()) {
+      const users = snapshot.val();
+      for (const uid in users) {
+        if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
+          setNotification({
+            type: 'error',
+            message: 'Cannot delete: This wallpaper exists in users\' snapped collections'
+          });
+          return;
+        }
+      }
+    }
+
+    // Show delete confirmation for all screen sizes
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = (e) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(false);
+    handleDelete();
+  };
+
+  const handleCancelDelete = (e) => {
+    e.stopPropagation();
+    setShowDeleteConfirm(false);
+  };
+
   return (
     <>
       <div 
@@ -205,15 +253,42 @@ const WallpaperCard = ({ imageURL, type }) => {
         onMouseLeave={handleMouseLeave}
       >
         {isAdmin && (
-          <button 
-            onClick={handleDelete}
-            className="delete-button"
-            title="Delete Wallpaper"
-          >
-            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#ff3b3b" d="M436,40h-81.716c-5.304,0-10.391-2.107-14.142-5.858L311.858,5.858C308.107,2.107,303.02,0,297.716,0h-83.432 c-5.304,0-10.391,2.107-14.142,5.858l-28.284,28.284C168.107,37.893,163.02,40,157.716,40H76c-22.091,0-40,17.909-40,40 s17.909,40,40,40h0v332c0,33.137,26.863,60,60,60h240c33.137,0,60-26.863,60-60V120c22.091,0,40-17.909,40-40S458.091,40,436,40z M216,402c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z M356,402 c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z"/>
-            </svg>
-          </button>
+          <>
+            <button 
+              onClick={handleDeleteClick}
+              className="delete-button"
+              title="Delete Wallpaper"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            </button>
+            {showDeleteConfirm && (
+              <div className="delete-confirm show">
+                <p className="delete-confirm-message">Are you sure you want to delete this wallpaper?</p>
+                <div className="delete-confirm-buttons">
+                  <button onClick={handleConfirmDelete} className="confirm-yes">
+                    Delete
+                  </button>
+                  <button onClick={handleCancelDelete} className="confirm-no">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
         <Image
           src={imageURL}
@@ -252,6 +327,13 @@ const WallpaperCard = ({ imageURL, type }) => {
         </button>
       </div>
       {showLogin && <Login onClose={() => setShowLogin(false)} currentPath={window.location.pathname} />}
+      {notification && (
+        <Notification
+          type={notification.type}
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
+      )}
     </>
   );
 };
