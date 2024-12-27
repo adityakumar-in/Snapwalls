@@ -408,7 +408,6 @@
 }
 
 .upload-button {
-  margin-top: 1.5rem;
   padding: 1rem 2rem;
   background: linear-gradient(135deg, var(--theme-color) 0%, #FFA500 100%);
   color: var(--background);

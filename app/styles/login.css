@@ -62,22 +62,22 @@
 @keyframes scaleIn {
   from { 
     opacity: 0;
-    transform: scale(0.95) translateY(10px);
+    transform: scale(0.95);
   }
   to { 
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
 @keyframes scaleOut {
   from { 
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
   to { 
     opacity: 0;
-    transform: scale(0.95) translateY(10px);
+    transform: scale(0.95);
   }
 }
 
@@ -351,67 +351,65 @@
   border: 1px solid rgba(231, 76, 60, 0.2);
 }
 
+.login-notification,
 .success-notification {
   position: fixed;
-  top: 2rem;
-  right: 2rem;
-  transform: none;
-  background: rgba(0, 204, 125, 0.1);
-  color: #00cc7d;
-  padding: 1rem 1.5rem;
-  border-radius: 16px;
+  top: 20px;
+  right: 20px;
+  background: rgba(27, 30, 35, 0.95);
+  border: 1px solid rgba(0, 204, 125, 0.2);
+  color: #f2f2f2;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  animation: slideInRight 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 8px 32px rgba(0, 204, 125, 0.15);
+  gap: 16px;
   z-index: 1100;
-  font-weight: 500;
-  border: 1px solid rgba(0, 204, 125, 0.2);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  animation: slideInRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  width: fit-content;
   min-width: 300px;
-  max-width: 90%;
-  width: auto;
+  max-width: calc(100vw - 40px);
+  transform: translateX(0);
+  margin-left: 20px;
 }
 
+.login-notification.hiding,
+.success-notification.hiding {
+  animation: notificationFadeOut 0.4s ease-in forwards;
+}
+
+.login-notification .icon,
 .success-notification .icon {
-  color: #00cc7d;
+  color: var(--theme-color);
   font-size: 1.25rem;
   flex-shrink: 0;
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+.login-notification .message,
 .success-notification .message {
   font-size: 0.95rem;
-  color: #00cc7d;
+  color: #f2f2f2;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  line-height: 1.4;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-@keyframes slideInRight {
-  from { 
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to { 
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-/* For tablets and smaller desktops */
-@media (min-width: 481px) and (max-width: 1024px) {
-  .success-notification {
-    top: 2rem;
-    right: 2rem;
-    padding: 1.125rem 1.75rem;
-  }
-}
-
-/* For mobile devices */
 @media (max-width: 480px) {
   .overlay {
     padding: 0;
     align-items: flex-end;
-    animation: fadeIn 0.3s ease-out forwards;
     height: 100dvh;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .overlay.closing {
+    animation: mobileFadeOut 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   .container {
@@ -422,14 +420,14 @@
     border-radius: 20px 20px 0 0;
     padding: 1.5rem;
     padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-    animation: slideUpMobile 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: slideUpMobile 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
     transform-origin: center bottom;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .container.closing {
-    animation: slideDownMobile 0.3s cubic-bezier(0.34, 0, 0.64, 1) forwards;
+    animation: slideDownMobile 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
 
   @keyframes slideUpMobile {
@@ -451,6 +449,15 @@
     to {
       opacity: 0;
       transform: translateY(100%);
+    }
+  }
+
+  @keyframes mobileFadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
     }
   }
 
@@ -507,7 +514,6 @@
 
   .forgot-password-link {
     font-size: 0.9rem;
-    /* margin: 0.75rem auto; */
     margin: 0px;
   }
 
@@ -522,292 +528,55 @@
     margin-top: 0.75rem;
   }
 
+  .login-notification,
   .success-notification {
-    left: 1rem;
-    right: 1rem;
-    bottom: 2rem;
-    top: auto;
-    border-radius: 14px;
-    padding: 1rem 1.25rem;
-    font-size: 0.95rem;
-    text-align: center;
-    justify-content: center;
-    animation: slideUpNotification 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    top: 16px;
+    right: 16px;
+    left: 16px;
+    margin-left: 0;
+    padding: 14px 20px;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    border-radius: 10px;
+    animation: slideInMobile 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
-  @keyframes slideUpNotification {
-    from {
-      transform: translateY(150%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  .login-notification.hiding,
+  .success-notification.hiding {
+    animation: mobileNotificationFadeOut 0.4s ease-in forwards;
   }
 
-  .social-buttons {
-    gap: 0.75rem;
+  .login-notification .icon,
+  .success-notification .icon {
+    font-size: 1.125rem;
   }
 
-  .google-button,
-  .github-button {
-    padding: 0.875rem;
-  }
-
-  .button svg,
-  .social-icon {
-    width: 18px;
-    height: 18px;
+  .login-notification .message,
+  .success-notification .message {
+    font-size: 0.875rem;
   }
 }
 
-/* Smaller mobile screens */
-@media (max-width: 360px) {
-  .container {
-    padding: 1.25rem;
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
   }
-
-  .login-title {
-    font-size: 1.35rem;
-    margin-bottom: 1.25rem;
+  100% {
+    opacity: 0;
+    transform: translateX(50px);
   }
-
-  .input,
-  .button {
-    padding: 0.75rem;
-    font-size: 0.9rem;
-  }
-
-  .social-buttons {
-    gap: 0.625rem;
-  }
-
-  .social-icon {
-    font-size: 1.1rem;
-  }
-
-  .button svg,
-  .social-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .password-toggle-button {
-    width: 30px;
-    height: 30px;
-    padding: 0.45rem;
-  }
-
-  .password-toggle-button svg {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-/* Landscape mode */
-@media (max-height: 600px) and (orientation: landscape) {
-  .overlay {
-    align-items: center;
-    padding: 1rem;
-  }
-
-  .container {
-    min-height: auto;
-    max-height: 85vh;
-    border-radius: 16px;
-    overflow-y: auto;
-  }
-
-  .container::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .container::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .container::-webkit-scrollbar-thumb {
-    background: var(--seekbar);
-    border-radius: 4px;
-  }
-
-  .form {
-    gap: 0.875rem;
-  }
-
-  .social-buttons {
-    gap: 0.625rem;
-  }
-
-  .signup-prompt {
-    margin-top: 1.25rem;
-    margin-bottom: 0.25rem;
-  }
-}
-
-/* Remove duplicate styles */
-.input-alert,
-.input.error,
-.input.success {
-  display: none;
-}
-
-/* Remove input-group margins */
-.input-group {
-  margin-bottom: 0;
-}
-
-/* Remove media queries related to validation */
-@media (min-width: 1024px), 
-       (max-width: 768px), 
-       (max-width: 480px), 
-       (max-width: 360px), 
-       (max-height: 600px) and (orientation: landscape) {
-  .input-group {
-    margin-bottom: 0;
-  }
-}
-
-.reset-password-container {
-  text-align: center;
-  padding: 1rem 0;
-}
-
-.reset-password-icon {
-  font-size: 3rem;
-  color: var(--theme-color);
-  margin-bottom: 1.5rem;
-  animation: floatIcon 3s ease-in-out infinite;
-}
-
-@keyframes floatIcon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.reset-password-header {
-  margin-bottom: 1.5rem;
-}
-
-.reset-password-header h2 {
-  font-size: 1.5rem;
-  color: var(--color);
-  margin-bottom: 0.75rem;
-}
-
-.reset-password-header p {
-  color: var(--color);
-  opacity: 0.8;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.reset-password-success {
-  text-align: center;
-  padding: 2rem 1rem;
-}
-
-.reset-password-success .success-icon {
-  font-size: 3rem;
-  color: #2ecc71;
-  margin-bottom: 1.25rem;
-  animation: scaleSuccess 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-}
-
-@keyframes scaleSuccess {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-.reset-password-success h2 {
-  font-size: 1.5rem;
-  color: var(--color);
-  margin-bottom: 1rem;
-}
-
-.reset-password-success p {
-  color: var(--color);
-  opacity: 0.8;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.back-to-login {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: var(--theme-color);
-  background: none;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  padding: 0.75rem;
-  margin-top: 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: 100%;
-  border-radius: 12px;
-}
-
-.back-to-login:hover {
-  background: rgba(var(--theme-color-rgb), 0.1);
-  transform: translateY(-1px);
-}
-
-.back-to-login svg {
-  font-size: 1.1rem;
-}
-
-.login-notification {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  background: linear-gradient(135deg, #00cc7d, #00b76f);
-  color: white;
-  padding: 0.875rem 1.5rem;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  animation: slideInRight 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 8px 24px rgba(0, 204, 125, 0.25),
-              0 2px 8px rgba(0, 204, 125, 0.15),
-              0 0 1px rgba(0, 204, 125, 0.1);
-  z-index: 1100;
-  font-weight: 500;
-  width: auto;
-  min-width: auto;
-  max-width: calc(100% - 4rem);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transform-origin: center right;
-}
-
-.login-notification .icon {
-  color: white;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.login-notification .message {
-  font-size: 0.95rem;
-  color: white;
-  font-weight: 500;
-  letter-spacing: 0.01em;
 }
 
 @keyframes slideInRight {
-  from { 
-    transform: translateX(100%) scale(0.95);
+  0% { 
     opacity: 0;
+    transform: translateX(100%);
   }
-  to { 
-    transform: translateX(0) scale(1);
+  100% { 
     opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -820,27 +589,66 @@
   }
 }
 
-@media (max-width: 480px) {
-  .login-notification {
-    top: 1rem;
-    right: 1rem;
-    left: auto;
-    padding: 0.875rem 1.25rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    gap: 0.75rem;
+@keyframes scaleInMobile {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
   }
-  
-  .login-notification .icon {
-    font-size: 1.125rem;
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  .login-notification .message {
-    font-size: 0.875rem;
+}
+
+@keyframes scaleOutMobile {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
   }
 }
 
 body.modal-open {
   overflow: hidden;
   padding-right: 6px; /* Prevent layout shift when scrollbar disappears */
+}
+
+.back-to-login svg {
+  font-size: 1.1rem;
+}
+
+@keyframes slideInMobile {
+  0% { 
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes notificationFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}
+
+@keyframes mobileNotificationFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
