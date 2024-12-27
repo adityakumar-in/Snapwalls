@@ -28,8 +28,6 @@ const CreateSnapProgress = ({ progress }) => {
                 <path className="success-check" d="M7 13l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2"/>
               </svg>
             </div>
-            <h2 className="success-title">Roadmap Created!</h2>
-            <p className="success-message">Your personalized learning journey is ready</p>
           </div>
         ) : (
           <div className="loading-container">
