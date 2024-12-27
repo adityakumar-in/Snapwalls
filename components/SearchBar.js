@@ -12,6 +12,7 @@ const SearchBar = ({ onSearch }) => {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
     const inputRef = useRef(null);
+    const searchContainerRef = useRef(null);
 
     // Helper function to format display names
     const formatDisplayName = (name) => {
@@ -96,6 +97,19 @@ const SearchBar = ({ onSearch }) => {
 
         document.addEventListener('keydown', handleKeyPress);
         return () => document.removeEventListener('keydown', handleKeyPress);
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
 
     
@@ -277,7 +291,7 @@ const SearchBar = ({ onSearch }) => {
     };
 
     return (
-        <div className="search-container">
+        <div className="search-container" ref={searchContainerRef}>
             <div className="search-input-container">
                 <div className="explore-search-icon">
                 <svg viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 11.1455C5.49956 8.21437 7.56975 5.69108 10.4445 5.11883C13.3193 4.54659 16.198 6.08477 17.32 8.79267C18.4421 11.5006 17.495 14.624 15.058 16.2528C12.621 17.8815 9.37287 17.562 7.3 15.4895C6.14763 14.3376 5.50014 12.775 5.5 11.1455Z" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.989 15.4905L19.5 19.0015" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
