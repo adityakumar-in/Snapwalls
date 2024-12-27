@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import Login from './Login'
 import { signOut } from 'firebase/auth'
 import { ref, set, remove, get, onValue } from 'firebase/database'
-import { db, auth } from '/components/firebase.config' // Make sure this path is correct
+import { db, auth, getCurrentUserEmailName } from '/components/firebase.config' // Make sure this path is correct
 
 const Navbar = () => {
   const path = usePathname()
@@ -24,6 +24,7 @@ const Navbar = () => {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [showLogoutNotification, setShowLogoutNotification] = useState(false)
   const [userEmail, setUserEmail] = useState('')
+  const [userName, setUserName] = useState('')
   const [showProfile, setShowProfile] = useState(false)
   const [showProf, setShowProf] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -43,7 +44,8 @@ const Navbar = () => {
         await user.reload();
         setTimeout(() => {
           setIsLoggedIn(user.emailVerified);
-          setUserEmail(user.email);
+          setUserEmail(user.email || 'john.doe@example.com');
+          setUserName(getCurrentUserEmailName() || user.displayName || 'John Doe');
           if (user.emailVerified) {
             setShowLogin(false);
             setShowSignup(false);
@@ -58,7 +60,8 @@ const Navbar = () => {
         });
       } else {
         setIsLoggedIn(false);
-        setUserEmail('john.doe@example.com');
+        setUserEmail(formatEmail('john.doe@example.com'));
+        setUserName('John Doe');
         setIsCreated(false);
       }
     });
@@ -143,7 +146,15 @@ const Navbar = () => {
   };
 
   const formatEmail = (email) => {
+    if (!email) return 'john.doe@example.com';
     return email.length > 16 ? email.substring(0, 16) + '...' : email;
+  };
+  const formatName = (name) => {
+    if (!name) return 'John Doe';
+    const formattedName = name.length > 14 ? name.substring(0, 14) + '...' : name;
+    return formattedName.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   };
   return (
     <div className="navbar-wrapper">
@@ -252,7 +263,7 @@ const Navbar = () => {
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 16.9998C6 17.3511 6 17.5268 6.01567 17.6795C6.14575 18.9473 7.0626 19.9945 8.30206 20.291C8.45134 20.3267 8.6255 20.3499 8.97368 20.3963L15.5656 21.2753C17.442 21.5254 18.3803 21.6505 19.1084 21.361C19.7478 21.1068 20.2803 20.6406 20.6168 20.0405C21 19.3569 21 18.4104 21 16.5174V7.48232C21 5.58928 21 4.64275 20.6168 3.95923C20.2803 3.35911 19.7478 2.89288 19.1084 2.63868C18.3803 2.34914 17.442 2.47423 15.5656 2.72442L8.97368 3.60335C8.62546 3.64978 8.45135 3.67299 8.30206 3.7087C7.0626 4.0052 6.14575 5.05241 6.01567 6.32018C6 6.47288 6 6.64854 6 6.99984M12 7.99984L16 11.9998M16 11.9998L12 15.9998M16 11.9998H3" stroke="#606060" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
               </div>
               <div className={loginActive ? "navbar-icon" : "navbar-icon none"}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 16.9998C6 17.3511 6 17.5268 6.01567 17.6795C6.14575 18.9473 7.0626 19.9945 8.30206 20.291C8.45134 20.3267 8.6255 20.3499 8.97368 20.3963L15.5656 21.2753C17.442 21.5254 18.3803 21.6505 19.1084 21.361C19.7478 21.1068 20.2803 20.6406 20.6168 20.0405C21 19.3569 21 18.4104 21 16.5174V7.48232C21 5.58928 21 4.64275 20.6168 3.95923C20.2803 3.35911 19.7478 2.89288 19.1084 2.63868C18.3803 2.34914 17.442 2.47423 15.5656 2.72442L8.97368 3.60335C8.62546 3.64978 8.45135 3.67299 8.30206 3.7087C7.0626 4.0052 6.14575 5.05241 6.01567 6.32018C6 6.47288 6 6.64854 6 6.99984M12 7.99984L16 11.9998M16 11.9998L12 15.9998M16 11.9998H3" stroke="#df2e38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 16.9998C6 17.3511 6 17.5268 6.01567 17.6795C6.14575 18.9473 7.0626 19.9945 8.30206 20.291C8.45134 20.3267 8.6255 20.3499 8.97368 20.3963L15.5656 21.2753C17.442 21.5254 18.3803 21.6505 19.1084 21.361C19.7478 21.1068 20.2803 20.6406 20.6168 20.0405C21 19.3569 21 18.4104 21 16.5174V7.48232C21 5.58928 21 4.64275 20.6168 3.95923C20.2803 3.35911 19.7478 2.89288 19.1084 2.63868C18.3803 2.34914 17.442 2.47423 15.5656 2.72442L8.97368 3.60335C8.62546 3.64978 8.45135 3.67299 8.30206 3.7087C7.0626 4.0052 6.14575 5.05241 6.01567 6.32018C6 6.47288 6 6.64854 6 6.99984M12 7.99984L16 11.9998M16 11.9998L12 15.9998M16 11.9998H3" stroke="#FFB200" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
               </div>
               <div className={loginActive ? "navbar-text nav-text-active nav-login" : "navbar-text nav-text nav-login"}>Log In</div>
             </div>
@@ -278,7 +289,7 @@ const Navbar = () => {
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="style=fill"> <g id="profile"> <path id="vector (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M6.75 6.5C6.75 3.6005 9.1005 1.25 12 1.25C14.8995 1.25 17.25 3.6005 17.25 6.5C17.25 9.3995 14.8995 11.75 12 11.75C9.1005 11.75 6.75 9.3995 6.75 6.5Z" fill="#FFB200"></path> <path id="rec (Stroke)" fillRule="evenodd" clipRule="evenodd" d="M4.25 18.5714C4.25 15.6325 6.63249 13.25 9.57143 13.25H14.4286C17.3675 13.25 19.75 15.6325 19.75 18.5714C19.75 20.8792 17.8792 22.75 15.5714 22.75H8.42857C6.12081 22.75 4.25 20.8792 4.25 18.5714Z" fill="#FFB200"></path> </g> </g> </g></svg>
                 </div>}
               <div className="navbar-profile-info">
-                <div className="navbar-profile-name">John Doe</div>
+                <div className="navbar-profile-name">{formatName(userName)}</div>
                 <div className="navbar-profile-email">{formatEmail(userEmail)}</div>
               </div>
             </div>

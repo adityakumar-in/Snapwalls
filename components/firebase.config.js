@@ -40,4 +40,15 @@ const getCurrentUserName = () => {
     return auth.currentUser?.displayName || null;
 };
 
-export { app, auth, db, storage, googleProvider, githubProvider, getCurrentUserName };
+// Function to get the user's name from their email
+const getCurrentUserEmailName = () => {
+    const currentUser = auth.currentUser;
+    if (currentUser && currentUser.email) {
+        // Assuming the email format is something like 'name@example.com'
+        const name = currentUser.email.split('@')[0];
+        return name;
+    }
+    return null;
+};
+
+export { app, auth, db, storage, googleProvider, githubProvider, getCurrentUserName, getCurrentUserEmailName };
