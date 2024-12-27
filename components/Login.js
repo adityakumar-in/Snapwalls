@@ -7,12 +7,6 @@ import Signup from './Signup';
 import '@/app/styles/login.css';
 import { useRouter } from 'next/navigation';
 
-const EyeIcon = () => (
-  <svg className="eye-icon" viewBox="0 0 24 24">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
 export default function Login({ onClose = () => { }, currentPath = '/' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -156,8 +150,9 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="password-toggle-button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
               <button type="submit" className="button primary-button">

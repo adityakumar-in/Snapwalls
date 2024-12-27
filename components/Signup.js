@@ -7,13 +7,6 @@ import Login from './Login';
 import '@/app/styles/signup.css';
 import '@/app/styles/login.css';
 
-const EyeIcon = () => (
-  <svg className="eye-icon" viewBox="0 0 24 24">
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
 const GmailIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="mail-icon">
     <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"></path>
@@ -308,8 +301,9 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
                   type="button"
                   onClick={togglePasswordVisibility}
                   className="password-toggle-button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <FaEyeSlash /> : <EyeIcon />}
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
               </div>
               {passwordError && <div className="error-message">{passwordError}</div>}
