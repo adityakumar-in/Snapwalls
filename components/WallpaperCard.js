@@ -209,8 +209,28 @@ const WallpaperCard = ({ imageURL, type }) => {
     setIsHovered(false);
   };
 
-  const handleDeleteClick = (e) => {
+  const handleDeleteClick = async (e) => {
     e.stopPropagation();
+    
+    // Check if wallpaper is snapped by any user first
+    const wallpaperKey = getWallpaperKey(imageURL);
+    const usersRef = ref(db, 'users');
+    const snapshot = await get(usersRef);
+    
+    if (snapshot.exists()) {
+      const users = snapshot.val();
+      for (const uid in users) {
+        if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
+          setNotification({
+            type: 'error',
+            message: 'Cannot delete: This wallpaper exists in users\' snapped collections'
+          });
+          return;
+        }
+      }
+    }
+
+    // If not snapped, then show delete confirmation on mobile
     if (window.innerWidth <= 768) {
       setShowDeleteConfirm(true);
     } else {
@@ -218,7 +238,7 @@ const WallpaperCard = ({ imageURL, type }) => {
     }
   };
 
-  const handleConfirmDelete = async (e) => {
+  const handleConfirmDelete = (e) => {
     e.stopPropagation();
     setShowDeleteConfirm(false);
     handleDelete();

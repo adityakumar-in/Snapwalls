@@ -504,8 +504,8 @@
 
 .delete-confirm {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   z-index: 20;
   background: rgba(20, 20, 20, 0.95);
   backdrop-filter: blur(12px) saturate(180%);
@@ -516,6 +516,14 @@
     0 8px 24px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   animation: scaleIn 0.2s ease-out;
+  display: none; /* Hide by default */
+}
+
+/* Only show delete confirmation on mobile if explicitly triggered */
+@media screen and (max-width: 768px) {
+  .delete-confirm.show {
+    display: block;
+  }
 }
 
 .delete-confirm-buttons {
