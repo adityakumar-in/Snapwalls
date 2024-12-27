@@ -1,6 +1,8 @@
+'use client'
+
 import React, { useRef, useEffect, useState } from 'react'
 import '/app/styles/navbarNotification.css'
-import { ref, onValue, update } from 'firebase/database'
+import { ref, onValue, update, remove } from 'firebase/database'
 import { db } from '/components/firebase.config'
 import { useAuth } from '/context/AuthContext'
 
@@ -13,8 +15,8 @@ const NavbarNotification = ({ isActive, onClose }) => {
 
   // Calculate time difference
   const getTimeAgo = (timestamp) => {
-    const now = new Date('2024-12-28T00:31:58+05:30').getTime();
-    const then = new Date(timestamp).getTime();
+    const now = new Date('2024-12-28T00:53:55+05:30').getTime();
+    const then = timestamp;
     const difference = now - then;
 
     const minutes = Math.floor(difference / 60000);
@@ -30,56 +32,109 @@ const NavbarNotification = ({ isActive, onClose }) => {
   useEffect(() => {
     if (!user) return;
 
-    const userNotificationsRef = ref(db, `users/${user.uid}/notifications`);
-    const globalNotificationsRef = ref(db, 'notifications');
-
-    // Listen to user-specific notifications
-    const userUnsubscribe = onValue(userNotificationsRef, (snapshot) => {
-      const userNotifs = [];
-      snapshot.forEach((childSnapshot) => {
-        const notification = childSnapshot.val();
-        userNotifs.push({
-          id: childSnapshot.key,
-          ...notification,
-          time: getTimeAgo(notification.timestamp)
-        });
-      });
-      setNotifications(userNotifs);
-    });
-
-    // Listen to global notifications
+    // Fetch global notifications
+    const globalNotificationsRef = ref(db, 'notification');
     const globalUnsubscribe = onValue(globalNotificationsRef, (snapshot) => {
       const globalNotifs = [];
-      snapshot.forEach((childSnapshot) => {
-        const notification = childSnapshot.val();
-        if (notification.forUser === user.uid) {
-          globalNotifs.push({
-            id: childSnapshot.key,
-            ...notification,
-            time: getTimeAgo(notification.timestamp)
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          const notification = childSnapshot.val();
+          // Only include unread notifications
+          if (!notification.isRead) {
+            globalNotifs.push({
+              id: childSnapshot.key,
+              source: 'global',
+              ...notification,
+              time: getTimeAgo(notification.timestamp)
+            });
+          }
+        });
+      }
+
+      // Fetch user-specific notifications
+      const userNotificationsRef = ref(db, `users/${user.uid}/notification`);
+      const userUnsubscribe = onValue(userNotificationsRef, (snapshot) => {
+        const userNotifs = [];
+        if (snapshot.exists()) {
+          snapshot.forEach((childSnapshot) => {
+            const notification = childSnapshot.val();
+            userNotifs.push({
+              id: childSnapshot.key,
+              source: 'user',
+              ...notification,
+              time: getTimeAgo(notification.timestamp)
+            });
           });
         }
+
+        // Combine and sort all notifications
+        const allNotifications = [...globalNotifs, ...userNotifs].sort((a, b) => 
+          b.timestamp - a.timestamp
+        );
+        setNotifications(allNotifications);
       });
-      setNotifications(prev => [...prev, ...globalNotifs].sort((a, b) => b.timestamp - a.timestamp));
+
+      return () => userUnsubscribe();
     });
 
-    return () => {
-      userUnsubscribe();
-      globalUnsubscribe();
-    };
+    return () => globalUnsubscribe();
   }, [user]);
 
-  // Mark notification as read
-  const markAsRead = async (notificationId, isUserSpecific) => {
+  // Mark single notification as read
+  const markAsRead = async (notificationId, source) => {
     if (!user) return;
     
-    const path = isUserSpecific 
-      ? `users/${user.uid}/notifications/${notificationId}`
-      : `notifications/${notificationId}`;
-    
-    await update(ref(db, path), {
-      isRead: true
-    });
+    try {
+      if (source === 'user') {
+        // Delete user-specific notification
+        await remove(ref(db, `users/${user.uid}/notification/${notificationId}`));
+      } else {
+        // Mark global notification as read
+        await update(ref(db, `notification/${notificationId}`), {
+          isRead: true
+        });
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    if (!user) return;
+
+    try {
+      const batch = [];
+
+      // Handle user notifications - delete them all
+      const userNotifs = notifications.filter(n => n.source === 'user');
+      userNotifs.forEach(notif => {
+        const userNotifRef = ref(db, `users/${user.uid}/notification/${notif.id}`);
+        batch.push(remove(userNotifRef));
+      });
+
+      // Handle global notifications - mark them as read
+      const globalNotifs = notifications.filter(n => n.source === 'global');
+      globalNotifs.forEach(notif => {
+        const globalNotifRef = ref(db, `notification/${notif.id}`);
+        batch.push(update(globalNotifRef, { isRead: true }));
+      });
+
+      // Execute all updates in parallel
+      await Promise.all(batch);
+
+      // Update local state to reflect changes
+      setNotifications(prevNotifs => 
+        prevNotifs.filter(notif => notif.source !== 'user')
+          .map(notif => ({
+            ...notif,
+            isRead: true
+          }))
+      );
+
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+    }
   };
 
   // Reset styles when notification state changes
@@ -193,14 +248,21 @@ const NavbarNotification = ({ isActive, onClose }) => {
         }} 
       />
       <div 
-        ref={notificationRef}
         className={`navbar-notification-container ${isActive ? 'active' : ''}`}
+        ref={notificationRef}
         onClick={handleContainerClick}
       >
         <div className="navbar-notification-header">
           <div className="navbar-notification-header-content">
             <h3>Notifications</h3>
-            <button className="mark-all-read">Mark all as read</button>
+            {notifications.length > 0 && (
+              <button 
+                className="mark-all-read"
+                onClick={markAllAsRead}
+              >
+                Mark all as read
+              </button>
+            )}
           </div>
           <button className="notification-close-btn" onClick={onClose}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -215,7 +277,7 @@ const NavbarNotification = ({ isActive, onClose }) => {
               <div 
                 key={notification.id} 
                 className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
-                onClick={() => markAsRead(notification.id, notification.forUser === user.uid)}
+                onClick={() => markAsRead(notification.id, notification.source)}
               >
                 <div className="notification-icon">
                   {notification.type === 'like' && (
@@ -252,7 +314,7 @@ const NavbarNotification = ({ isActive, onClose }) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default NavbarNotification

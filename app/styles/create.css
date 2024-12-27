@@ -910,3 +910,26 @@
 .create-button:hover svg {
   transform: translateY(-1px);
 }
+
+.notification-trigger-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #6366f1;
+  color: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-left: 12px;
+}
+
+.notification-trigger-button:hover {
+  background-color: #4f46e5;
+}
+
+.notification-trigger-button svg {
+  width: 20px;
+  height: 20px;
+}

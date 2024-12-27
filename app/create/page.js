@@ -9,6 +9,7 @@ import { generatePollinationImage } from '/utils/pollinations';
 import CreateSnapProgress from '@/components/CreateSnapProgress';
 import CreatedSnap from '@/components/CreatedSnap';
 import AddWallpaper from '@/components/AddWallpaper';
+import AddNotification from '@/components/AddNotification';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Login from '@/components/Login';
 
@@ -28,9 +29,15 @@ const page = () => {
   const numberOfVariations = 4; // Number of wallpapers to generate
   const [isAddWallpaperOpen, setIsAddWallpaperOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [isAddNotificationOpen, setIsAddNotificationOpen] = useState(false);
 
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+  
+  const isAdmin = user && (
+    user.uid === process.env.NEXT_PUBLIC_ADMIN_UID_1 ||
+    user.uid === process.env.NEXT_PUBLIC_ADMIN_UID_2
+  );
   
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -351,6 +358,25 @@ const page = () => {
                 Upload
               </button>
             )}
+            {(user?.uid === process.env.NEXT_PUBLIC_ADMIN_UID_1 || user?.uid === process.env.NEXT_PUBLIC_ADMIN_UID_2) && (
+              <button 
+                className="notification-trigger-button" 
+                onClick={() => {
+                  if (!user) {
+                    alert('Please login to add notifications');
+                    return;
+                  }
+                  setIsAddNotificationOpen(true);
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 22C6.47715 22 2 17.5228 2 12S6.47715 2 12 2s10 4.47715 10 10-4.47715 10-10 10z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 8V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 16H12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Add Notification
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -359,6 +385,12 @@ const page = () => {
         isOpen={isAddWallpaperOpen} 
         onClose={() => setIsAddWallpaperOpen(false)} 
       />
+      {isAdmin && isAddNotificationOpen && (
+        <AddNotification
+          isOpen={isAddNotificationOpen}
+          onClose={() => setIsAddNotificationOpen(false)}
+        />
+      )}
     </div>
   )
 }
