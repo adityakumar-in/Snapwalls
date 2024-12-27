@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import Login from './Login';
+import { useRouter } from 'next/navigation';
 import '../app/styles/wallpaperCard.css';
 
 const WallpaperCard = ({ imageURL, type }) => {
@@ -17,6 +18,7 @@ const WallpaperCard = ({ imageURL, type }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const auth = getAuth();
+  const router = useRouter();
 
   const getWallpaperKey = (url) => {
     // Create a simple hash of the URL
@@ -164,6 +166,7 @@ const WallpaperCard = ({ imageURL, type }) => {
         const users = snapshot.val();
         for (const uid in users) {
           if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
+            // TODO: Add Custom Notification
             alert('Cannot delete: This wallpaper exists in users\' snapped collections');
             return;
           }
@@ -173,9 +176,13 @@ const WallpaperCard = ({ imageURL, type }) => {
       // If wallpaper is not snapped by any user, delete it from storage
       const imageRef = storageRef(storage, imageURL);
       await deleteObject(imageRef);
+
+      // TODO: Add Custom Notification
       alert('Successfully deleted');
+      router.refresh(); // Refresh the page to update the UI
     } catch (error) {
       console.error('Error deleting wallpaper:', error);
+      // TODO: Add Custom Notification
       alert('Error deleting wallpaper. Please try again.');
     }
   };
