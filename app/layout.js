@@ -1,5 +1,6 @@
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import { AuthProvider } from '/context/AuthContext';
 
 export const metadata = {
   title: "Snapwalls - Ultra HD Wallpapers",
@@ -11,9 +12,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <AuthProvider>
           <Navbar />
           <div>
-              {children}
+            {children}
           </div>
           <script type="module" dangerouslySetInnerHTML={{
             __html: `
@@ -21,6 +23,7 @@ export default function RootLayout({ children }) {
               document.addEventListener('DOMContentLoaded', initScrollbar);
             `
           }} />
+        </AuthProvider>
       </body>
     </html>
   );

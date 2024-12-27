@@ -1,10 +1,86 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import '/app/styles/navbarNotification.css'
+import { ref, onValue, update } from 'firebase/database'
+import { db } from '/components/firebase.config'
+import { useAuth } from '/context/AuthContext'
 
 const NavbarNotification = ({ isActive, onClose }) => {
   const notificationRef = useRef(null);
   const startY = useRef(0);
   const currentY = useRef(0);
+  const [notifications, setNotifications] = useState([]);
+  const { user } = useAuth();
+
+  // Calculate time difference
+  const getTimeAgo = (timestamp) => {
+    const now = new Date('2024-12-28T00:31:58+05:30').getTime();
+    const then = new Date(timestamp).getTime();
+    const difference = now - then;
+
+    const minutes = Math.floor(difference / 60000);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours < 24) return `${hours} hours ago`;
+    return `${days} days ago`;
+  };
+
+  // Fetch notifications from Firebase
+  useEffect(() => {
+    if (!user) return;
+
+    const userNotificationsRef = ref(db, `users/${user.uid}/notifications`);
+    const globalNotificationsRef = ref(db, 'notifications');
+
+    // Listen to user-specific notifications
+    const userUnsubscribe = onValue(userNotificationsRef, (snapshot) => {
+      const userNotifs = [];
+      snapshot.forEach((childSnapshot) => {
+        const notification = childSnapshot.val();
+        userNotifs.push({
+          id: childSnapshot.key,
+          ...notification,
+          time: getTimeAgo(notification.timestamp)
+        });
+      });
+      setNotifications(userNotifs);
+    });
+
+    // Listen to global notifications
+    const globalUnsubscribe = onValue(globalNotificationsRef, (snapshot) => {
+      const globalNotifs = [];
+      snapshot.forEach((childSnapshot) => {
+        const notification = childSnapshot.val();
+        if (notification.forUser === user.uid) {
+          globalNotifs.push({
+            id: childSnapshot.key,
+            ...notification,
+            time: getTimeAgo(notification.timestamp)
+          });
+        }
+      });
+      setNotifications(prev => [...prev, ...globalNotifs].sort((a, b) => b.timestamp - a.timestamp));
+    });
+
+    return () => {
+      userUnsubscribe();
+      globalUnsubscribe();
+    };
+  }, [user]);
+
+  // Mark notification as read
+  const markAsRead = async (notificationId, isUserSpecific) => {
+    if (!user) return;
+    
+    const path = isUserSpecific 
+      ? `users/${user.uid}/notifications/${notificationId}`
+      : `notifications/${notificationId}`;
+    
+    await update(ref(db, path), {
+      isRead: true
+    });
+  };
 
   // Reset styles when notification state changes
   useEffect(() => {
@@ -107,31 +183,6 @@ const NavbarNotification = ({ isActive, onClose }) => {
     };
   }, [isActive, onClose]);
 
-  // Example notifications - in a real app, these would come from your backend/database
-  const notifications = [
-    {
-      id: 1,
-      type: 'like',
-      message: 'John Doe liked your wallpaper',
-      time: '2 minutes ago',
-      isRead: false
-    },
-    {
-      id: 2,
-      type: 'comment',
-      message: 'Jane Smith commented on your snap',
-      time: '1 hour ago',
-      isRead: false
-    },
-    {
-      id: 3,
-      type: 'follow',
-      message: 'Mike Johnson started following you',
-      time: '2 hours ago',
-      isRead: true
-    }
-  ]
-
   return (
     <>
       <div 
@@ -164,6 +215,7 @@ const NavbarNotification = ({ isActive, onClose }) => {
               <div 
                 key={notification.id} 
                 className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
+                onClick={() => markAsRead(notification.id, notification.forUser === user.uid)}
               >
                 <div className="notification-icon">
                   {notification.type === 'like' && (
@@ -203,4 +255,4 @@ const NavbarNotification = ({ isActive, onClose }) => {
   )
 }
 
-export default NavbarNotification 
+export default NavbarNotification
