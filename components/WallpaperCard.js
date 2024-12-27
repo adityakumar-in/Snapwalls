@@ -8,6 +8,7 @@ import { getAuth } from 'firebase/auth';
 import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import Login from './Login';
+import Notification from './Notification';
 import { useRouter } from 'next/navigation';
 import '../app/styles/wallpaperCard.css';
 
@@ -17,6 +18,7 @@ const WallpaperCard = ({ imageURL, type }) => {
   const [downloadState, setDownloadState] = useState('idle'); // idle, downloading, success
   const [showLogin, setShowLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [notification, setNotification] = useState(null);
   const auth = getAuth();
   const router = useRouter();
 
@@ -153,7 +155,10 @@ const WallpaperCard = ({ imageURL, type }) => {
     const currentUser = auth.currentUser;
     
     if (!currentUser) {
-      alert('Please login first');
+      setNotification({
+        type: 'error',
+        message: 'Please login first'
+      });
       return;
     }
 
@@ -166,8 +171,10 @@ const WallpaperCard = ({ imageURL, type }) => {
         const users = snapshot.val();
         for (const uid in users) {
           if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
-            // TODO: Add Custom Notification
-            alert('Cannot delete: This wallpaper exists in users\' snapped collections');
+            setNotification({
+              type: 'error',
+              message: 'Cannot delete: This wallpaper exists in users\' snapped collections'
+            });
             return;
           }
         }
@@ -177,13 +184,17 @@ const WallpaperCard = ({ imageURL, type }) => {
       const imageRef = storageRef(storage, imageURL);
       await deleteObject(imageRef);
 
-      // TODO: Add Custom Notification
-      alert('Successfully deleted');
+      setNotification({
+        type: 'success',
+        message: 'Successfully deleted'
+      });
       router.refresh(); // Refresh the page to update the UI
     } catch (error) {
       console.error('Error deleting wallpaper:', error);
-      // TODO: Add Custom Notification
-      alert('Error deleting wallpaper. Please try again.');
+      setNotification({
+        type: 'error',
+        message: 'Error deleting wallpaper. Please try again.'
+      });
     }
   };
 
@@ -252,6 +263,13 @@ const WallpaperCard = ({ imageURL, type }) => {
         </button>
       </div>
       {showLogin && <Login onClose={() => setShowLogin(false)} currentPath={window.location.pathname} />}
+      {notification && (
+        <Notification
+          type={notification.type}
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
+      )}
     </>
   );
 };
