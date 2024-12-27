@@ -143,6 +143,34 @@ const WallpaperCard = ({ imageURL, type }) => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!isAdmin) return;
+
+    const wallpaperKey = getWallpaperKey(imageURL);
+    const currentUser = auth.currentUser;
+    
+    if (!currentUser) {
+      alert('Please login first');
+      return;
+    }
+
+    // Check if wallpaper exists in any user's snapped collection
+    const usersRef = ref(db, 'users');
+    const snapshot = await get(usersRef);
+    
+    if (snapshot.exists()) {
+      const users = snapshot.val();
+      for (const uid in users) {
+        if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
+          alert('Cannot delete: This wallpaper exists in users\' snapped collections');
+          return;
+        }
+      }
+    }
+
+    alert('Successfully deleted');
+  };
+
   const handleMouseEnter = () => {
     if (!document.querySelector('.suggestion-container')) {
       setIsHovered(true);
@@ -162,6 +190,7 @@ const WallpaperCard = ({ imageURL, type }) => {
       >
         {isAdmin && (
           <button 
+            onClick={handleDelete}
             className="delete-button"
             title="Delete Wallpaper"
           >
