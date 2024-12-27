@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { FaCamera, FaFire } from 'react-icons/fa';
 import { DownloadIcon, LoadingIcon, CheckIcon } from './icons/DownloadIcon';
-import { db } from '/components/firebase.config';
+import { db, storage } from '/components/firebase.config';
 import { getAuth } from 'firebase/auth';
 import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
+import { ref as storageRef, deleteObject } from 'firebase/storage';
 import Login from './Login';
 import '../app/styles/wallpaperCard.css';
 
@@ -154,21 +155,29 @@ const WallpaperCard = ({ imageURL, type }) => {
       return;
     }
 
-    // Check if wallpaper exists in any user's snapped collection
-    const usersRef = ref(db, 'users');
-    const snapshot = await get(usersRef);
-    
-    if (snapshot.exists()) {
-      const users = snapshot.val();
-      for (const uid in users) {
-        if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
-          alert('Cannot delete: This wallpaper exists in users\' snapped collections');
-          return;
+    try {
+      // Check if wallpaper exists in any user's snapped collection
+      const usersRef = ref(db, 'users');
+      const snapshot = await get(usersRef);
+      
+      if (snapshot.exists()) {
+        const users = snapshot.val();
+        for (const uid in users) {
+          if (users[uid].snapped && users[uid].snapped[wallpaperKey]) {
+            alert('Cannot delete: This wallpaper exists in users\' snapped collections');
+            return;
+          }
         }
       }
-    }
 
-    alert('Successfully deleted');
+      // If wallpaper is not snapped by any user, delete it from storage
+      const imageRef = storageRef(storage, imageURL);
+      await deleteObject(imageRef);
+      alert('Successfully deleted');
+    } catch (error) {
+      console.error('Error deleting wallpaper:', error);
+      alert('Error deleting wallpaper. Please try again.');
+    }
   };
 
   const handleMouseEnter = () => {
