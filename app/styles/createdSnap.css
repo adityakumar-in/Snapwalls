@@ -45,7 +45,6 @@
 .prompt-text {
     color: var(--color);
     font-size: 1.25rem;
-    /* font-style: italic; */
     margin: 0 auto;
     padding: 1.25rem 2rem;
     background: var(--background);
@@ -53,11 +52,15 @@
     border: 1px solid rgba(255, 178, 0, 0.25);
     display: inline-flex;
     align-items: center;
-    max-width: fit-content;
+    width: fit-content;
+    min-width: min-content;
+    max-width: calc(100% - 4rem);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     position: relative;
     line-height: 1.5;
     text-align: center;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .prompt-text::before {
@@ -68,6 +71,7 @@
     line-height: 0;
     position: relative;
     top: 4px;
+    flex-shrink: 0;
 }
 
 .prompt-text::after {
@@ -78,6 +82,7 @@
     line-height: 0;
     position: relative;
     top: 4px;
+    flex-shrink: 0;
 }
 
 .back-button {
@@ -320,10 +325,16 @@
 
     .prompt-text {
         font-size: 1.1rem;
-        padding: 1rem 1.5rem;
-        width: calc(100% - 2rem);
-        max-width: 100%;
-        margin: 0 1rem;
+        padding: 1rem 1.75rem;
+        max-width: calc(100% - 3rem);
+        margin: 0 auto;
+        border-radius: 14px;
+    }
+
+    .prompt-text::before,
+    .prompt-text::after {
+        font-size: 1.35em;
+        top: 3px;
     }
 
     .back-button {
@@ -401,7 +412,7 @@
 @media (max-width: 360px) {
     .prompt-text {
         font-size: 0.95rem;
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 1.25rem;
         width: fit-content;
         margin: 0 auto;
     }
@@ -916,6 +927,47 @@
     .modal-download:active {
         transform: scale(0.98);
         background: var(--theme-color-darker, #e6a000);
+    }
+}
+
+/* Mobile Screens */
+@media (max-width: 500px) {
+    .prompt-text {
+        font-size: 1rem;
+        padding: 0.875rem 1.5rem;
+        width: fit-content;
+        min-width: min-content;
+        max-width: calc(100% - 2.5rem);
+        margin: 0 auto;
+        line-height: 1.4;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .prompt-text::before,
+    .prompt-text::after {
+        font-size: 1.25em;
+        top: 2px;
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 360px) {
+    .prompt-text {
+        font-size: 0.95rem;
+        padding: 0.75rem 1.25rem;
+        line-height: 1.35;
+        border-radius: 10px;
+        max-width: calc(100% - 2rem);
+    }
+
+    .prompt-text::before,
+    .prompt-text::after {
+        font-size: 1.2em;
+        top: 2px;
     }
 }
   
