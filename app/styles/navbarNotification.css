@@ -1,18 +1,19 @@
 /* Desktop Notification Styles */
 .navbar-notification-container {
   position: fixed;
-  top: 20px;
-  right: -420px;
-  width: 420px;
+  top: 15px;
+  right: -480px;
+  width: 480px;
+  height: 85vh;
   background: linear-gradient(145deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.98));
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px) scale(0.98);
   transition: all 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
   z-index: 1000;
-  max-height: calc(100vh - 40px);
+  max-height: 85vh;
   overflow: hidden;
   backdrop-filter: blur(12px);
 }
@@ -21,7 +22,7 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
-  right: 20px;
+  right: 15px;
 }
 
 .navbar-notification-header {
@@ -108,8 +109,8 @@
 }
 
 .mark-all-read {
-  background: linear-gradient(45deg, rgba(255, 178, 0, 0.1), rgba(255, 178, 0, 0.15));
-  border: none;
+  background: rgba(255, 178, 0, 0.08);
+  border: 1px solid rgba(255, 178, 0, 0.15);
   color: var(--theme-color);
   font-size: 0.9rem;
   font-weight: 500;
@@ -119,24 +120,24 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(5px);
 }
 
-.mark-all-read::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, transparent, rgba(255, 178, 0, 0.2), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.4s ease;
+.mark-all-read:hover {
+  background: rgba(255, 178, 0, 0.12);
+  border-color: rgba(255, 178, 0, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 178, 0, 0.15);
 }
 
-.mark-all-read:hover::before {
-  transform: translateX(100%);
+.mark-all-read:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .navbar-notification-list {
-  padding: 4px;
-  max-height: calc(100vh - 180px);
+  padding: 8px;
+  max-height: calc(85vh - 100px);
   overflow-y: auto;
 }
 
@@ -174,9 +175,9 @@
 }
 
 .notification-icon {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   background: linear-gradient(45deg, rgba(255, 178, 0, 0.1), rgba(255, 178, 0, 0.15));
   border-radius: 14px;
   display: flex;
@@ -184,16 +185,29 @@
   justify-content: center;
   margin-right: 16px;
   transition: all 0.3s ease;
+  padding: 10px;
+  border: 1px solid rgba(255, 178, 0, 0.1);
+  backdrop-filter: blur(8px);
 }
 
 .notification-item:hover .notification-icon {
-  transform: scale(1.08) rotate(-4deg);
+  transform: scale(1.05);
+  background: linear-gradient(45deg, rgba(255, 178, 0, 0.12), rgba(255, 178, 0, 0.18));
+  border-color: rgba(255, 178, 0, 0.15);
+  box-shadow: 0 4px 15px rgba(255, 178, 0, 0.1);
 }
 
 .notification-icon svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   color: var(--theme-color);
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.notification-item:hover .notification-icon svg {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .notification-content {
@@ -263,33 +277,102 @@
 
 /* Mobile Styles - Completely Different Design */
 @media screen and (max-width: 700px) {
+  .notification-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .notification-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .navbar-notification-container {
     position: fixed;
     top: auto;
-    bottom: -100vh;
+    bottom: 0;
     right: 0;
     left: 0;
     width: 100%;
     max-width: none;
     height: 90vh;
     border-radius: 24px 24px 0 0;
-    transform: none;
+    transform: translateY(100%);
     background: linear-gradient(180deg, rgba(25, 25, 25, 0.98), rgba(18, 18, 18, 0.98));
     backdrop-filter: blur(20px);
     z-index: 9999;
-    transition: all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    touch-action: pan-y;
+    will-change: transform, opacity;
+    pointer-events: all !important;
   }
 
   .navbar-notification-container.active {
-    transform: none;
-    right: 0;
-    bottom: 0;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: all !important;
+  }
+
+  .navbar-notification-list {
+    position: relative;
+    z-index: 10000;
+    pointer-events: all !important;
+  }
+
+  .notification-item {
+    position: relative;
+    z-index: 10000;
+    pointer-events: all !important;
+  }
+
+  .notification-content {
+    position: relative;
+    z-index: 10000;
+    pointer-events: all !important;
   }
 
   .navbar-notification-header {
-    padding: 20px;
+    position: relative;
+    z-index: 10000;
+    pointer-events: all !important;
+  }
+
+  .navbar-notification-header-content {
+    position: relative;
+    z-index: 10000;
+    pointer-events: all !important;
+  }
+
+  .notification-close-btn {
+    position: absolute;
+    z-index: 10001;
+    pointer-events: all !important;
+  }
+
+  .mark-all-read {
+    position: relative;
+    z-index: 10000;
+    pointer-events: all !important;
+  }
+
+  .navbar-notification-header {
+    padding: 0;
     background: transparent;
     position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    margin-top: 8px;
   }
 
   .navbar-notification-header::before {
@@ -300,53 +383,99 @@
     transform: translateX(-50%);
     width: 40px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 100px;
+    transition: background-color 0.3s ease;
+    margin-top: 8px;
   }
 
-  .navbar-notification-header::after {
-    display: none;
+  .navbar-notification-container:active .navbar-notification-header::before {
+    background: rgba(255, 255, 255, 0.25);
   }
 
   .navbar-notification-header-content {
+    padding: 28px 20px 16px;
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 12px;
+    position: relative;
   }
 
   .navbar-notification-header h3 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
+    margin: 0;
+    background: linear-gradient(90deg, #fff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.3px;
   }
 
   .mark-all-read {
-    font-size: 0.85rem;
-    padding: 6px 12px;
-    background: rgba(255, 178, 0, 0.1);
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    background: rgba(255, 178, 0, 0.08);
+    border: 1px solid rgba(255, 178, 0, 0.15);
+    border-radius: 10px;
+    color: var(--theme-color);
+    transition: all 0.2s ease;
+    backdrop-filter: blur(5px);
+    margin-top: 4px;
+  }
+
+  .mark-all-read:active {
+    background: rgba(255, 178, 0, 0.15);
+    border-color: rgba(255, 178, 0, 0.25);
+    transform: scale(0.98);
   }
 
   .notification-close-btn {
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 16px;
+    width: 36px;
+    height: 36px;
     background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+  }
+
+  .notification-close-btn:active {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(0.92);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .notification-close-btn svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.9;
+    color: #fff;
   }
 
   .navbar-notification-list {
-    padding: 0 12px;
+    padding: 0 16px;
+    margin-top: 4px;
     max-height: calc(90vh - 100px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .notification-item {
-    padding: 16px;
-    margin: 8px 0;
-    border-radius: 18px;
+    padding: 14px;
+    margin: 6px 0;
+    border-radius: 16px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.04);
+    touch-action: pan-x;
   }
 
-  .notification-item:hover {
-    transform: none;
-    background: rgba(255, 255, 255, 0.04);
+  .notification-item:active {
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(0.995);
   }
 
   .notification-item.unread::before {
@@ -360,40 +489,46 @@
   }
 
   .notification-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 16px;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 14px;
+    padding: 10px;
+    margin-right: 12px;
+    background: linear-gradient(45deg, rgba(255, 178, 0, 0.08), rgba(255, 178, 0, 0.12));
   }
 
   .notification-icon svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
   .notification-message {
-    font-size: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    margin-bottom: 6px;
   }
 
   .notification-time {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .navbar-notification-container {
+    width: 520px;
+    right: -520px;
+    height: 90vh;
+    max-height: 90vh;
+    top: 15px;
   }
 
-  .notification-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(6px);
-    z-index: 9998;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+  .navbar-notification-container.active {
+    right: 15px;
   }
 
-  .notification-overlay.active {
-    display: block;
-    opacity: 1;
+  .navbar-notification-list {
+    max-height: calc(90vh - 100px);
   }
 } 

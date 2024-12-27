@@ -1,7 +1,112 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import '/app/styles/navbarNotification.css'
 
 const NavbarNotification = ({ isActive, onClose }) => {
+  const notificationRef = useRef(null);
+  const startY = useRef(0);
+  const currentY = useRef(0);
+
+  // Reset styles when notification state changes
+  useEffect(() => {
+    const panel = notificationRef.current;
+    if (!panel) return;
+
+    if (isActive) {
+      // Reset styles when opening
+      panel.style.transform = '';
+      panel.style.opacity = '';
+      panel.style.transition = '';
+    }
+  }, [isActive]);
+
+  const handleContainerClick = (e) => {
+    // Stop event propagation to prevent navbar icon click
+    e.stopPropagation();
+  };
+
+  useEffect(() => {
+    const panel = notificationRef.current;
+    if (!panel) return;
+
+    let isDragging = false;
+
+    const handleTouchStart = (e) => {
+      const touch = e.touches[0];
+      startY.current = touch.clientY;
+      currentY.current = touch.clientY;
+      isDragging = true;
+      panel.style.transition = 'none';
+      // Stop propagation for touch events
+      e.stopPropagation();
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      
+      const touch = e.touches[0];
+      const deltaY = touch.clientY - startY.current;
+      currentY.current = touch.clientY;
+
+      // Only allow dragging down
+      if (deltaY < 0) return;
+
+      // Calculate opacity based on drag distance
+      const opacity = 1 - (deltaY / panel.offsetHeight);
+      panel.style.transform = `translateY(${deltaY}px)`;
+      panel.style.opacity = opacity;
+      // Stop propagation for touch events
+      e.stopPropagation();
+    };
+
+    const handleTouchEnd = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      panel.style.transition = 'all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1)';
+
+      const deltaY = currentY.current - startY.current;
+      if (deltaY > 150) {
+        // If dragged down more than 150px, close the notification
+        panel.style.transform = `translateY(100%)`;
+        panel.style.opacity = '0';
+        setTimeout(() => {
+          onClose();
+          // Reset styles after closing
+          panel.style.transform = '';
+          panel.style.opacity = '';
+          panel.style.transition = '';
+        }, 300);
+      } else {
+        // Otherwise, snap back to original position
+        panel.style.transform = 'translateY(0)';
+        panel.style.opacity = '1';
+        setTimeout(() => {
+          // Reset transition after snapping back
+          panel.style.transition = '';
+        }, 300);
+      }
+      // Stop propagation for touch events
+      e.stopPropagation();
+    };
+
+    if (isActive) {
+      panel.addEventListener('touchstart', handleTouchStart);
+      panel.addEventListener('touchmove', handleTouchMove);
+      panel.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      if (panel) {
+        panel.removeEventListener('touchstart', handleTouchStart);
+        panel.removeEventListener('touchmove', handleTouchMove);
+        panel.removeEventListener('touchend', handleTouchEnd);
+        // Reset styles on cleanup
+        panel.style.transform = '';
+        panel.style.opacity = '';
+        panel.style.transition = '';
+      }
+    };
+  }, [isActive, onClose]);
+
   // Example notifications - in a real app, these would come from your backend/database
   const notifications = [
     {
@@ -29,8 +134,18 @@ const NavbarNotification = ({ isActive, onClose }) => {
 
   return (
     <>
-      <div className={`notification-overlay ${isActive ? 'active' : ''}`} onClick={onClose} />
-      <div className={`navbar-notification-container ${isActive ? 'active' : ''}`}>
+      <div 
+        className={`notification-overlay ${isActive ? 'active' : ''}`} 
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }} 
+      />
+      <div 
+        ref={notificationRef}
+        className={`navbar-notification-container ${isActive ? 'active' : ''}`}
+        onClick={handleContainerClick}
+      >
         <div className="navbar-notification-header">
           <div className="navbar-notification-header-content">
             <h3>Notifications</h3>
