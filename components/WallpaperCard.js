@@ -14,6 +14,7 @@ const WallpaperCard = ({ imageURL, type }) => {
   const [isSnapped, setIsSnapped] = useState(false);
   const [downloadState, setDownloadState] = useState('idle'); // idle, downloading, success
   const [showLogin, setShowLogin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const auth = getAuth();
 
   const getWallpaperKey = (url) => {
@@ -38,6 +39,14 @@ const WallpaperCard = ({ imageURL, type }) => {
       setIsSnapped(snapshot.exists());
     });
   }, [imageURL, auth.currentUser]);
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      const adminUid1 = process.env.NEXT_PUBLIC_ADMIN_UID_1;
+      const adminUid2 = process.env.NEXT_PUBLIC_ADMIN_UID_2;
+      setIsAdmin(auth.currentUser.uid === adminUid1 || auth.currentUser.uid === adminUid2);
+    }
+  }, [auth.currentUser]);
 
   const handleDownload = async () => {
     try {
@@ -134,13 +143,8 @@ const WallpaperCard = ({ imageURL, type }) => {
     }
   };
 
-  // Check if any suggestion container is active
-  const isSuggestionActive = () => {
-    return document.querySelector('.suggestion-container') !== null;
-  };
-
   const handleMouseEnter = () => {
-    if (!isSuggestionActive()) {
+    if (!document.querySelector('.suggestion-container')) {
       setIsHovered(true);
     }
   };
@@ -156,6 +160,16 @@ const WallpaperCard = ({ imageURL, type }) => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
+        {isAdmin && (
+          <button 
+            className="delete-button"
+            title="Delete Wallpaper"
+          >
+            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#ff3b3b" d="M436,40h-81.716c-5.304,0-10.391-2.107-14.142-5.858L311.858,5.858C308.107,2.107,303.02,0,297.716,0h-83.432 c-5.304,0-10.391,2.107-14.142,5.858l-28.284,28.284C168.107,37.893,163.02,40,157.716,40H76c-22.091,0-40,17.909-40,40 s17.909,40,40,40h0v332c0,33.137,26.863,60,60,60h240c33.137,0,60-26.863,60-60V120c22.091,0,40-17.909,40-40S458.091,40,436,40z M216,402c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z M356,402 c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z"/>
+            </svg>
+          </button>
+        )}
         <Image
           src={imageURL}
           alt="Wallpaper"
