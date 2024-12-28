@@ -1,102 +1,598 @@
 .notification-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(33, 33, 33, 0.9), rgba(22, 22, 22, 0.95));
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 9999;
+  backdrop-filter: blur(12px) saturate(180%);
+  animation: fadeIn 0.25s ease-in-out;
+  padding: 16px;
 }
 
 .notification-modal {
-  background-color: white;
-  border-radius: 8px;
-  padding: 24px;
-  width: 400px;
+  background: linear-gradient(145deg, rgba(44, 44, 44, 0.6), rgba(33, 33, 33, 0.8));
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transform: translateY(0);
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: visible;
 }
 
-.notification-modal-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 16px;
+/* Create a wrapper for content other than dropdown */
+.notification-content-wrapper {
+  position: relative;
+  z-index: 1;
 }
 
 .notification-form {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 28px;
+}
+
+.notification-select-wrapper {
+  position: fixed;
+  z-index: 99999;
+}
+
+.notification-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.notification-select-button {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  font-size: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--color);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: "Ubuntu", sans-serif;
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+}
+
+.notification-select-button:hover {
+  border-color: rgba(255, 178, 0, 0.3);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.notification-select-button svg {
+  width: 20px;
+  height: 20px;
+  color: var(--theme-color);
+}
+
+.notification-select-button .dropdown-arrow {
+  transition: transform 0.2s ease;
+}
+
+.notification-select-button.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.notification-select-button .option-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--theme-color);
+  opacity: 0.9;
+}
+
+.notification-select-options {
+  background-color: rgb(15, 15, 15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 10px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 
+    0 4px 20px -1px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transform-origin: top center;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.notification-select-options.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+  transition-delay: 0.05s;
+}
+
+.notification-select-option {
+  padding: 14px 16px;
+  cursor: pointer;
+  border-radius: 12px;
+  color: var(--color);
+  font-size: 14px;
+  font-family: "Ubuntu", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: rgb(22, 22, 22);
+  margin: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  animation: dropdownItemFadeIn 0.3s forwards;
+  will-change: transform, opacity;
+}
+
+.notification-select-option:nth-child(1) { animation-delay: 0.05s; }
+.notification-select-option:nth-child(2) { animation-delay: 0.1s; }
+.notification-select-option:nth-child(3) { animation-delay: 0.15s; }
+.notification-select-option:nth-child(4) { animation-delay: 0.2s; }
+
+.notification-select-option:hover {
+  background-color: rgb(30, 30, 30);
+  transform: translateY(-1px);
+}
+
+.notification-select-option.selected {
+  background-color: rgb(35, 35, 35);
+  color: var(--theme-color);
+}
+
+.notification-select-options::-webkit-scrollbar {
+  width: 8px;
+}
+
+.notification-select-options::-webkit-scrollbar-track {
+  background-color: rgb(15, 15, 15);
+}
+
+.notification-select-options::-webkit-scrollbar-thumb {
+  background-color: rgb(35, 35, 35);
+  border-radius: 4px;
+}
+
+.notification-select-options::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(45, 45, 45);
+}
+
+.notification-select-option svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.9;
+}
+
+.notification-buttons {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 40px;
+  z-index: 1;
+}
+
+.notification-button {
+  padding: 18px 32px;
+  border-radius: 16px;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  font-family: "Ubuntu", sans-serif;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+}
+
+.notification-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.notification-button:hover::before {
+  opacity: 1;
+}
+
+.notification-button-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color);
+  backdrop-filter: blur(5px);
+}
+
+.notification-button-cancel:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.notification-button-submit {
+  background: linear-gradient(135deg, var(--theme-color), #FFA000);
+  color: var(--background);
+}
+
+.notification-button-submit:hover {
+  transform: translateY(-2px);
+  filter: brightness(110%);
+  box-shadow: 0 8px 24px -4px rgba(255, 178, 0, 0.5);
+}
+
+.notification-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.loading-spinner::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  margin-left: 10px;
+  border: 2px solid var(--background);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+
+.notification-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  min-height: 220px;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--theme-color);
+  margin-bottom: 24px;
+  animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 8px 16px rgba(255, 178, 0, 0.3));
+}
+
+.notification-success p {
+  color: var(--color);
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  font-family: "Ubuntu", sans-serif;
+  letter-spacing: -0.01em;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .notification-modal {
+    padding: 24px 20px;
+    margin: 0;
+    border-radius: 20px;
+  }
+  
+  .notification-modal-title {
+    font-size: 20px;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .notification-modal-title svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+  
+  .notification-modal-title::after {
+    width: 36px;
+  }
+
+  .notification-form {
+    gap: 20px;
+  }
+  
+  .notification-buttons {
+    flex-direction: column-reverse;
+    gap: 12px;
+    margin-top: 0px;
+  }
+  
+  .notification-button {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .notification-select-options {
+    position: fixed !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+    max-height: 300px;
+    padding: 12px;
+    gap: 8px;
+    border-radius: 20px;
+    box-shadow: 
+      0 8px 32px -4px rgba(0, 0, 0, 0.9),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+
+  .notification-select-option {
+    padding: 16px;
+    font-size: 15px;
+    gap: 14px;
+  }
+
+  .notification-select-option svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .notification-select-button {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  .notification-select-button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .notification-success {
+    min-height: 200px;
+    padding: 16px;
+  }
+
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
+
+  .notification-success p {
+    font-size: 17px;
+  }
+}
+
+.notification-modal::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 178, 0, 0.1), transparent 80%);
+  pointer-events: none;
+  border-radius: 20px;
+}
+
+.notification-modal-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 36px;
+  color: var(--color);
+  text-align: center;
+  font-family: "Ubuntu", sans-serif;
+  letter-spacing: -0.02em;
+  position: relative;
+  padding-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.notification-modal-title svg {
+  width: 28px;
+  height: 28px;
+  color: var(--theme-color);
+  opacity: 0.9;
+  margin-top: -2px;
+}
+
+.notification-modal-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--theme-color), transparent);
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .notification-modal-title {
+    font-size: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 14px;
+    gap: 10px;
+  }
+  
+  .notification-modal-title svg {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .notification-modal-title::after {
+    width: 36px;
+  }
 }
 
 .notification-form-group {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  width: 100%;
 }
 
 .notification-label {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
+  color: var(--color);
+  font-family: "Ubuntu", sans-serif;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .notification-input {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  font-size: 15px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--color);
+  font-family: "Ubuntu", sans-serif;
+  backdrop-filter: blur(5px);
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.notification-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.notification-input:hover {
+  border-color: rgba(255, 178, 0, 0.3);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .notification-input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  border-color: var(--theme-color);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 4px rgba(255, 178, 0, 0.15);
 }
 
-.notification-select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 14px;
-  background-color: white;
+@keyframes dropdownItemFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.notification-select:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-}
-
-.notification-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.notification-button {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+.notification-close-button {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(22, 22, 22, 0.8);
+  color: var(--color);
   cursor: pointer;
-  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.notification-button-cancel {
-  background-color: #f3f4f6;
-  color: #4b5563;
+.notification-close-button:hover {
+  background: rgba(33, 33, 33, 0.95);
+  transform: scale(1.08);
+  border-color: rgba(255, 178, 0, 0.3);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 178, 0, 0.2) inset;
 }
 
-.notification-button-cancel:hover {
-  background-color: #e5e7eb;
+.notification-close-button svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.85;
+  transition: all 0.2s ease;
 }
 
-.notification-button-submit {
-  background-color: #6366f1;
-  color: white;
+.notification-close-button:hover svg {
+  opacity: 1;
+  color: var(--theme-color);
+  transform: rotate(90deg);
 }
 
-.notification-button-submit:hover {
-  background-color: #4f46e5;
+@media (max-width: 640px) {
+  .notification-close-button {
+    display: none;
+  }
 }
