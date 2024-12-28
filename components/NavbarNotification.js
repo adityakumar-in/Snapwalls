@@ -13,6 +13,14 @@ const NavbarNotification = ({ isActive, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const { user } = useAuth();
 
+  // Pass unread count to parent
+  useEffect(() => {
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+    // Dispatch custom event for unread count
+    const event = new CustomEvent('unreadNotificationsCount', { detail: unreadCount });
+    window.dispatchEvent(event);
+  }, [notifications]);
+
   // Calculate time difference
   const getTimeAgo = (timestamp) => {
     const now = new Date().getTime();

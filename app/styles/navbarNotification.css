@@ -592,4 +592,55 @@
     font-size: 0.75rem;
     padding: 3px 8px;
   }
+}
+
+/* Notification Badge Styles */
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: rgba(255, 178, 0, 0.95);
+  color: rgba(0, 0, 0, 0.9);
+  font-size: 0.65rem;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1.5px solid rgba(18, 18, 18, 0.95);
+  opacity: 0;
+  transform: scale(0.8) translateY(4px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+  backdrop-filter: blur(4px);
+}
+
+/* Add this new style to ensure the notification icon container is relative */
+.navbar-notification .navbar-icon {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+.notification-badge.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Mobile adjustments for badge */
+@media screen and (max-width: 700px) {
+  .notification-badge {
+    min-width: 14px;
+    height: 14px;
+    font-size: 0.6rem;
+    top: -4px;
+    right: -4px;
+    border-width: 1px;
+    padding: 0 3px;
+  }
 } 
