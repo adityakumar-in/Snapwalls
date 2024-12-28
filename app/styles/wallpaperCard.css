@@ -405,7 +405,7 @@
 .firebase-wallpaper-card:hover .delete-button {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .delete-button:hover {
