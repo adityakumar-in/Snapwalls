@@ -17,6 +17,7 @@ import { createPortal } from 'react-dom';
 import { db } from '/components/firebase.config';
 import { getAuth } from 'firebase/auth';
 import { ref, set, get, onValue, push, update, remove } from 'firebase/database';
+import Login from '/components/Login';
 
 const QUALITY_PRESETS = {
   standard: {
@@ -494,6 +495,8 @@ const Page = () => {
   const [drawerHeight, setDrawerHeight] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState(0);
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginRedirectPath, setLoginRedirectPath] = useState('');
   const drawerRef = useRef(null);
   const touchStartY = useRef(null);
   const touchEndY = useRef(null);
@@ -805,6 +808,11 @@ const Page = () => {
   };
 
   const handleGalleryToggle = () => {
+    if (!auth.currentUser) {
+      setLoginRedirectPath('/random-snaps');
+      setShowLogin(true);
+      return;
+    }
     setIsGalleryOpen(true);
     // Reset any transform styles when opening
     if (drawerRef.current) {
@@ -970,8 +978,23 @@ const Page = () => {
     wrapper.addEventListener('touchend', handleTouchEnd);
   };
 
+  const handleFavoriteClick = (wallpaper) => {
+    if (!auth.currentUser) {
+      setLoginRedirectPath('/random-snaps');
+      setShowLogin(true);
+      return;
+    }
+    toggleFavorite(wallpaper);
+  };
+
   return (
     <div className='default-padding'>
+      {showLogin && (
+        <Login 
+          onClose={() => setShowLogin(false)} 
+          currentPath={loginRedirectPath}
+        />
+      )}
       <div 
         ref={containerRef}
         className='random-snaps-container'
@@ -1124,7 +1147,7 @@ const Page = () => {
                     </button>
                     <button 
                       className={`random-snap-action-btn favorite-btn ${favorites.some(fav => fav.url === imageUrl) ? 'active' : ''}`}
-                      onClick={() => toggleFavorite({ 
+                      onClick={() => handleFavoriteClick({ 
                         url: imageUrl, 
                         category: currentCategory, 
                         type: wallpaperType, 
@@ -1149,7 +1172,7 @@ const Page = () => {
                   imageUrl={imageUrl}
                   onDownload={handleDownload}
                   onShare={handleShare}
-                  onFavorite={() => toggleFavorite({ 
+                  onFavorite={() => handleFavoriteClick({ 
                     url: imageUrl, 
                     category: currentCategory, 
                     type: wallpaperType, 

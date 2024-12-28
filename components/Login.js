@@ -173,7 +173,7 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
                   <FaLock />
                 </div>
                 <div className="reset-password-header">
-                  <h2>Reset Your Password</h2>
+                  {/* <h2>Reset Your Password</h2> */}
                   <p>Enter your email address and we'll send you instructions to reset your password.</p>
                 </div>
                 <form onSubmit={handleForgotPassword} className="form">
@@ -182,7 +182,7 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
                       type="email"
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
-                      placeholder="Enter your email"
+                      placeholder="Email"
                       required
                       className="input"
                     />
