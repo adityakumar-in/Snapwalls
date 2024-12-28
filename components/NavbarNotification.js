@@ -13,13 +13,21 @@ const NavbarNotification = ({ isActive, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const { user } = useAuth();
 
-  // Pass unread count to parent
+  // Pass unread count to parent only if user is logged in
   useEffect(() => {
+    if (!user) {
+      // Reset notifications when logged out
+      setNotifications([]);
+      // Dispatch event with 0 count when logged out
+      const event = new CustomEvent('unreadNotificationsCount', { detail: 0 });
+      window.dispatchEvent(event);
+      return;
+    }
+
     const unreadCount = notifications.filter(n => !n.isRead).length;
-    // Dispatch custom event for unread count
     const event = new CustomEvent('unreadNotificationsCount', { detail: unreadCount });
     window.dispatchEvent(event);
-  }, [notifications]);
+  }, [notifications, user]);
 
   // Calculate time difference
   const getTimeAgo = (timestamp) => {
@@ -178,8 +186,12 @@ const NavbarNotification = ({ isActive, onClose }) => {
     }
   }, [isActive]);
 
+  // Handle click when not logged in
   const handleContainerClick = (e) => {
-    // Stop event propagation to prevent navbar icon click
+    if (!user) {
+      e.stopPropagation();
+      return;
+    }
     e.stopPropagation();
   };
 
