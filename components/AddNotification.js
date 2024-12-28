@@ -73,6 +73,7 @@ const AddNotification = ({ isOpen, onClose }) => {
   const [startY, setStartY] = useState(null);
   const [currentY, setCurrentY] = useState(null);
   const modalRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -80,6 +81,12 @@ const AddNotification = ({ isOpen, onClose }) => {
       setType('comment');
       setShowSuccess(false);
       setIsDropdownOpen(false);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
     }
   }, [isOpen]);
 
@@ -286,6 +293,7 @@ const AddNotification = ({ isOpen, onClose }) => {
                 <label className="notification-label">
                   Message
                   <input
+                    ref={inputRef}
                     type="text"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
