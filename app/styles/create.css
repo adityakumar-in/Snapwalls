@@ -238,15 +238,15 @@
 }
 
 .create-button {
-  padding: 12px 32px;
-  border-radius: 20px;
+  padding: 12px 28px;
+  border-radius: 16px;
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(28, 28, 28, 0.4);
   color: var(--theme-color);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 178, 0, 0.2);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   box-shadow: 
@@ -259,21 +259,45 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  justify-content: center;
   min-width: 140px;
-  border-radius: 16px;
+  justify-content: center;
+}
+
+.create-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 178, 0, 0.2) 0%,
+    rgba(255, 178, 0, 0.1) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: all 0.5s ease;
+  transform: translateX(-100%) scale(1.2);
+  z-index: -1;
+}
+
+.create-button:hover {
+  background: rgba(35, 35, 35, 0.75);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 8px 20px rgba(255, 178, 0, 0.15),
+    0 4px 8px rgba(255, 178, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.3px;
+  border-color: rgba(255, 178, 0, 0.3);
+}
+
+.create-button:hover::before {
+  opacity: 1;
+  transform: translateX(0) scale(1);
 }
 
 .create-buttons-row {
     display: flex;
     gap: 0.5rem;
-}
-
-.create-button:hover {
-  background: transparent;
-  transform: translateY(-6px) scale(1.03);
-  letter-spacing: 0.4px;
-  border: 1px solid var(--theme-color);
 }
 
 .upload-trigger-button {
