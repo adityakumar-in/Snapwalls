@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { ref, push, serverTimestamp } from 'firebase/database';
+import { ref, push, serverTimestamp, get, child } from 'firebase/database';
 import { db } from '/components/firebase.config';
 import '/app/styles/addNotification.css';
 
@@ -84,13 +84,26 @@ const AddNotification = ({ isOpen, onClose }) => {
     setIsLoading(true);
     
     try {
-      const notificationRef = ref(db, 'notification');
-      await push(notificationRef, {
-        message,
-        type,
-        timestamp: Date.now(),
-        isRead: false
-      });
+      // Get all users
+      const usersRef = ref(db, 'users');
+      const usersSnapshot = await get(usersRef);
+      
+      if (usersSnapshot.exists()) {
+        const users = Object.keys(usersSnapshot.val());
+        
+        // Add notification to each user's notification folder
+        const promises = users.map(uid => {
+          const userNotificationRef = ref(db, `notification/${uid}`);
+          return push(userNotificationRef, {
+            message,
+            type,
+            timestamp: Date.now(),
+            isRead: false
+          });
+        });
+        
+        await Promise.all(promises);
+      }
       
       setShowSuccess(true);
       setTimeout(() => {
