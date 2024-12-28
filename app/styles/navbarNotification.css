@@ -515,8 +515,8 @@
 
 @media screen and (min-width: 1440px) {
   .navbar-notification-container {
-    width: 520px;
-    right: -520px;
+    width: 420px;
+    right: -420px;
     height: 90vh;
     max-height: 90vh;
     top: 15px;
@@ -622,4 +622,4 @@
     border-width: 1px;
     padding: 0 3px;
   }
-} 
+}
