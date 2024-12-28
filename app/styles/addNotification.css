@@ -336,64 +336,112 @@
   }
 }
 
-@media (max-width: 640px) {
-  .notification-modal {
-    padding: 24px 20px;
-    margin: 0;
-    border-radius: 20px;
+/* Desktop and Tablet (above 500px) */
+@media (min-width: 501px) {
+  .notification-drawer-handle {
+    display: none;
   }
   
-  .notification-modal-title {
-    font-size: 20px;
-    margin-bottom: 28px;
-    padding-bottom: 14px;
-    gap: 8px;
-    white-space: nowrap;
+  .notification-close-button {
+    display: flex;
+  }
+}
+
+/* Mobile (500px and below) */
+@media (max-width: 500px) {
+  .notification-close-button {
+    display: none;
   }
 
-  .notification-modal-title svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
+  .notification-drawer-handle {
+    display: flex;
+    height: 28px;
+    padding: 8px;
   }
-  
-  .notification-modal-title::after {
+
+  .notification-modal-overlay {
+    align-items: flex-end;
+    background: linear-gradient(180deg, rgba(22, 22, 22, 0.5), rgba(22, 22, 22, 0.95));
+    padding: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .notification-modal {
+    border-radius: 28px 28px 0 0;
+    padding: 32px 20px;
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    will-change: transform, opacity;
+  }
+
+  .notification-modal.closing {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  .notification-modal-overlay.closing {
+    opacity: 0;
+  }
+
+  .notification-close-button {
+    display: none;
+  }
+
+  .notification-drawer-handle {
+    display: flex;
+    height: 28px;
+    padding: 8px;
+  }
+
+  .notification-drawer-handle::after {
     width: 36px;
   }
 
-  .notification-form {
-    gap: 20px;
+  .notification-drawer-handle:active::after {
+    width: 42px;
   }
-  
-  .notification-buttons {
-    flex-direction: column-reverse;
-    gap: 12px;
-    margin-top: 0px;
-  }
-  
-  .notification-button {
-    width: 100%;
-    padding: 16px;
+
+  .notification-modal-title {
+    margin-top: 28px;
   }
 
   .notification-select-options {
     position: fixed !important;
-    left: 16px !important;
-    right: 16px !important;
-    width: auto !important;
-    max-height: 300px;
-    padding: 12px;
-    gap: 8px;
-    border-radius: 20px;
-    box-shadow: 
-      0 8px 32px -4px rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    top: auto !important;
+    border-radius: 28px 28px 0 0;
+    background: rgb(15, 15, 15);
+    padding: 20px;
+    max-height: 65vh;
+    transform: translateY(100%);
+    opacity: 1;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 999999;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .notification-select-options.open {
+    transform: translateY(0);
   }
 
   .notification-select-option {
-    padding: 16px;
+    padding: 14px;
+    margin: 2px 0;
+    border-radius: 14px;
     font-size: 15px;
-    gap: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .notification-select-option:first-child {
+    margin-top: 16px;
   }
 
   .notification-select-option svg {
@@ -401,29 +449,27 @@
     height: 20px;
   }
 
-  .notification-select-button {
-    padding: 16px;
-    font-size: 15px;
+  .notification-select-option:active {
+    background: rgba(255, 255, 255, 0.06);
   }
+}
 
-  .notification-select-button svg {
-    width: 22px;
-    height: 22px;
+/* Tablet adjustments (501px to 640px) */
+@media (min-width: 501px) and (max-width: 640px) {
+  .notification-modal-title {
+    font-size: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 14px;
+    gap: 10px;
   }
-
-  .notification-success {
-    min-height: 200px;
-    padding: 16px;
+  
+  .notification-modal-title svg {
+    width: 24px;
+    height: 24px;
   }
-
-  .success-icon {
-    width: 56px;
-    height: 56px;
-    margin-bottom: 20px;
-  }
-
-  .notification-success p {
-    font-size: 17px;
+  
+  .notification-modal-title::after {
+    width: 36px;
   }
 }
 
@@ -470,24 +516,6 @@
   height: 2px;
   background: linear-gradient(to right, transparent, var(--theme-color), transparent);
   border-radius: 4px;
-}
-
-@media (max-width: 640px) {
-  .notification-modal-title {
-    font-size: 24px;
-    margin-bottom: 32px;
-    padding-bottom: 14px;
-    gap: 10px;
-  }
-  
-  .notification-modal-title svg {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .notification-modal-title::after {
-    width: 36px;
-  }
 }
 
 .notification-form-group {
@@ -591,8 +619,100 @@
   transform: rotate(90deg);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 500px) {
   .notification-close-button {
     display: none;
+  }
+
+  .notification-drawer-handle {
+    display: flex;
+  }
+}
+
+.swipe-indicator {
+  display: none;
+  text-align: center;
+  color: var(--color);
+  font-size: 12px;
+  opacity: 0.6;
+  font-family: "Ubuntu", sans-serif;
+  margin: 8px 0 20px;
+  letter-spacing: 0.02em;
+}
+
+.swipe-indicator svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  opacity: 0.7;
+  animation: swipeAnimation 2s ease-in-out infinite;
+}
+
+@keyframes swipeAnimation {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (max-width: 640px) {
+  .swipe-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.notification-drawer-handle {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.notification-drawer-handle::after {
+  content: '';
+  width: 32px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.notification-drawer-handle:active {
+  cursor: grabbing;
+}
+
+.notification-drawer-handle:active::after {
+  background: rgba(255, 255, 255, 0.3);
+  width: 38px;
+}
+
+@media (max-width: 500px) {
+  .notification-close-button {
+    display: none;
+  }
+
+  .notification-drawer-handle {
+    display: flex;
+    height: 28px;
+    padding: 8px;
+  }
+
+  .notification-drawer-handle::after {
+    width: 36px;
+  }
+
+  .notification-drawer-handle:active::after {
+    width: 42px;
+  }
+
+  .notification-modal-title {
+    margin-top: 28px;
   }
 }

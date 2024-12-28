@@ -54,6 +54,9 @@ const AddNotification = ({ isOpen, onClose }) => {
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
   const [dropdownPosition, setDropdownPosition] = useState(null);
+  const [startY, setStartY] = useState(null);
+  const [currentY, setCurrentY] = useState(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -126,19 +129,22 @@ const AddNotification = ({ isOpen, onClose }) => {
   }, [isDropdownOpen]);
 
   const renderDropdown = () => {
-    if (!isDropdownOpen || !dropdownPosition) return null;
+    if (!isDropdownOpen) return null;
+
+    const isMobile = window.innerWidth <= 500;
+    const dropdownStyles = isMobile ? {} : {
+      position: 'fixed',
+      top: `${dropdownPosition?.top}px`,
+      left: `${dropdownPosition?.left}px`,
+      width: `${dropdownPosition?.width}px`,
+      visibility: dropdownPosition ? 'visible' : 'hidden'
+    };
 
     return createPortal(
       <div 
         ref={dropdownRef}
         className={`notification-select-options ${isDropdownOpen ? 'open' : ''}`}
-        style={{
-          position: 'fixed',
-          top: `${dropdownPosition.top}px`,
-          left: `${dropdownPosition.left}px`,
-          width: `${dropdownPosition.width}px`,
-          visibility: dropdownPosition ? 'visible' : 'hidden'
-        }}
+        style={dropdownStyles}
       >
         {NOTIFICATION_TYPES.map((option) => (
           <div
@@ -158,11 +164,67 @@ const AddNotification = ({ isOpen, onClose }) => {
     );
   };
 
+  const handleTouchStart = (e) => {
+    setStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!startY) return;
+    
+    const currentY = e.touches[0].clientY;
+    const diff = currentY - startY;
+    
+    if (diff > 0) { // Only allow downward swipe
+      setCurrentY(diff);
+      if (modalRef.current) {
+        modalRef.current.style.transform = `translateY(${diff}px)`;
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!startY || !currentY) return;
+    
+    if (currentY > 100) { // If dragged down more than 100px, close
+      if (modalRef.current) {
+        modalRef.current.classList.add('closing');
+      }
+      setTimeout(onClose, 300);
+    } else {
+      if (modalRef.current) {
+        modalRef.current.style.transform = '';
+      }
+    }
+    
+    setStartY(null);
+    setCurrentY(null);
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="notification-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="notification-modal">
+    <div 
+      className={`notification-modal-overlay`} 
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          if (modalRef.current) {
+            modalRef.current.classList.add('closing');
+            e.currentTarget.classList.add('closing');
+            setTimeout(onClose, 300);
+          } else {
+            onClose();
+          }
+        }
+      }}
+    >
+      <div 
+        ref={modalRef}
+        className="notification-modal"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="notification-drawer-handle" />
         <button 
           className="notification-close-button"
           onClick={onClose}
