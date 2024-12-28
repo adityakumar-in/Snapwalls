@@ -121,7 +121,7 @@ const SnappedPage = () => {
   }
 
   return (
-    <div className="default-padding">
+    <div className="default-padding padding-bottom">
       {showLogin ? (
         <Login onClose={() => setShowLogin(false)} />
       ) : (
