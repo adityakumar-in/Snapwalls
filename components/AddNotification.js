@@ -109,10 +109,13 @@ const AddNotification = ({ isOpen, onClose }) => {
     if (buttonRef.current && isDropdownOpen) {
       const updatePosition = () => {
         const rect = buttonRef.current.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(buttonRef.current);
+        const width = rect.width;
+        
         setDropdownPosition({
           top: rect.bottom + 8,
           left: rect.left,
-          width: rect.width
+          width: width
         });
       };
       

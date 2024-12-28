@@ -117,6 +117,7 @@
   transform-origin: top center;
   will-change: transform, opacity;
   backface-visibility: hidden;
+  box-sizing: border-box;
 }
 
 .notification-select-options.open {
