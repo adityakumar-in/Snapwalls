@@ -113,8 +113,7 @@ const AddNotification = ({ isOpen, onClose }) => {
           return push(userNotificationRef, {
             message,
             type,
-            timestamp: Date.now(),
-            isRead: false
+            timestamp: Date.now()
           });
         });
         
