@@ -147,6 +147,11 @@
     margin: 20px 0;
     cursor: pointer;
   }
+
+  .navbar-logout {
+    z-index: -1;
+  }
+  
   .navbar-text {
     font-size: 17px;
     padding-left: 12px;

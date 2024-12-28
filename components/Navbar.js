@@ -29,10 +29,12 @@ const Navbar = () => {
   const [showProfile, setShowProfile] = useState(false)
   const [showProf, setShowProf] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
 
   const closeRef = useRef(null);
   const siteRef = useRef(null);
   const navbarRef = useRef(null);
+  const notificationRef = useRef(null);
 
   // Add this check before using auth
   useEffect(() => {
@@ -83,13 +85,21 @@ const Navbar = () => {
           setIsClosing(false);
         }, 500); // Match animation duration
       }
+
+      // Add notification outside click handler
+      if (notificationRef.current && 
+          !notificationRef.current.contains(event.target) && 
+          window.innerWidth > 700 && 
+          notificationActive) {
+        setNotificationActive(false);
+      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [siteActive]);
+  }, [siteActive, notificationActive]);
 
   const notificationHandler = () => {
     setNotificationActive(!notificationActive)
@@ -178,6 +188,19 @@ const Navbar = () => {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
+
+  // Add event listener for unread notifications count
+  useEffect(() => {
+    const handleUnreadCount = (event) => {
+      setUnreadNotifications(event.detail);
+    };
+
+    window.addEventListener('unreadNotificationsCount', handleUnreadCount);
+    return () => {
+      window.removeEventListener('unreadNotificationsCount', handleUnreadCount);
+    };
+  }, []);
+
   return (
     <div className="navbar-wrapper">
       <div ref={navbarRef} className={`navbar-container ${siteActive ? 'navbar-container-active' : ''} ${isClosing ? 'navbar-container-closing' : ''}`}>
@@ -266,16 +289,24 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-footer">
-          <div className="navbar-notification" onClick={notificationHandler}>
-            <div className={!notificationActive ? "navbar-icon" : "navbar-icon none"}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.02 2.90991C8.70997 2.90991 6.01997 5.59991 6.01997 8.90991V11.7999C6.01997 12.4099 5.75997 13.3399 5.44997 13.8599L4.29997 15.7699C3.58997 16.9499 4.07997 18.2599 5.37997 18.6999C9.68997 20.1399 14.34 20.1399 18.65 18.6999C19.86 18.2999 20.39 16.8699 19.73 15.7699L18.58 13.8599C18.28 13.3399 18.02 12.4099 18.02 11.7999V8.90991C18.02 5.60991 15.32 2.90991 12.02 2.90991Z" stroke="#606060" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round"></path> <path d="M13.87 3.19994C13.56 3.10994 13.24 3.03994 12.91 2.99994C11.95 2.87994 11.03 2.94994 10.17 3.19994C10.46 2.45994 11.18 1.93994 12.02 1.93994C12.86 1.93994 13.58 2.45994 13.87 3.19994Z" stroke="#606060" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M15.02 19.0601C15.02 20.7101 13.67 22.0601 12.02 22.0601C11.2 22.0601 10.44 21.7201 9.90002 21.1801C9.36002 20.6401 9.02002 19.8801 9.02002 19.0601" stroke="#606060" strokeWidth="1.5" strokeMiterlimit="10"></path> </g></svg>
+          {isLoggedIn && (
+            <div className="navbar-notification" onClick={notificationHandler} ref={notificationRef}>
+              <div className={`navbar-icon ${notificationActive ? 'none' : ''}`}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M18.7491 9.70957V9.00497C18.7491 5.13623 15.7274 2 12 2C8.27256 2 5.25087 5.13623 5.25087 9.00497V9.70957C5.25087 10.5552 5.00972 11.3818 4.5578 12.0854L3.45036 13.8095C2.43882 15.3843 3.21105 17.5249 4.97036 18.0229C9.57274 19.3257 14.4273 19.3257 19.0296 18.0229C20.789 17.5249 21.5612 15.3843 20.5496 13.8095L19.4422 12.0854C18.9903 11.3818 18.7491 10.5552 18.7491 9.70957Z" stroke="#606060" strokeWidth="1.5"></path> <path d="M7.5 19C8.15503 20.7478 9.92246 22 12 22C14.0775 22 15.845 20.7478 16.5 19" stroke="#606060" strokeWidth="1.5" strokeLinecap="round"></path> </g></svg>
+                {unreadNotifications > 0 && (
+                  <div className="notification-badge active">{unreadNotifications}</div>
+                )}
+              </div>
+              <div className={`navbar-icon ${!notificationActive ? 'none' : ''}`}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M18.7491 9.70957V9.00497C18.7491 5.13623 15.7274 2 12 2C8.27256 2 5.25087 5.13623 5.25087 9.00497V9.70957C5.25087 10.5552 5.00972 11.3818 4.5578 12.0854L3.45036 13.8095C2.43882 15.3843 3.21105 17.5249 4.97036 18.0229C9.57274 19.3257 14.4273 19.3257 19.0296 18.0229C20.789 17.5249 21.5612 15.3843 20.5496 13.8095L19.4422 12.0854C18.9903 11.3818 18.7491 10.5552 18.7491 9.70957Z" stroke="#FFB200" strokeWidth="1.5"></path> <path d="M7.5 19C8.15503 20.7478 9.92246 22 12 22C14.0775 22 15.845 20.7478 16.5 19" stroke="#FFB200" strokeWidth="1.5" strokeLinecap="round"></path> </g></svg>
+                {unreadNotifications > 0 && (
+                  <div className="notification-badge active">{unreadNotifications}</div>
+                )}
+              </div>
+              <div className={notificationActive ? "navbar-text nav-text-active nav-notification" : "navbar-text nav-text nav-notification"}>Notification</div>
+              <NavbarNotification isActive={notificationActive} onClose={() => setNotificationActive(false)} />
             </div>
-            <div className={notificationActive ? "navbar-icon" : "navbar-icon none"}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M19.3399 14.49L18.3399 12.83C18.1299 12.46 17.9399 11.76 17.9399 11.35V8.82C17.9399 6.47 16.5599 4.44 14.5699 3.49C14.0499 2.57 13.0899 2 11.9899 2C10.8999 2 9.91994 2.59 9.39994 3.52C7.44994 4.49 6.09994 6.5 6.09994 8.82V11.35C6.09994 11.76 5.90994 12.46 5.69994 12.82L4.68994 14.49C4.28994 15.16 4.19994 15.9 4.44994 16.58C4.68994 17.25 5.25994 17.77 5.99994 18.02C7.93994 18.68 9.97994 19 12.0199 19C14.0599 19 16.0999 18.68 18.0399 18.03C18.7399 17.8 19.2799 17.27 19.5399 16.58C19.7999 15.89 19.7299 15.13 19.3399 14.49Z" fill="#FFB200"></path> <path d="M14.8297 20.01C14.4097 21.17 13.2997 22 11.9997 22C11.2097 22 10.4297 21.68 9.87969 21.11C9.55969 20.81 9.31969 20.41 9.17969 20C9.30969 20.02 9.43969 20.03 9.57969 20.05C9.80969 20.08 10.0497 20.11 10.2897 20.13C10.8597 20.18 11.4397 20.21 12.0197 20.21C12.5897 20.21 13.1597 20.18 13.7197 20.13C13.9297 20.11 14.1397 20.1 14.3397 20.07C14.4997 20.05 14.6597 20.03 14.8297 20.01Z" fill="#FFB200"></path> </g></svg>
-            </div>
-            <div className={notificationActive ? "navbar-text nav-text-active nav-notification" : "navbar-text nav-text nav-notification"}>Notification</div>
-            <NavbarNotification isActive={notificationActive} onClose={() => setNotificationActive(false)} />
-          </div>
+          )}
 
           {/* Login/Logout buttons */}
           {!isLoggedIn ? (

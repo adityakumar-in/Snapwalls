@@ -13,19 +13,55 @@ const NavbarNotification = ({ isActive, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const { user } = useAuth();
 
+  // Pass unread count to parent only if user is logged in
+  useEffect(() => {
+    if (!user) {
+      // Reset notifications when logged out
+      setNotifications([]);
+      // Dispatch event with 0 count when logged out
+      const event = new CustomEvent('unreadNotificationsCount', { detail: 0 });
+      window.dispatchEvent(event);
+      return;
+    }
+
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const event = new CustomEvent('unreadNotificationsCount', { detail: unreadCount });
+    window.dispatchEvent(event);
+  }, [notifications, user]);
+
   // Calculate time difference
   const getTimeAgo = (timestamp) => {
-    const now = new Date('2024-12-28T00:53:55+05:30').getTime();
+    const now = new Date().getTime();
     const then = timestamp;
     const difference = now - then;
+
+    // Handle future dates or invalid timestamps
+    if (difference < 0 || !timestamp) {
+      return 'Just now';
+    }
 
     const minutes = Math.floor(difference / 60000);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
+    const weeks = Math.floor(days / 7);
+    const months = Math.floor(days / 30);
 
+    if (minutes < 1) return 'Just now';
+    if (minutes === 1) return '1 minute ago';
     if (minutes < 60) return `${minutes} minutes ago`;
+    if (hours === 1) return '1 hour ago';
     if (hours < 24) return `${hours} hours ago`;
-    return `${days} days ago`;
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (weeks === 1) return '1 week ago';
+    if (weeks < 4) return `${weeks} weeks ago`;
+    if (months === 1) return '1 month ago';
+    if (months < 12) return `${months} months ago`;
+    return new Date(timestamp).toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: new Date(timestamp).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+    });
   };
 
   // Fetch notifications from Firebase
@@ -150,8 +186,12 @@ const NavbarNotification = ({ isActive, onClose }) => {
     }
   }, [isActive]);
 
+  // Handle click when not logged in
   const handleContainerClick = (e) => {
-    // Stop event propagation to prevent navbar icon click
+    if (!user) {
+      e.stopPropagation();
+      return;
+    }
     e.stopPropagation();
   };
 
@@ -277,7 +317,6 @@ const NavbarNotification = ({ isActive, onClose }) => {
               <div 
                 key={notification.id} 
                 className={`notification-item ${notification.isRead ? 'read' : 'unread'}`}
-                onClick={() => markAsRead(notification.id, notification.source)}
               >
                 <div className="notification-icon">
                   {notification.type === 'like' && (
@@ -302,7 +341,20 @@ const NavbarNotification = ({ isActive, onClose }) => {
                 </div>
                 <div className="notification-content">
                   <p className="notification-message">{notification.message}</p>
-                  <span className="notification-time">{notification.time}</span>
+                  <div className="notification-actions">
+                    <span className="notification-time">{notification.time}</span>
+                    {!notification.isRead && (
+                      <button 
+                        className="mark-read-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markAsRead(notification.id, notification.source);
+                        }}
+                      >
+                        Mark as read
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
