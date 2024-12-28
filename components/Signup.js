@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { createUserWithEmailAndPassword, signInWithPopup, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
-import { auth, googleProvider, githubProvider } from '../components/firebase.config';
+import { auth, googleProvider, twitterProvider } from '../components/firebase.config';
 import { useRouter } from 'next/navigation';
-import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaGithub, FaTimes } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaCheckCircle, FaEnvelope, FaGoogle, FaTimes } from 'react-icons/fa';
+import { FaXTwitter } from "react-icons/fa6";
 import Login from './Login';
 import '@/app/styles/signup.css';
 import '@/app/styles/login.css';
@@ -262,9 +263,9 @@ export default function Signup({ onClose = () => { }, currentPath = '/' }) {
               <FaGoogle className="social-icon" />
               <span>Google</span>
             </button>
-            <button onClick={() => handleSocialSignup(githubProvider)} className="social-button github-button">
-              <FaGithub className="social-icon" />
-              <span>GitHub</span>
+            <button onClick={() => handleSocialSignup(twitterProvider)} className="social-button twitter-button">
+              <FaXTwitter className="social-icon" />
+              <span>Twitter</span>
             </button>
           </div>
           

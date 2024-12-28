@@ -307,7 +307,7 @@
 }
 
 .google-button,
-.github-button {
+.twitter-button {
   padding: 0.875rem;
   border: none;
   color: white;
@@ -323,12 +323,12 @@
 }
 
 .google-button:hover,
-.github-button:hover {
+.twitter-button:hover {
   transform: translateY(-1px);
 }
 
 .google-button:active,
-.github-button:active {
+.twitter-button:active {
   transform: translateY(0);
 }
 
@@ -337,9 +337,19 @@
   box-shadow: 0 4px 12px rgba(219, 68, 55, 0.2);
 }
 
-.github-button {
-  background: #333;
-  box-shadow: 0 4px 12px rgba(51, 51, 51, 0.2);
+.twitter-button {
+  background: #000000 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.twitter-button:hover {
+  background: #000000 !important;
+  transform: translateY(-1px);
+}
+
+.twitter-button .social-icon {
+  color: white;
 }
 
 .social-icon {

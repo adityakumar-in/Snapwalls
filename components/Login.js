@@ -1,8 +1,9 @@
 "use client"
 import { useState, useRef, useEffect } from 'react';
 import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
-import { auth, googleProvider, githubProvider } from '../components/firebase.config';
-import { FaEye, FaEyeSlash, FaGoogle, FaGithub, FaEnvelope, FaCheckCircle, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { auth, googleProvider, twitterProvider } from '../components/firebase.config';
+import { FaEye, FaEyeSlash, FaGoogle, FaEnvelope, FaCheckCircle, FaLock, FaArrowLeft } from 'react-icons/fa';
+import { FaXTwitter } from "react-icons/fa6";
 import Signup from './Signup';
 import '@/app/styles/login.css';
 import { useRouter } from 'next/navigation';
@@ -122,9 +123,9 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
                 <FaGoogle className="social-icon" />
                 <span>Google</span>
               </button>
-              <button onClick={() => handleSocialLogin(githubProvider)} className="social-button github-button">
-                <FaGithub className="social-icon" />
-                <span>GitHub</span>
+              <button onClick={() => handleSocialLogin(twitterProvider)} className="social-button twitter-button">
+                <FaXTwitter className="social-icon" />
+                <span>Twitter</span>
               </button>
             </div>
             <div className="divider">or continue with</div>
@@ -223,7 +224,7 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         </div>
       )}
       {verificationSent && (
-        <div className="verification-&& message">
+        <div className="verification-message">
           <FaEnvelope className="verification-icon" />
           <h2>Verify Your Email</h2>
           <p>A verification email has been sent to your email address.</p>
