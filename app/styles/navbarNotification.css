@@ -321,7 +321,8 @@
     touch-action: pan-y;
     will-change: transform, opacity;
     pointer-events: all !important;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .navbar-notification-container.active {
@@ -331,14 +332,13 @@
   }
 
   .navbar-notification-list {
+    flex: 1;
     padding: 0 16px;
     margin-top: 4px;
-    height: calc(85vh - 140px);
-    max-height: none;
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 20px;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 
   .notification-item {
@@ -347,7 +347,7 @@
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.04);
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
   }
 
   .notification-item:active {
@@ -381,33 +381,7 @@
   }
 
   .navbar-notification-header {
-    position: sticky;
-    top: 0;
-    background: linear-gradient(180deg, rgba(25, 25, 25, 0.98), rgba(18, 18, 18, 0.95));
-    z-index: 10000;
-    padding-bottom: 12px;
-    margin-bottom: 8px;
-  }
-
-  .navbar-notification-header-content {
-    position: relative;
-    z-index: 10000;
-    pointer-events: all !important;
-  }
-
-  .notification-close-btn {
-    position: absolute;
-    z-index: 10001;
-    pointer-events: all !important;
-  }
-
-  .mark-all-read {
-    position: relative;
-    z-index: 10000;
-    pointer-events: all !important;
-  }
-
-  .navbar-notification-header {
+    flex-shrink: 0;
     padding: 0;
     background: transparent;
     position: relative;
@@ -429,6 +403,7 @@
     border-radius: 100px;
     transition: background-color 0.3s ease;
     margin-top: 8px;
+    z-index: 10002;
   }
 
   .navbar-notification-container:active .navbar-notification-header::before {
@@ -442,6 +417,7 @@
     align-items: flex-start;
     gap: 12px;
     position: relative;
+    flex-shrink: 0;
   }
 
   .navbar-notification-header h3 {

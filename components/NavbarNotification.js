@@ -202,13 +202,23 @@ const NavbarNotification = ({ isActive, onClose }) => {
     let isDragging = false;
 
     const handleTouchStart = (e) => {
-      const touch = e.touches[0];
-      startY.current = touch.clientY;
-      currentY.current = touch.clientY;
-      isDragging = true;
-      panel.style.transition = 'none';
-      // Stop propagation for touch events
-      e.stopPropagation();
+      const header = panel.querySelector('.navbar-notification-header');
+      const touchY = e.touches[0].clientY;
+      const headerRect = header.getBoundingClientRect();
+      const notificationList = panel.querySelector('.navbar-notification-list');
+      
+      // Only allow dragging if:
+      // 1. Touch is within the handle area (top 28px of header)
+      // 2. The notification list is scrolled to the top
+      if (touchY >= headerRect.top && touchY <= headerRect.top + 28 && 
+          (!notificationList || notificationList.scrollTop === 0)) {
+        const touch = e.touches[0];
+        startY.current = touch.clientY;
+        currentY.current = touch.clientY;
+        isDragging = true;
+        panel.style.transition = 'none';
+        e.stopPropagation();
+      }
     };
 
     const handleTouchMove = (e) => {
@@ -225,8 +235,8 @@ const NavbarNotification = ({ isActive, onClose }) => {
       const opacity = 1 - (deltaY / panel.offsetHeight);
       panel.style.transform = `translateY(${deltaY}px)`;
       panel.style.opacity = opacity;
-      // Stop propagation for touch events
       e.stopPropagation();
+      e.preventDefault(); // Prevent scrolling while dragging
     };
 
     const handleTouchEnd = (e) => {
@@ -255,7 +265,6 @@ const NavbarNotification = ({ isActive, onClose }) => {
           panel.style.transition = '';
         }, 300);
       }
-      // Stop propagation for touch events
       e.stopPropagation();
     };
 
