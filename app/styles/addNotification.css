@@ -267,7 +267,7 @@
   animation: spin 0.7s linear infinite;
 }
 
-.notification-success {
+.navbar-notification-success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -286,7 +286,7 @@
   filter: drop-shadow(0 8px 16px rgba(255, 178, 0, 0.3));
 }
 
-.notification-success p {
+.navbar-notification-success p {
   color: var(--color);
   font-size: 18px;
   font-weight: 500;
