@@ -716,3 +716,38 @@
     margin-top: 28px;
   }
 }
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.loading-text {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--background);
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spinnerRotate 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spinnerRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.notification-button-submit {
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

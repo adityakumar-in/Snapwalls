@@ -303,7 +303,10 @@ const AddNotification = ({ isOpen, onClose }) => {
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <span className="loading-spinner">Adding...</span>
+                    <div className="loading-state">
+                      <span className="loading-text">Adding</span>
+                      <div className="spinner"></div>
+                    </div>
                   ) : (
                     'Add Notification'
                   )}
