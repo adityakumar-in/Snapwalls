@@ -174,7 +174,7 @@
   border-radius: 4px;
 }
 
-.notification-icon {
+.navbar-notification-icon {
   width: 44px;
   height: 44px;
   min-width: 44px;
@@ -190,14 +190,14 @@
   backdrop-filter: blur(8px);
 }
 
-.notification-item:hover .notification-icon {
+.notification-item:hover .navbar-notification-icon {
   transform: scale(1.05);
   background: linear-gradient(45deg, rgba(255, 178, 0, 0.12), rgba(255, 178, 0, 0.18));
   border-color: rgba(255, 178, 0, 0.15);
   box-shadow: 0 4px 15px rgba(255, 178, 0, 0.1);
 }
 
-.notification-icon svg {
+.navbar-notification-icon svg {
   width: 24px;
   height: 24px;
   color: var(--theme-color);
@@ -205,12 +205,12 @@
   transition: all 0.3s ease;
 }
 
-.notification-item:hover .notification-icon svg {
+.notification-item:hover .navbar-notification-icon svg {
   opacity: 1;
   transform: scale(1.1);
 }
 
-.notification-content {
+.navbar-notification-content {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -350,7 +350,7 @@
     pointer-events: all !important;
   }
 
-  .notification-content {
+  .navbar-notification-content {
     position: relative;
     z-index: 10000;
     pointer-events: all !important;
@@ -503,19 +503,19 @@
     transform: none;
   }
 
-  .notification-icon {
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
-    border-radius: 14px;
-    padding: 10px;
-    margin-right: 12px;
+  .navbar-notification-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 12px;
+    padding: 8px;
+    margin-right: 10px;
     background: linear-gradient(45deg, rgba(255, 178, 0, 0.08), rgba(255, 178, 0, 0.12));
   }
 
-  .notification-icon svg {
-    width: 22px;
-    height: 22px;
+  .navbar-notification-icon svg {
+    width: 20px;
+    height: 20px;
   }
 
   .notification-message {
