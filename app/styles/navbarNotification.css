@@ -271,23 +271,14 @@
 /* Custom Scrollbar */
 .navbar-notification-container::-webkit-scrollbar,
 .navbar-notification-list::-webkit-scrollbar {
-  width: 6px;
+  width: 0;
+  display: none;
 }
 
-.navbar-notification-container::-webkit-scrollbar-track,
-.navbar-notification-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.navbar-notification-container::-webkit-scrollbar-thumb,
-.navbar-notification-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-}
-
-.navbar-notification-container::-webkit-scrollbar-thumb:hover,
-.navbar-notification-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
+.navbar-notification-container,
+.navbar-notification-list {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Mobile Styles - Completely Different Design */
@@ -320,7 +311,7 @@
     left: 0;
     width: 100%;
     max-width: none;
-    height: 90vh;
+    height: 85vh;
     border-radius: 24px 24px 0 0;
     transform: translateY(100%);
     background: linear-gradient(180deg, rgba(25, 25, 25, 0.98), rgba(18, 18, 18, 0.98));
@@ -330,6 +321,7 @@
     touch-action: pan-y;
     will-change: transform, opacity;
     pointer-events: all !important;
+    overflow: hidden;
   }
 
   .navbar-notification-container.active {
@@ -339,27 +331,62 @@
   }
 
   .navbar-notification-list {
-    position: relative;
-    z-index: 10000;
-    pointer-events: all !important;
+    padding: 0 16px;
+    margin-top: 4px;
+    height: calc(85vh - 140px);
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
   }
 
   .notification-item {
-    position: relative;
-    z-index: 10000;
-    pointer-events: all !important;
+    padding: 14px;
+    margin: 6px 0;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    touch-action: pan-x;
   }
 
-  .navbar-notification-content {
-    position: relative;
-    z-index: 10000;
-    pointer-events: all !important;
+  .notification-item:active {
+    background: rgba(255, 255, 255, 0.05);
+    transform: scale(0.995);
+  }
+
+  .notification-item.unread::before {
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 40%;
+    background: linear-gradient(to right, var(--theme-color), transparent);
+    border-radius: 3px 3px 0 0;
+    transform: none;
+  }
+
+  .navbar-notification-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 12px;
+    padding: 8px;
+    margin-right: 10px;
+    background: linear-gradient(45deg, rgba(255, 178, 0, 0.08), rgba(255, 178, 0, 0.12));
+  }
+
+  .navbar-notification-icon svg {
+    width: 20px;
+    height: 20px;
   }
 
   .navbar-notification-header {
-    position: relative;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(180deg, rgba(25, 25, 25, 0.98), rgba(18, 18, 18, 0.95));
     z-index: 10000;
-    pointer-events: all !important;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .navbar-notification-header-content {
@@ -468,54 +495,6 @@
     height: 20px;
     opacity: 0.9;
     color: #fff;
-  }
-
-  .navbar-notification-list {
-    padding: 0 16px;
-    margin-top: 4px;
-    max-height: calc(90vh - 100px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .notification-item {
-    padding: 14px;
-    margin: 6px 0;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    touch-action: pan-x;
-  }
-
-  .notification-item:active {
-    background: rgba(255, 255, 255, 0.05);
-    transform: scale(0.995);
-  }
-
-  .notification-item.unread::before {
-    left: 0;
-    top: 0;
-    height: 3px;
-    width: 40%;
-    background: linear-gradient(to right, var(--theme-color), transparent);
-    border-radius: 3px 3px 0 0;
-    transform: none;
-  }
-
-  .navbar-notification-icon {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 12px;
-    padding: 8px;
-    margin-right: 10px;
-    background: linear-gradient(45deg, rgba(255, 178, 0, 0.08), rgba(255, 178, 0, 0.12));
-  }
-
-  .navbar-notification-icon svg {
-    width: 20px;
-    height: 20px;
   }
 
   .notification-message {
