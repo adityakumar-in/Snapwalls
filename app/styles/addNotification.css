@@ -354,6 +354,14 @@
     display: none;
   }
 
+  .notification-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0px;
+  }
+  
+
   .notification-drawer-handle {
     display: flex;
     height: 28px;
