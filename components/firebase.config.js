@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, TwitterAuthProvider } from "firebase/auth";
 import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
@@ -22,7 +22,7 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
-const githubProvider = new GithubAuthProvider();
+const twitterProvider = new TwitterAuthProvider();
 
 const isProduction = process.env.NODE_ENV === 'production';
 const redirectUrl = isProduction
@@ -33,7 +33,7 @@ googleProvider.setCustomParameters({
     redirect_uri: redirectUrl,
     prompt: 'select_account' // This ensures Google will ask for user profile info
 });
-githubProvider.setCustomParameters({ redirect_uri: redirectUrl });
+twitterProvider.setCustomParameters({ redirect_uri: redirectUrl });
 
 // Get current user's display name
 const getCurrentUserName = () => {
@@ -51,4 +51,4 @@ const getCurrentUserEmailName = () => {
     return null;
 };
 
-export { app, auth, db, storage, googleProvider, githubProvider, getCurrentUserName, getCurrentUserEmailName };
+export { app, auth, db, storage, googleProvider, twitterProvider, getCurrentUserName, getCurrentUserEmailName };
