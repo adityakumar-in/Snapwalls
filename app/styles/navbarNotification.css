@@ -160,18 +160,31 @@
 
 .notification-item.unread {
   background: linear-gradient(45deg, rgba(255, 178, 0, 0.03), rgba(255, 178, 0, 0.06));
+  position: relative;
+  overflow: hidden;
 }
 
 .notification-item.unread::before {
   content: '';
   position: absolute;
-  left: -4px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 4px;
-  height: 40%;
-  background: linear-gradient(to bottom, var(--theme-color), transparent);
-  border-radius: 4px;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(180deg, 
+    var(--theme-color),
+    rgba(255, 178, 0, 0.6),
+    rgba(255, 178, 0, 0.2)
+  );
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification-item.unread:hover::before {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .navbar-notification-icon {
@@ -358,11 +371,21 @@
   .notification-item.unread::before {
     left: 0;
     top: 0;
-    height: 3px;
-    width: 40%;
-    background: linear-gradient(to right, var(--theme-color), transparent);
-    border-radius: 3px 3px 0 0;
-    transform: none;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(180deg, 
+      var(--theme-color),
+      rgba(255, 178, 0, 0.6),
+      rgba(255, 178, 0, 0.2)
+    );
+    border-radius: 0 3px 3px 0;
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  .notification-item.unread:active::before {
+    opacity: 1;
+    transform: translateX(0);
   }
 
   .navbar-notification-icon {
