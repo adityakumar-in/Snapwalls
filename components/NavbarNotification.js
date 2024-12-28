@@ -68,108 +68,59 @@ const NavbarNotification = ({ isActive, onClose }) => {
   useEffect(() => {
     if (!user) return;
 
-    // Fetch global notifications
-    const globalNotificationsRef = ref(db, 'notification');
-    const globalUnsubscribe = onValue(globalNotificationsRef, (snapshot) => {
-      const globalNotifs = [];
+    // Fetch user notifications from the new path
+    const userNotificationsRef = ref(db, `notification/${user.uid}`);
+    const unsubscribe = onValue(userNotificationsRef, (snapshot) => {
+      const notifs = [];
       if (snapshot.exists()) {
         snapshot.forEach((childSnapshot) => {
           const notification = childSnapshot.val();
-          // Only include unread notifications
-          if (!notification.isRead) {
-            globalNotifs.push({
-              id: childSnapshot.key,
-              source: 'global',
-              ...notification,
-              time: getTimeAgo(notification.timestamp)
-            });
-          }
+          notifs.push({
+            id: childSnapshot.key,
+            ...notification,
+            time: getTimeAgo(notification.timestamp)
+          });
         });
       }
-
-      // Fetch user-specific notifications
-      const userNotificationsRef = ref(db, `users/${user.uid}/notification`);
-      const userUnsubscribe = onValue(userNotificationsRef, (snapshot) => {
-        const userNotifs = [];
-        if (snapshot.exists()) {
-          snapshot.forEach((childSnapshot) => {
-            const notification = childSnapshot.val();
-            userNotifs.push({
-              id: childSnapshot.key,
-              source: 'user',
-              ...notification,
-              time: getTimeAgo(notification.timestamp)
-            });
-          });
-        }
-
-        // Combine and sort all notifications
-        const allNotifications = [...globalNotifs, ...userNotifs].sort((a, b) => 
-          b.timestamp - a.timestamp
-        );
-        setNotifications(allNotifications);
-      });
-
-      return () => userUnsubscribe();
+      setNotifications(notifs);
     });
 
-    return () => globalUnsubscribe();
+    return () => unsubscribe();
   }, [user]);
 
-  // Mark single notification as read
-  const markAsRead = async (notificationId, source) => {
+  // Delete single notification
+  const markAsRead = async (notificationId) => {
     if (!user) return;
     
     try {
-      if (source === 'user') {
-        // Delete user-specific notification
-        await remove(ref(db, `users/${user.uid}/notification/${notificationId}`));
-      } else {
-        // Mark global notification as read
-        await update(ref(db, `notification/${notificationId}`), {
-          isRead: true
-        });
-      }
+      // Delete the notification
+      await remove(ref(db, `notification/${user.uid}/${notificationId}`));
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error('Error deleting notification:', error);
     }
   };
 
-  // Mark all notifications as read
+  // Delete all notifications
   const markAllAsRead = async () => {
-    if (!user) return;
+    if (!user || notifications.length === 0) return;
 
     try {
       const batch = [];
 
-      // Handle user notifications - delete them all
-      const userNotifs = notifications.filter(n => n.source === 'user');
-      userNotifs.forEach(notif => {
-        const userNotifRef = ref(db, `users/${user.uid}/notification/${notif.id}`);
-        batch.push(remove(userNotifRef));
+      // Delete all notifications
+      notifications.forEach(notif => {
+        const notifRef = ref(db, `notification/${user.uid}/${notif.id}`);
+        batch.push(remove(notifRef));
       });
 
-      // Handle global notifications - mark them as read
-      const globalNotifs = notifications.filter(n => n.source === 'global');
-      globalNotifs.forEach(notif => {
-        const globalNotifRef = ref(db, `notification/${notif.id}`);
-        batch.push(update(globalNotifRef, { isRead: true }));
-      });
-
-      // Execute all updates in parallel
+      // Execute all deletions in parallel
       await Promise.all(batch);
 
-      // Update local state to reflect changes
-      setNotifications(prevNotifs => 
-        prevNotifs.filter(notif => notif.source !== 'user')
-          .map(notif => ({
-            ...notif,
-            isRead: true
-          }))
-      );
+      // Update local state to remove all notifications
+      setNotifications([]);
 
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
+      console.error('Error deleting all notifications:', error);
     }
   };
 
@@ -357,7 +308,7 @@ const NavbarNotification = ({ isActive, onClose }) => {
                         className="mark-read-btn"
                         onClick={(e) => {
                           e.stopPropagation();
-                          markAsRead(notification.id, notification.source);
+                          markAsRead(notification.id);
                         }}
                       >
                         Mark as read
