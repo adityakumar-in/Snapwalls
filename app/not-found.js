@@ -7,6 +7,8 @@ export default function NotFound() {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [isGameOver, setIsGameOver] = useState(false);
     const [difficulty, setDifficulty] = useState(null); // null, 'easy', 'medium', 'hard'
+    const [playerSymbol, setPlayerSymbol] = useState(null); // null, 'X', 'O'
+    const [isComputerTurn, setIsComputerTurn] = useState(false);
 
     const calculateWinner = (squares) => {
         const lines = [
@@ -17,7 +19,10 @@ export default function NotFound() {
         for (let line of lines) {
             const [a, b, c] = line;
             if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                return squares[a];
+                return {
+                    winner: squares[a],
+                    line: [a, b, c]
+                };
             }
         }
         return null;
@@ -100,40 +105,42 @@ export default function NotFound() {
         const newBoard = [...board];
         const move = findBestMove(newBoard);
         if (move !== -1) {
-            newBoard[move] = 'O';
+            newBoard[move] = playerSymbol === 'X' ? 'O' : 'X';
             setBoard(newBoard);
+            setIsComputerTurn(false);
         }
     };
 
     useEffect(() => {
-        const winner = calculateWinner(board);
-        const isDraw = !winner && board.every(cell => cell);
+        const result = calculateWinner(board);
+        const isDraw = !result && board.every(cell => cell);
         
-        if (winner || isDraw) {
+        if (result || isDraw) {
             setIsGameOver(true);
-        } else {
-            // If it's computer's turn (O) and game is not over
-            const isOTurn = board.filter(cell => cell).length % 2 === 1;
-            if (isOTurn && !isGameOver && difficulty) {
-                const timer = setTimeout(() => {
-                    makeComputerMove();
-                }, 400);
-                return () => clearTimeout(timer);
-            }
+        } else if (isComputerTurn && !isGameOver && difficulty) {
+            const timer = setTimeout(() => {
+                makeComputerMove();
+            }, 400);
+            return () => clearTimeout(timer);
         }
-    }, [board, isGameOver, difficulty]);
+    }, [board, isGameOver, difficulty, isComputerTurn]);
 
     const handleClick = (i) => {
-        if (!difficulty || board[i] || isGameOver || calculateWinner(board)) return;
+        if (!difficulty || !playerSymbol || board[i] || isGameOver || calculateWinner(board) || isComputerTurn) return;
         
-        // Player's move (X)
         const newBoard = [...board];
-        newBoard[i] = 'X';
+        newBoard[i] = playerSymbol;
         setBoard(newBoard);
+        setIsComputerTurn(true);
     };
 
     const startGame = (level) => {
         setDifficulty(level);
+    };
+
+    const selectSymbol = (symbol) => {
+        setPlayerSymbol(symbol);
+        setIsComputerTurn(symbol === 'O');
         setBoard(Array(9).fill(null));
         setIsGameOver(false);
     };
@@ -142,24 +149,33 @@ export default function NotFound() {
         setBoard(Array(9).fill(null));
         setIsGameOver(false);
         setDifficulty(null);
+        setPlayerSymbol(null);
+        setIsComputerTurn(false);
     };
 
-    const winner = calculateWinner(board);
-    const isDraw = !winner && board.every(cell => cell);
+    const result = calculateWinner(board);
+    const winner = result?.winner;
+    const winningLine = result?.line || [];
+    const isDraw = !result && board.every(cell => cell);
     const status = !difficulty ? "Select difficulty to start" :
+                  !playerSymbol ? "" :
                   winner ? `Winner: ${winner}` : 
                   isDraw ? "It's a Draw!" : 
-                  board.filter(cell => cell).length % 2 === 1 ? "Computer is thinking..." : 
-                  "Your turn (X)";
+                  isComputerTurn ? "Computer is thinking..." : 
+                  "Your turn";
 
     return (
         <div className="not_found_container">
-            <h1 className="not_found_title">404</h1>
-            <p className="not_found_text">
-                Page not found. Challenge the computer to a game?
-            </p>
+            {!difficulty && (
+                <>
+                    <h1 className="not_found_title">404</h1>
+                    <p className="not_found_text">
+                        Page not found. Would you like to play a game of Tic-Tac-Toe while you're here?
+                    </p>
+                </>
+            )}
             
-            <div className="game_container">
+            <div className={`game_container ${difficulty ? 'game_active' : ''}`}>
                 <div className={`game_status ${winner ? 'winner' : isDraw ? 'draw' : ''}`}>
                     {status}
                 </div>
@@ -169,6 +185,24 @@ export default function NotFound() {
                         <button className="difficulty_button medium" onClick={() => startGame('medium')}>Medium</button>
                         <button className="difficulty_button hard" onClick={() => startGame('hard')}>Hard</button>
                     </div>
+                ) : !playerSymbol ? (
+                    <div className="symbol_selection">
+                        <p className="symbol_text">Select your symbol</p>
+                        <div className="symbol_buttons">
+                            <button 
+                                className={`symbol_button ${playerSymbol === 'X' ? 'selected' : ''}`} 
+                                onClick={() => selectSymbol('X')}
+                            >
+                                X
+                            </button>
+                            <button 
+                                className={`symbol_button ${playerSymbol === 'O' ? 'selected' : ''}`} 
+                                onClick={() => selectSymbol('O')}
+                            >
+                                O
+                            </button>
+                        </div>
+                    </div>
                 ) : (
                     <>
                         <div className="board">
@@ -176,11 +210,11 @@ export default function NotFound() {
                                 <button
                                     key={i}
                                     className={`cell ${
-                                        value && winner && board[i] === winner ? 'winner' : 
+                                        winner && winningLine.includes(i) ? 'winner' : 
                                         isDraw ? 'draw' : ''
                                     }`}
                                     onClick={() => handleClick(i)}
-                                    disabled={board[i] || isGameOver || calculateWinner(board) || board.filter(cell => cell).length % 2 === 1}
+                                    disabled={board[i] || isGameOver || calculateWinner(board) || isComputerTurn}
                                 >
                                     <span>{value}</span>
                                 </button>
