@@ -41,6 +41,11 @@
     width: 100%;
     max-width: 300px;
     padding: 1rem;
+    margin-top: 2rem;
+}
+
+.game_container.game_active {
+    margin-top: 0;
 }
 
 .board {
@@ -154,5 +159,51 @@
     
     .cell span {
         font-size: 1.25rem;
+    }
+
+    .not_found_container {
+        padding: 10px;
+        justify-content: center;
+    }
+
+    .game_container {
+        width: 90%;
+        max-width: 280px;
+        padding: 0.5rem;
+        margin: 0 auto;
+    }
+
+    .game_container.game_active {
+        margin: 0 auto;
+    }
+
+    .board {
+        max-width: 280px;
+        gap: 6px;
+    }
+
+    .difficulty_buttons {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .difficulty_button {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        min-width: 80px;
+    }
+
+    .button_container {
+        gap: 8px;
+    }
+
+    .reset_button {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    .game_status {
+        font-size: 0.9rem;
+        margin: 0.75rem 0;
     }
 } 

@@ -154,12 +154,16 @@ export default function NotFound() {
 
     return (
         <div className="not_found_container">
-            <h1 className="not_found_title">404</h1>
-            <p className="not_found_text">
-                Page not found. Challenge the computer to a game?
-            </p>
+            {!difficulty && (
+                <>
+                    <h1 className="not_found_title">404</h1>
+                    <p className="not_found_text">
+                        Page not found. Challenge the computer to a game?
+                    </p>
+                </>
+            )}
             
-            <div className="game_container">
+            <div className={`game_container ${difficulty ? 'game_active' : ''}`}>
                 <div className={`game_status ${winner ? 'winner' : isDraw ? 'draw' : ''}`}>
                     {status}
                 </div>
