@@ -289,7 +289,6 @@ const AddWallpaper = ({ isOpen, onClose }) => {
         setPreview(null);
         setShowSuccess(false);
         setUploading(false);
-        onClose();
       }, 2000);
 
     } catch (error) {
