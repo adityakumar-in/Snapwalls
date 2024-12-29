@@ -206,6 +206,7 @@ const ExplorePage = () => {
                 gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
                 gap: '20px',
                 width: '100%',
+                paddingBottom: '12px'
             }}>
                 {wallpapers.length === 0 ? (
                     <>
