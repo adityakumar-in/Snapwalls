@@ -170,7 +170,7 @@ export default function NotFound() {
                 <>
                     <h1 className="not_found_title">404</h1>
                     <p className="not_found_text">
-                        Page not found. Challenge the computer to a game?
+                        Page not found. Would you like to play a game of Tic-Tac-Toe while you're here?
                     </p>
                 </>
             )}
