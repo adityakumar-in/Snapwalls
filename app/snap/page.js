@@ -154,6 +154,7 @@ const SnappedPage = () => {
           gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
           gap: '20px',
           width: '100%',
+          paddingBottom: '12px'
         }}>
           {(() => {
             // Separate desktop and phone images
