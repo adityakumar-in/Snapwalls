@@ -746,8 +746,6 @@ const Page = () => {
 
       isGenerating = true;
       lastGenerationTime = now;
-
-      console.log('Starting image generation...');
       setImageUrl('');
       setImageLoaded(false);
       setLoading(true);
@@ -766,10 +764,6 @@ const Page = () => {
         : 'perfect horizontal composition, desktop wallpaper style, wide format';
       
       const prompt = `${basePrompt}, ${styleModifiers}, ${orientationModifiers}, ${qualityModifiers} --no blur, noise, pixelation, low quality, text, watermark, artifacts, distortion`;
-      
-      console.log('Calling Pollination API with prompt:', prompt);
-      console.log('Dimensions:', dimensions);
-
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(new Error('Generation timed out')), 60000);
       });
@@ -778,8 +772,6 @@ const Page = () => {
         generatePollinationImage(prompt, dimensions),
         timeoutPromise
       ]);
-
-      console.log('Received URL:', url);
 
       if (!url) {
         throw new Error('Failed to generate image URL');
@@ -790,7 +782,6 @@ const Page = () => {
       img.src = url;
       
       img.onload = () => {
-        console.log('Image loaded successfully');
         setImageUrl(url);
         setImageLoaded(true);
         setLoading(false);
