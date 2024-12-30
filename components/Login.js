@@ -1,6 +1,6 @@
 "use client"
 import { useState, useRef, useEffect } from 'react';
-import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
 import { auth, googleProvider, twitterProvider } from '../components/firebase.config';
 import { FaEye, FaEyeSlash, FaGoogle, FaEnvelope, FaCheckCircle, FaLock, FaArrowLeft } from 'react-icons/fa';
 import { FaXTwitter } from "react-icons/fa6";
@@ -8,7 +8,7 @@ import Signup from './Signup';
 import '@/app/styles/login.css';
 import { useRouter } from 'next/navigation';
 
-export default function Login({ onClose = () => { }, currentPath = '/' }) {
+export default function Login({ onClose = () => { }, currentPath = '/', onLoginSuccess = () => { } }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -50,13 +50,14 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         setVerificationSent(true);
         await sendEmailVerification(userCredential.user);
       } else {
-        setNotificationMessage('Successfully logged in!');
-        setShowNotification(true);
+        // Call parent's success handler first
+        onLoginSuccess();
+        
+        // Wait a bit before closing the modal
         setTimeout(() => {
-          setShowNotification(false);
           onClose();
           router.push(currentPath);
-        }, 5000);
+        }, 1000);
       }
     } catch (error) {
       setError("Unable to log in. Please check your credentials and try again.");
@@ -64,22 +65,47 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
   };
   const handleSocialLogin = async (provider) => {
     try {
-      const result = await signInWithPopup(auth, provider);
-      if (result.user.emailVerified) {
-        setNotificationMessage('Successfully logged in!');
-        setShowNotification(true);
-        setTimeout(() => {
-          setShowNotification(false);
-          onClose();
-          router.push(currentPath);
-        }, 5000);
-      } else {
-        await auth.signOut();
-        setVerificationSent(true);
-        await sendEmailVerification(result.user);
+      if (provider === twitterProvider) {
+        provider.setCustomParameters({
+          lang: 'en'
+        });
       }
+      
+      const result = await signInWithPopup(auth, provider);
+      
+      // Call parent's success handler first
+      onLoginSuccess();
+      
+      // Wait a bit before closing the modal
+      setTimeout(() => {
+        onClose();
+        router.push(currentPath);
+      }, 1000);
+      
     } catch (error) {
-      setError("Unable to complete social login. Please try again.");
+      console.error('Social login error details:', {
+        code: error.code,
+        message: error.message,
+        fullError: error
+      });
+      
+      let errorMessage = "Unable to complete social login. Please try again.";
+      
+      if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = "Login popup was closed. Please try again.";
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = "Login popup was blocked. Please allow popups for this site.";
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        errorMessage = "Login process was cancelled. Please try again.";
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = "An account already exists with the same email address but different sign-in credentials.";
+      } else if (error.code === 'auth/operation-not-allowed') {
+        errorMessage = "Twitter login is not enabled. Please contact support.";
+      } else if (error.code === 'auth/internal-error') {
+        errorMessage = "Authentication service is experiencing issues. This might be due to incorrect Twitter API configuration. Please try again later or use another login method.";
+      }
+      
+      setError(errorMessage);
     }
   };
 

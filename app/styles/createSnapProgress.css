@@ -178,8 +178,8 @@
   opacity: 0.6;
 }
 
-/* Success Container */
-.success-container {
+/* progress-success Container */
+.progress-success-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -187,13 +187,13 @@
   animation: scaleIn 0.5s ease-out;
 }
 
-.success-icon {
+.progress-success-icon {
   color: #22c55e;
   filter: drop-shadow(0 0 10px rgba(34, 197, 94, 0.5));
   animation: iconPop 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.success-title {
+.progress-success-title {
   font-size: 2rem;
   font-weight: 700;
   margin: 0;
@@ -203,7 +203,7 @@
   animation: slideUpFade 0.5s ease-out 0.2s backwards;
 }
 
-.success-message {
+.progress-success-message {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
   text-align: center;

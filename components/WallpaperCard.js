@@ -55,6 +55,11 @@ const WallpaperCard = ({ imageURL, type }) => {
   }, [auth.currentUser]);
 
   const handleDownload = async () => {
+    if (!auth.currentUser) {
+      setShowLogin(true);
+      return;
+    }
+
     try {
       setDownloadState('downloading');
       
