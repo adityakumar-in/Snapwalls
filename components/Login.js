@@ -8,7 +8,7 @@ import Signup from './Signup';
 import '@/app/styles/login.css';
 import { useRouter } from 'next/navigation';
 
-export default function Login({ onClose = () => { }, currentPath = '/' }) {
+export default function Login({ onClose = () => { }, currentPath = '/', onLoginSuccess = () => { } }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -50,13 +50,14 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
         setVerificationSent(true);
         await sendEmailVerification(userCredential.user);
       } else {
-        setNotificationMessage('Successfully logged in!');
-        setShowNotification(true);
+        // Call parent's success handler first
+        onLoginSuccess();
+        
+        // Wait a bit before closing the modal
         setTimeout(() => {
-          setShowNotification(false);
           onClose();
           router.push(currentPath);
-        }, 5000);
+        }, 1000);
       }
     } catch (error) {
       setError("Unable to log in. Please check your credentials and try again.");
@@ -71,13 +72,16 @@ export default function Login({ onClose = () => { }, currentPath = '/' }) {
       }
       
       const result = await signInWithPopup(auth, provider);
-      setNotificationMessage('Successfully logged in!');
-      setShowNotification(true);
+      
+      // Call parent's success handler first
+      onLoginSuccess();
+      
+      // Wait a bit before closing the modal
       setTimeout(() => {
-        setShowNotification(false);
         onClose();
         router.push(currentPath);
-      }, 5000);
+      }, 1000);
+      
     } catch (error) {
       console.error('Social login error details:', {
         code: error.code,

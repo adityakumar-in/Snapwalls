@@ -163,9 +163,10 @@ const Navbar = () => {
   const handleLoginSuccess = () => {
     setShowSuccessNotification(true);
     setShowLogin(false);
+    setLoginActive(false);
     setTimeout(() => {
       setShowSuccessNotification(false);
-    }, 3000);
+    }, 8000);
   };
 
   const handleProfileClick = () => {
