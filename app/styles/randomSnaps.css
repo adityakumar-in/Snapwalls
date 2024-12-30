@@ -215,7 +215,7 @@
 }
 
 .generate-button:disabled {
-  background: var(--foreground);
+  background: var(--theme-color);
   cursor: not-allowed;
   opacity: 0.7;
 }
