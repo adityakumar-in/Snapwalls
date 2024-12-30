@@ -725,17 +725,18 @@ const Page = () => {
   };
 
   const handleGenerateImage = async () => {
-    setImageUrl('');
-    setImageLoaded(false);
-    setLoading(true);
-    setError('');
-    
     try {
+      console.log('Starting image generation...');
+      setImageUrl('');
+      setImageLoaded(false);
+      setLoading(true);
+      setError('');
+      
       const dimensions = getWallpaperDimensions();
       const chosenCategory = selectedCategory === 'random' ? getRandomCategory() : selectedCategory;
       setCurrentCategory(chosenCategory);
-      const basePrompt = getRandomPrompt(chosenCategory);
       
+      const basePrompt = getRandomPrompt(chosenCategory);
       const qualityModifiers = QUALITY_PRESETS[selectedQuality].modifiers;
       const styleModifiers = STYLE_PRESETS[selectedStyle].modifiers;
       
@@ -745,30 +746,57 @@ const Page = () => {
       
       const prompt = `${basePrompt}, ${styleModifiers}, ${orientationModifiers}, ${qualityModifiers} --no blur, noise, pixelation, low quality, text, watermark, artifacts, distortion`;
       
-      const url = await generatePollinationImage(prompt, dimensions);
-      setImageUrl(url);
+      console.log('Calling Pollination API with prompt:', prompt);
+      console.log('Dimensions:', dimensions);
 
-      // Add to history
-      const newHistoryItem = {
-        url,
-        category: chosenCategory,
-        type: wallpaperType,
-        quality: selectedQuality,
-        style: selectedStyle,
-        timestamp: new Date().toISOString()
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Generation timed out')), 60000);
+      });
+
+      const url = await Promise.race([
+        generatePollinationImage(prompt, dimensions),
+        timeoutPromise
+      ]);
+
+      console.log('Received URL:', url);
+
+      if (!url) {
+        throw new Error('Failed to generate image URL');
+      }
+
+      // Pre-load the image before setting it
+      const img = new Image();
+      img.src = url;
+      
+      img.onload = () => {
+        console.log('Image loaded successfully');
+        setImageUrl(url);
+        setImageLoaded(true);
+        setLoading(false);
+        
+        // Add to history after successful generation
+        const newHistoryItem = {
+          url,
+          category: chosenCategory,
+          type: wallpaperType,
+          quality: selectedQuality,
+          style: selectedStyle,
+          timestamp: new Date().toISOString()
+        };
+        addToHistory(newHistoryItem);
       };
-      addToHistory(newHistoryItem);
+
+      img.onerror = () => {
+        console.error('Image failed to load');
+        throw new Error('Failed to load generated image');
+      };
 
     } catch (error) {
-      console.error('Error generating image:', error);
-      setError('Failed to generate image. Please try again.');
-    } finally {
+      console.error('Error in handleGenerateImage:', error);
+      setError(error.message || 'Failed to generate image. Please try again.');
       setLoading(false);
+      setImageLoaded(false);
     }
-  };
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
   };
 
   const handleDownload = async () => {
@@ -1068,7 +1096,7 @@ const Page = () => {
           <div className="controls-bottom">
             <button 
               onClick={handleGenerateImage}
-              disabled={loading}
+              disabled={loading || (imageUrl && !imageLoaded)}
               className='generate-button'
               title="Press 'G' to generate"
             >
@@ -1187,7 +1215,12 @@ const Page = () => {
                 src={imageUrl} 
                 alt={`Generated ${currentCategory} wallpaper`}
                 className='generated-image'
-                onLoad={handleImageLoad}
+                onError={() => {
+                  console.error('Image failed to load in component');
+                  setError('Failed to load image. Please try again.');
+                  setLoading(false);
+                  setImageLoaded(false);
+                }}
               />
             </div>
           )}
@@ -1228,7 +1261,7 @@ const Page = () => {
               title="Close Gallery"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
               </svg>
             </button>
           </div>
