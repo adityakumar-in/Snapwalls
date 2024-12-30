@@ -119,6 +119,9 @@ const NavbarNotification = ({ isActive, onClose }) => {
       // Update local state to remove all notifications
       setNotifications([]);
 
+      // Close the notification panel
+      onClose();
+
     } catch (error) {
       console.error('Error deleting all notifications:', error);
     }
