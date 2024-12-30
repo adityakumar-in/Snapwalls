@@ -322,40 +322,37 @@
   gap: 0.625rem;
 }
 
-.google-button:hover,
-.twitter-button:hover {
-  transform: translateY(-1px);
-}
-
-.google-button:active,
-.twitter-button:active {
-  transform: translateY(0);
-}
-
 .google-button {
   background: #db4437;
   box-shadow: 0 4px 12px rgba(219, 68, 55, 0.2);
 }
 
+.google-button:hover {
+  background: #db4437;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(219, 68, 55, 0.2);
+}
+
 .twitter-button {
-  background: #000000 !important;
-  color: white !important;
-  border: none !important;
+  background: #000000;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .twitter-button:hover {
-  background: #000000 !important;
+  background: #000000;
   transform: translateY(-1px);
-}
-
-.twitter-button .social-icon {
-  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .social-icon {
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+}
+
+.twitter-button .social-icon {
+  color: white;
 }
 
 .signup-prompt {
