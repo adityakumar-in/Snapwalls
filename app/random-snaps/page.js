@@ -59,48 +59,233 @@ const STYLE_PRESETS = {
 
 const WALLPAPER_CATEGORIES = {
   nature: {
-    weight: 0.25,
+    weight: 0.2,
     prompts: [
-      'stunning nature landscape, majestic mountains, serene lakes',
-      'beautiful forest scene, mystical woodland, enchanted nature',
-      'ocean waves, coastal scenery, beach paradise',
-      'dramatic sunset landscape, golden hour nature photography'
+      "serene mountain landscape with misty peaks and golden sunlight",
+      "tranquil forest scene with sunbeams filtering through ancient trees", 
+      "dramatic coastal landscape with crashing waves and rugged cliffs",
+      "peaceful lake reflection with surrounding autumn trees",
+      "ethereal northern lights dancing over snow-covered mountains",
+      "lush tropical waterfall in a verdant rainforest",
+      "cherry blossom trees in full bloom beside a peaceful stream",
+      "desert landscape with rolling sand dunes at sunset",
+      "mystical foggy forest with bioluminescent elements",
+      "pristine beach with crystal clear turquoise waters",
+      "majestic redwood forest canopy with morning mist",
+      "alpine meadow filled with wildflowers and distant peaks",
+      "volcanic landscape with active lava flows and steam vents",
+      "bamboo forest with dappled sunlight and stone path",
+      "coral reef underwater scene with tropical fish",
+      "ice cave with crystalline formations and blue light",
+      "autumn forest with vibrant red and gold leaves",
+      "cascading mountain stream with moss-covered rocks",
+      "misty valley with rolling hills at dawn",
+      "desert oasis with palm trees and clear pool",
+      "rocky coastline with lighthouse at stormy sunset",
+      "zen garden with raked sand and weathered stones",
+      "rainforest canopy view with exotic birds",
+      "snow-covered pine forest in soft moonlight",
+      "spring meadow with blooming lavender fields"
     ]
   },
   abstract: {
-    weight: 0.2,
-    prompts: [
-      'modern abstract art, fluid shapes, contemporary design',
-      'geometric patterns, minimalist abstract composition',
-      'colorful abstract waves, dynamic flowing shapes',
-      'abstract cosmic art, space-inspired patterns'
-    ]
-  },
-  anime: {
     weight: 0.15,
     prompts: [
-      'anime scenic background art, studio ghibli inspired',
-      'japanese anime art style, vibrant anime landscape',
-      'anime fantasy scene, magical anime environment',
-      'cyberpunk anime cityscape, futuristic anime art'
+      "flowing liquid colors with metallic and iridescent elements",
+      "geometric patterns with neon lights and glass effects", 
+      "organic shapes with vibrant gradients and smooth transitions",
+      "fractal patterns with cosmic elements and deep space colors",
+      "minimalist composition with bold shapes and subtle textures",
+      "dynamic swirls of color with particle effects",
+      "crystalline structures with rainbow light refractions",
+      "abstract cityscape with futuristic elements",
+      "fluid art with marble textures and gold accents",
+      "digital waves with holographic effects",
+      "kaleidoscopic patterns with jewel tones and symmetry",
+      "abstract smoke art with vivid color transitions",
+      "microscopic cellular patterns with vibrant details",
+      "topographical maps with colorful elevation layers",
+      "sound wave visualizations with neon pulses",
+      "abstract ocean waves with pearlescent foam",
+      "mathematical patterns with golden ratio spirals",
+      "ink drop photography with psychedelic colors",
+      "abstract aurora patterns with flowing ribbons",
+      "crystalline fractals with prismatic light",
+      "bubble art with rainbow iridescence",
+      "abstract energy fields with plasma effects",
+      "waveform interference patterns with metallic sheen",
+      "abstract quantum visualizations with particle trails",
+      "marbled paper patterns with floating ink designs"
     ]
   },
-  minimal: {
-    weight: 0.2,
+  space: {
+    weight: 0.15,
     prompts: [
-      'minimalist design, clean simple composition',
-      'zen minimalist art, peaceful simple shapes',
-      'modern minimalist patterns, elegant simple design',
-      'architectural minimalism, clean lines and shapes'
+      "nebula with vibrant colors and star clusters",
+      "distant galaxies with cosmic dust and stellar formations",
+      "planet rise over alien landscape with multiple moons",
+      "supernova explosion with spectacular light effects",
+      "black hole event horizon with gravitational lensing",
+      "space station orbiting a ringed gas giant",
+      "asteroid field with distant sun and space phenomena",
+      "binary star system with surrounding planetary bodies", 
+      "cosmic storm with swirling stellar matter",
+      "deep space nebula with star formation regions",
+      "pulsar star with electromagnetic beams",
+      "colliding galaxies with stellar bridges",
+      "planetary nebula with intricate gas clouds",
+      "wormhole tunnel with space-time distortions",
+      "stellar nursery with young stars forming",
+      "quasar jet stream with intense energy beams",
+      "mars landscape with earth in the sky",
+      "neutron star with intense magnetic fields",
+      "cosmic microwave background visualization",
+      "interstellar cloud with dark matter effects",
+      "dying star with expanding shell of gas",
+      "asteroid impact on lunar surface",
+      "solar flare eruption with plasma arcs",
+      "galactic core with dense star clusters",
+      "comet tail with ice crystals and gas"
+    ]
+  },
+  cyberpunk: {
+    weight: 0.15,
+    prompts: [
+      "neon-lit cityscape with flying vehicles and holographic advertisements",
+      "cybernetic interface with glowing circuits and data streams", 
+      "futuristic metropolis in rain with reflecting neon lights",
+      "digital realm with matrix-like elements and cyber aesthetics",
+      "retro-futuristic arcade scene with synthwave elements",
+      "cyberpunk alley with neon signs and steam vents",
+      "virtual reality landscape with grid lines and glitch effects",
+      "techno-organic fusion with bioluminescent details",
+      "dystopian cityscape with massive holographic displays",
+      "cyber-enhanced street scene with robot inhabitants",
+      "cyberpunk market with holographic vendor stalls",
+      "neon subway station with augmented reality ads",
+      "rooftop cyberpunk garden with bioluminescent plants",
+      "underground hacker den with matrix displays",
+      "cyberpunk laboratory with experimental tech",
+      "augmented reality street art in neon city",
+      "cybernetic enhancement clinic at night",
+      "digital slums with makeshift tech solutions",
+      "corporate cyberpunk tower with security drones",
+      "neon-soaked back alley with cyber merchants",
+      "virtual reality nightclub with digital effects",
+      "cyberpunk traffic jam with hovering vehicles",
+      "abandoned mall repurposed with cyber tech",
+      "cyberpunk medical facility with robot staff",
+      "digital marketplace with hologram products",
+      "cyberpunk resistance hideout with screens",
+      "neon temple with technological artifacts",
+      "cyber-enhanced sports arena at night",
+      "floating cyberpunk platforms with bridges",
+      "underground cyber racing circuit"
     ]
   },
   fantasy: {
-    weight: 0.2,
+    weight: 0.15,
     prompts: [
-      'fantasy landscape, magical environment, mystical scene',
-      'enchanted world, fantasy art, magical atmosphere',
-      'dreamlike fantasy scene, surreal environment',
-      'magical fantasy realm, ethereal landscape'
+      "magical crystal cave with glowing minerals",
+      "enchanted forest with floating lights and mystical creatures", 
+      "ancient dragon temple in misty mountains",
+      "fairy tale castle with rainbow aurora in the sky",
+      "mystical portal with swirling magical energies",
+      "floating islands with waterfalls and crystal formations",
+      "phoenix rising with spectacular fire effects",
+      "underwater palace with bioluminescent sea life",
+      "magical library with floating books and starry ceiling",
+      "crystal dragon perched on an ethereal mountain peak",
+      "wizard tower with magical experiments and potions",
+      "fairy village in giant mushroom forest",
+      "mythical creature sanctuary with unicorns and griffins",
+      "enchanted garden with magical flowers and butterflies",
+      "ancient elven city in treetop canopy",
+      "magical oasis with color-changing water",
+      "dragon's treasure hoard with magical artifacts",
+      "floating magical academy in the clouds",
+      "crystal forest with prismatic light effects",
+      "magical underground cavern with glowing crystals",
+      "enchanted ice palace with aurora effects",
+      "mystical ruins with ancient magical symbols",
+      "fairy ring with dancing magical lights",
+      "magical waterfall with rainbow mist",
+      "crystal spire city with magical bridges",
+      "enchanted desert with magical mirages",
+      "magical storm with swirling elements",
+      "ancient magical battlefield with lingering spells",
+      "mystical sanctuary with magical creatures",
+      "magical nexus with swirling energy vortex"
+    ]
+  },
+  minimal: {
+    weight: 0.1,
+    prompts: [
+      "simple geometric shapes with subtle gradients",
+      "minimalist landscape with clean lines and limited palette",
+      "zen garden inspired pattern with subtle textures", 
+      "abstract minimal composition with floating elements",
+      "simple color blocks with organic transitions",
+      "minimalist nature scene with fog and silhouettes",
+      "clean architectural lines with shadow play",
+      "minimal ocean scene with horizon line",
+      "geometric pattern with subtle depth and shadows",
+      "simplified mountain range with gradient sky",
+      "minimalist desert scene with single dune",
+      "abstract circles with delicate line work",
+      "minimal forest with negative space",
+      "geometric cityscape with clean angles",
+      "simple wave patterns with subtle motion",
+      "minimalist sunset with color bands",
+      "abstract minimal shapes in balance",
+      "zen stone arrangement with shadows",
+      "clean lined architectural facade",
+      "minimal winter scene with snow",
+      "geometric abstract with single focal point",
+      "simple cloud study with gradients",
+      "minimalist river scene with reflections",
+      "abstract pattern with repeating elements",
+      "minimal meadow with single flower",
+      "geometric composition with light play",
+      "simple moonlit scene with silhouettes",
+      "minimalist rain study with lines",
+      "abstract landscape with basic shapes",
+      "zen inspired minimal composition"
+    ]
+  },
+  anime: {
+    weight: 0.1,
+    prompts: [
+      "anime-style cherry blossom scene with soft lighting",
+      "studio ghibli inspired magical forest",
+      "anime cityscape with dramatic sky and weather", 
+      "japanese shrine with supernatural elements",
+      "anime-style cosmic scene with magical effects",
+      "detailed anime landscape with fantasy elements",
+      "cyberpunk anime city with neon accents",
+      "anime beach scene with sunset and waves",
+      "magical girl transformation background",
+      "anime-style starry night with floating lanterns",
+      "anime school rooftop scene at sunset",
+      "magical anime library with floating books",
+      "anime-style mountain temple in the clouds",
+      "futuristic anime mecha hangar",
+      "anime hot springs with mystical steam",
+      "anime festival scene with paper lanterns",
+      "magical anime garden with glowing flowers",
+      "anime train scene with passing scenery",
+      "cyberpunk anime alleyway with rain",
+      "anime-style underwater palace",
+      "magical anime forest clearing with spirits",
+      "anime sky castle among clouds",
+      "traditional japanese room in anime style",
+      "anime space station with earth view",
+      "magical anime academy courtyard",
+      "anime-style autumn scene with falling leaves",
+      "mystical anime shrine at night",
+      "anime desert oasis with mirages",
+      "magical anime crystal cave",
+      "anime-style floating islands in sky"
     ]
   }
 };
@@ -478,6 +663,10 @@ const ClientOnly = ({ children }) => {
   return children;
 };
 
+const RATE_LIMIT_DELAY = 2000; // 2 seconds between generations
+let lastGenerationTime = 0;
+let isGenerating = false;
+
 const Page = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -725,17 +914,33 @@ const Page = () => {
   };
 
   const handleGenerateImage = async () => {
-    setImageUrl('');
-    setImageLoaded(false);
-    setLoading(true);
-    setError('');
-    
     try {
+      // Check if generation is already in progress
+      if (isGenerating) {
+        setError('Please wait for the current generation to complete');
+        return;
+      }
+
+      // Check rate limiting
+      const now = Date.now();
+      const timeSinceLastGeneration = now - lastGenerationTime;
+      if (timeSinceLastGeneration < RATE_LIMIT_DELAY) {
+        setError(`Please wait ${Math.ceil((RATE_LIMIT_DELAY - timeSinceLastGeneration) / 1000)} seconds before generating again`);
+        return;
+      }
+
+      isGenerating = true;
+      lastGenerationTime = now;
+      setImageUrl('');
+      setImageLoaded(false);
+      setLoading(true);
+      setError('');
+      
       const dimensions = getWallpaperDimensions();
       const chosenCategory = selectedCategory === 'random' ? getRandomCategory() : selectedCategory;
       setCurrentCategory(chosenCategory);
-      const basePrompt = getRandomPrompt(chosenCategory);
       
+      const basePrompt = getRandomPrompt(chosenCategory);
       const qualityModifiers = QUALITY_PRESETS[selectedQuality].modifiers;
       const styleModifiers = STYLE_PRESETS[selectedStyle].modifiers;
       
@@ -744,31 +949,54 @@ const Page = () => {
         : 'perfect horizontal composition, desktop wallpaper style, wide format';
       
       const prompt = `${basePrompt}, ${styleModifiers}, ${orientationModifiers}, ${qualityModifiers} --no blur, noise, pixelation, low quality, text, watermark, artifacts, distortion`;
-      
-      const url = await generatePollinationImage(prompt, dimensions);
-      setImageUrl(url);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Generation timed out')), 60000);
+      });
 
-      // Add to history
-      const newHistoryItem = {
-        url,
-        category: chosenCategory,
-        type: wallpaperType,
-        quality: selectedQuality,
-        style: selectedStyle,
-        timestamp: new Date().toISOString()
+      const url = await Promise.race([
+        generatePollinationImage(prompt, dimensions),
+        timeoutPromise
+      ]);
+
+      if (!url) {
+        throw new Error('Failed to generate image URL');
+      }
+
+      // Pre-load the image before setting it
+      const img = new Image();
+      img.src = url;
+      
+      img.onload = () => {
+        setImageUrl(url);
+        setImageLoaded(true);
+        setLoading(false);
+        isGenerating = false; // Reset generating flag
+        
+        // Add to history after successful generation
+        const newHistoryItem = {
+          url,
+          category: chosenCategory,
+          type: wallpaperType,
+          quality: selectedQuality,
+          style: selectedStyle,
+          timestamp: new Date().toISOString()
+        };
+        addToHistory(newHistoryItem);
       };
-      addToHistory(newHistoryItem);
+
+      img.onerror = () => {
+        console.error('Image failed to load');
+        isGenerating = false; // Reset generating flag
+        throw new Error('Failed to load generated image');
+      };
 
     } catch (error) {
-      console.error('Error generating image:', error);
-      setError('Failed to generate image. Please try again.');
-    } finally {
+      console.error('Error in handleGenerateImage:', error);
+      setError(error.message || 'Failed to generate image. Please try again.');
       setLoading(false);
+      setImageLoaded(false);
+      isGenerating = false; // Reset generating flag
     }
-  };
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
   };
 
   const handleDownload = async () => {
@@ -1068,11 +1296,13 @@ const Page = () => {
           <div className="controls-bottom">
             <button 
               onClick={handleGenerateImage}
-              disabled={loading}
+              disabled={loading || (imageUrl && !imageLoaded) || isGenerating}
               className='generate-button'
               title="Press 'G' to generate"
             >
-              {loading ? 'Creating Magic...' : 'Generate Random Wallpaper'}
+              {loading ? 'Creating Magic...' : 
+               isGenerating ? 'Please Wait...' : 
+               'Generate Random Wallpaper'}
             </button>
 
             <button 
@@ -1187,7 +1417,12 @@ const Page = () => {
                 src={imageUrl} 
                 alt={`Generated ${currentCategory} wallpaper`}
                 className='generated-image'
-                onLoad={handleImageLoad}
+                onError={() => {
+                  console.error('Image failed to load in component');
+                  setError('Failed to load image. Please try again.');
+                  setLoading(false);
+                  setImageLoaded(false);
+                }}
               />
             </div>
           )}
@@ -1228,7 +1463,7 @@ const Page = () => {
               title="Close Gallery"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
               </svg>
             </button>
           </div>
