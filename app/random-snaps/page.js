@@ -478,6 +478,10 @@ const ClientOnly = ({ children }) => {
   return children;
 };
 
+const RATE_LIMIT_DELAY = 2000; // 2 seconds between generations
+let lastGenerationTime = 0;
+let isGenerating = false;
+
 const Page = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -726,6 +730,23 @@ const Page = () => {
 
   const handleGenerateImage = async () => {
     try {
+      // Check if generation is already in progress
+      if (isGenerating) {
+        setError('Please wait for the current generation to complete');
+        return;
+      }
+
+      // Check rate limiting
+      const now = Date.now();
+      const timeSinceLastGeneration = now - lastGenerationTime;
+      if (timeSinceLastGeneration < RATE_LIMIT_DELAY) {
+        setError(`Please wait ${Math.ceil((RATE_LIMIT_DELAY - timeSinceLastGeneration) / 1000)} seconds before generating again`);
+        return;
+      }
+
+      isGenerating = true;
+      lastGenerationTime = now;
+
       console.log('Starting image generation...');
       setImageUrl('');
       setImageLoaded(false);
@@ -773,6 +794,7 @@ const Page = () => {
         setImageUrl(url);
         setImageLoaded(true);
         setLoading(false);
+        isGenerating = false; // Reset generating flag
         
         // Add to history after successful generation
         const newHistoryItem = {
@@ -788,6 +810,7 @@ const Page = () => {
 
       img.onerror = () => {
         console.error('Image failed to load');
+        isGenerating = false; // Reset generating flag
         throw new Error('Failed to load generated image');
       };
 
@@ -796,6 +819,7 @@ const Page = () => {
       setError(error.message || 'Failed to generate image. Please try again.');
       setLoading(false);
       setImageLoaded(false);
+      isGenerating = false; // Reset generating flag
     }
   };
 
@@ -1096,11 +1120,13 @@ const Page = () => {
           <div className="controls-bottom">
             <button 
               onClick={handleGenerateImage}
-              disabled={loading || (imageUrl && !imageLoaded)}
+              disabled={loading || (imageUrl && !imageLoaded) || isGenerating}
               className='generate-button'
               title="Press 'G' to generate"
             >
-              {loading ? 'Creating Magic...' : 'Generate Random Wallpaper'}
+              {loading ? 'Creating Magic...' : 
+               isGenerating ? 'Please Wait...' : 
+               'Generate Random Wallpaper'}
             </button>
 
             <button 
