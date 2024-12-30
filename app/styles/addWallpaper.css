@@ -453,7 +453,7 @@
   transform: none;
 }
 
-.success-message {
+.add-wallpaper-success-message {
   position: fixed;
   top: 1rem;
   left: 50%;
@@ -481,7 +481,7 @@
   white-space: nowrap;
 }
 
-.success-message svg {
+.add-wallpaper-success-message svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
@@ -499,9 +499,9 @@
   }
 }
 
-/* Mobile adjustments for success message */
+/* Mobile adjustments for add-wallpaper-success message */
 @media screen and (max-width: 768px) {
-  .success-message {
+  .add-wallpaper-success-message {
     top: env(safe-area-inset-top, 1rem);
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
@@ -513,14 +513,14 @@
       0 2px 4px rgba(0, 200, 83, 0.2);
   }
 
-  .success-message svg {
+  .add-wallpaper-success-message svg {
     width: 16px;
     height: 16px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .success-message {
+  .add-wallpaper-success-message {
     width: calc(100% - 2rem);
     white-space: normal;
     text-align: left;

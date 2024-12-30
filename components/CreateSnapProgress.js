@@ -21,11 +21,11 @@ const CreateSnapProgress = ({ progress }) => {
         <div className="glow-effect"></div>
 
         {showSuccess ? (
-          <div className="success-container">
-            <div className="success-icon">
+          <div className="progress-success-container">
+            <div className="progress-success-icon">
               <svg viewBox="0 0 24 24" width="100" height="100">
-                <circle className="success-circle" cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="2"/>
-                <path className="success-check" d="M7 13l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2"/>
+                <circle className="progress-success-circle" cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="2"/>
+                <path className="progress-success-check" d="M7 13l3 3 7-7" fill="none" stroke="currentColor" strokeWidth="2"/>
               </svg>
             </div>
           </div>
