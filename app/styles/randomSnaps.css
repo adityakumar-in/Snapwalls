@@ -2404,6 +2404,8 @@
   transform-origin: top center;
   animation: selectDropIn 0.2s ease forwards;
   z-index: 999999;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 @keyframes selectDropIn {
@@ -2415,6 +2417,11 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.select-options::-webkit-scrollbar {
+  display: none;
 }
 
 .select-option {
