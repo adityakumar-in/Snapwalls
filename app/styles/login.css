@@ -916,16 +916,14 @@ body.modal-open {
 @media (max-width: 480px) {
   .success-notification,
   .logout-notification {
-    top: auto;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    animation: slideInMobile 0.5s ease forwards;
+    top: 20px;
+    bottom: auto;
+    animation: slideInTop 0.5s ease forwards;
   }
 
-  @keyframes slideInMobile {
+  @keyframes slideInTop {
     from {
-      transform: translateY(100%);
+      transform: translateY(-100%);
       opacity: 0;
     }
     to {
