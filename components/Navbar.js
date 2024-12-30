@@ -46,15 +46,11 @@ const Navbar = () => {
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
       if (user) {
         await user.reload();
-        setTimeout(() => {
-          setIsLoggedIn(user.emailVerified);
-          setUserEmail(user.email || 'john.doe@example.com');
-          setUserName(getCurrentUserEmailName() || user.displayName || 'John Doe');
-          if (user.emailVerified) {
-            setShowLogin(false);
-            setShowSignup(false);
-          }
-        }, 1000);
+        setIsLoggedIn(true);
+        setUserEmail(user.email || 'john.doe@example.com');
+        setUserName(getCurrentUserEmailName() || user.displayName || 'John Doe');
+        setShowLogin(false);
+        setShowSignup(false);
 
         // Check if the user is created
         const userRef = ref(db, `users/${user.uid}/isCreated`);
