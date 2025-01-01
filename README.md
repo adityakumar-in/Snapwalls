@@ -193,7 +193,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-Abhishek - [@abhishekabysm](https://www.instagram.com/abhishekabysm/)
-\Aditya - [@coding.tutor](https://www.instagram.com/coding.tutor/)
+Abhishek - [@abhishekabysm](https://www.instagram.com/abhishekabysm/) | Aditya - [@coding.tutor](https://www.instagram.com/coding.tutor/)
 
 Project Link: [https://snapwalls.vercel.app/](https://snapwalls.vercel.app/)
