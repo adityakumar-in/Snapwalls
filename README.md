@@ -48,28 +48,39 @@ Snapwalls is a modern web application that uses AI to generate beautiful, high-q
 ## 📱 Mobile Preview
 <p align="center"><em>Home page mobile view</em></p>
 
-![Snapwalls Desktop Preview](public/home-mobile.png)
+<p align="center">
+  <img src="public/home-mobile.png" alt="Snapwalls Desktop Preview">
+</p>
 
 <p align="center"><em>Explore page mobile view</em></p>
 
-![Snapwalls Desktop Preview](public/explore-mobile.png)
+<p align="center">
+  <img src="public/explore-mobile.png" alt="Snapwalls Desktop Preview">
+</p>
 
 <p align="center"><em>Create page mobile view</em></p>
 
-![Snapwalls Desktop Preview](public/create-mobile.png)
+<p align="center">
+  <img src="public/create-mobile.png" alt="Snapwalls Desktop Preview">
+</p>
 
 <p align="center"><em>Snap page mobile view</em></p>
 
-![Snapwalls Desktop Preview](public/snap-mobile.png)
-
-
-<p align="center"><em>RandomSnap page mobile view</em></p>
-
-![Snapwalls Desktop Preview](public/randomsnaps1-mobile.png)
+<p align="center">
+  <img src="public/snap-mobile.png" alt="Snapwalls Desktop Preview">
+</p>
 
 <p align="center"><em>RandomSnap page mobile view</em></p>
 
-![Snapwalls Desktop Preview](public/randomsnaps2-mobile.png)
+<p align="center">
+  <img src="public/randomsnaps1-mobile.png" alt="Snapwalls Desktop Preview">
+</p>
+
+<p align="center"><em>RandomSnap page mobile view</em></p>
+
+<p align="center">
+  <img src="public/randomsnaps2-mobile.png" alt="Snapwalls Desktop Preview">
+</p>
 
 ## 🌟 Features
 
