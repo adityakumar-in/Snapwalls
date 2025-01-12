@@ -1,10 +1,10 @@
 :root {
-  --theme-color: #FFB200;
+  --theme-color: #ffb200;
   --background: rgb(33, 33, 33);
   --foreground: rgb(44, 44, 44);
   --color: rgb(234, 234, 234);
   --seekbar: rgb(57, 57, 57);
-  --scrollbar-thumb-color: #FFB200;  /* Initial visible state */
+  --scrollbar-thumb-color: #ffb200; /* Initial visible state */
 }
 * {
   margin: 0;
@@ -17,7 +17,9 @@
 }
 
 /* Enable text selection for form inputs */
-input, textarea, [contenteditable="true"] {
+input,
+textarea,
+[contenteditable="true"] {
   -webkit-touch-callout: default;
   -webkit-user-select: text;
   user-select: text;
@@ -75,26 +77,33 @@ body {
 }
 
 .default-padding {
-  padding-left: 74px;
+  padding-left: 85px;
   padding-top: 7px;
-  padding-right: 7px;
+  padding-right: 10px;
 }
 
 @media screen and (max-width: 768px) {
   .default-padding {
     padding-left: 70px;
+    padding-top: 7px;
+    padding-right: 10px;
   }
 }
+
 @media screen and (max-width: 700px) {
   .default-padding {
-    padding-top: 57px;
-    padding-left: 7px;
-    padding-bottom: 65px;
+    padding-top: 70px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 70px;
   }
 }
+
 @media screen and (max-width: 365px) {
   .default-padding {
-    padding-top: 55px;
-    padding-bottom: 60px;
+    padding-top: 65px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 65px;
   }
 }
