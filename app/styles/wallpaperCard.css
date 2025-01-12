@@ -1,6 +1,5 @@
 .firebase-wallpaper-card {
   position: relative;
-  border-radius: 8px;
   overflow: hidden;
   background-color: #121212;
   cursor: pointer;
@@ -10,6 +9,7 @@
   flex-direction: column;
   transition: transform 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
 }
 
 .firebase-wallpaper-image {
@@ -39,7 +39,7 @@
   align-items: center;
   justify-content: center;
   height: 40px;
-  border-radius: 12px;
+  border-radius: 15px;
   background: var(--theme-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -48,7 +48,7 @@
   color: var(--background);
   opacity: 0;
   border: none;
-  z-index: 1; /* Lower than firebase-card-buttons */
+  z-index: 1;
 }
 
 .firebase-snap-button {
@@ -69,7 +69,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 15px;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -174,7 +174,7 @@
 }
 
 .firebase-snap-text.firebase-snapped {
-  background: linear-gradient(135deg, var(--theme-color) 0%, #FFA500 100%);
+  background: linear-gradient(135deg, var(--theme-color) 0%, #ffa500 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -275,7 +275,7 @@
 }
 
 .firebase-snap-button.firebase-snapped::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -293,7 +293,7 @@
 }
 
 .firebase-snap-button.firebase-snapped::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -311,26 +311,35 @@
     height: fit-content;
     max-height: 300px;
   }
-  
+
   .firebase-card-button {
     height: 38px;
   }
-  
+
   .firebase-snap-button {
     padding: 0 14px;
   }
-  
+
   .firebase-download-button {
     width: 38px;
   }
-  
+
   .firebase-button-icon {
     font-size: 1.1rem;
   }
-  
+
   .firebase-snap-button.firebase-snapped {
     width: 38px;
     height: 38px;
+  }
+
+  .firebase-wallpaper-card {
+    border-radius: 24px;
+  }
+
+  .firebase-card-button,
+  .firebase-download-button {
+    border-radius: 12px;
   }
 }
 
@@ -338,22 +347,31 @@
   .firebase-card-button {
     height: 36px;
   }
-  
+
   .firebase-snap-button {
     padding: 0 12px;
   }
-  
+
   .firebase-download-button {
     width: 36px;
   }
-  
+
   .firebase-button-icon {
     font-size: 1rem;
   }
-  
+
   .firebase-snap-button.firebase-snapped {
     width: 36px;
     height: 36px;
+  }
+
+  .firebase-wallpaper-card {
+    border-radius: 20px;
+  }
+
+  .firebase-card-button,
+  .firebase-download-button {
+    border-radius: 10px;
   }
 }
 
@@ -361,20 +379,26 @@
   pointer-events: none;
 }
 
-.suggestions-container:not(:empty) ~ .firebase-wallpaper-card .firebase-card-button {
+.suggestions-container:not(:empty)
+  ~ .firebase-wallpaper-card
+  .firebase-card-button {
   opacity: 0 !important;
   pointer-events: none;
   visibility: hidden;
   transition: none;
 }
 
-.suggestions-container:not(:empty) ~ .firebase-wallpaper-card:hover .firebase-card-button {
+.suggestions-container:not(:empty)
+  ~ .firebase-wallpaper-card:hover
+  .firebase-card-button {
   opacity: 0 !important;
   transform: none !important;
   visibility: hidden !important;
 }
 
-.suggestions-container:not(:empty) ~ .firebase-wallpaper-card:hover .firebase-wallpaper-image {
+.suggestions-container:not(:empty)
+  ~ .firebase-wallpaper-card:hover
+  .firebase-wallpaper-image {
   transform: none;
 }
 
@@ -397,7 +421,7 @@
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-radius: 12px;
+  border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
@@ -412,15 +436,13 @@
   transform: translateY(-2px) !important;
   background: rgba(239, 68, 68, 0.9);
   border-color: rgba(239, 68, 68, 0.3);
-  box-shadow: 
-    0 8px 20px rgba(239, 68, 68, 0.25),
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25),
     0 0 0 1px rgba(239, 68, 68, 0.5) inset;
 }
 
 .delete-button:active {
   transform: translateY(0) !important;
-  box-shadow: 
-    0 4px 12px rgba(239, 68, 68, 0.2),
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2),
     0 0 0 1px rgba(239, 68, 68, 0.5) inset;
 }
 
@@ -446,8 +468,7 @@
     background: rgba(20, 20, 20, 0.85);
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
-    box-shadow: 
-      0 4px 12px rgba(0, 0, 0, 0.2),
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 
@@ -471,7 +492,7 @@
   .delete-button {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
+    border-radius: 10px;
     top: 12px;
     right: 12px;
     background: rgba(20, 20, 20, 0.9);
@@ -492,7 +513,7 @@
   .delete-button {
     width: 38px;
     height: 38px;
-    border-radius: 10px;
+    border-radius: 8px;
     top: 12px;
     right: 12px;
   }
@@ -532,11 +553,9 @@
   background: rgba(20, 20, 20, 0.98);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border-radius: 16px;
+  border-radius: 15px;
   padding: 1.25rem;
-  box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.3),
-    0 4px 12px rgba(0, 0, 0, 0.2),
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   min-width: 280px;
   max-width: 90vw;
@@ -547,14 +566,14 @@
 }
 
 .delete-confirm::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: -1;
-  border-radius: 14px;
+  border-radius: 10px;
 }
 
 .delete-confirm.show {
@@ -626,16 +645,14 @@
 .confirm-yes:hover {
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 20px rgba(239, 68, 68, 0.25),
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25),
     0 0 0 1px rgba(239, 68, 68, 0.5) inset;
 }
 
 .confirm-no:hover {
   background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
-  box-shadow: 
-    0 8px 20px rgba(0, 0, 0, 0.2),
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
 
@@ -683,7 +700,7 @@
   .delete-confirm button {
     padding: 0.5rem 1rem;
     font-size: 0.8125rem;
-    border-radius: 9px;
+    border-radius: 10px;
   }
 
   .delete-confirm-buttons {

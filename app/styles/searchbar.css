@@ -204,10 +204,7 @@
   }
 
   .search-slash {
-    padding: 5px 10px;
-    font-size: 14px;
-    right: 14px;
-    border-radius: 7px;
+    display: none;
   }
 
   .suggestions-container {
